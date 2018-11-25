@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    tools:context=".controllers.fragments.SuggestedFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:columnCount="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rowCount="2">
+
+        <ImageView
+            android:id="@+id/suggested_first"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            app:layout_gravity="center_vertical|center_horizontal"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/suggested_second"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            app:layout_gravity="center_vertical|center_horizontal"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/suggested_third"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            app:layout_gravity="center_vertical|center_horizontal"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/suggested_forth"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"
+            app:layout_gravity="center_vertical|center_horizontal"
+            tools:src="@tools:sample/avatars" />
+
+    </android.support.v7.widget.GridLayout>
+
+</android.support.constraint.ConstraintLayout>
