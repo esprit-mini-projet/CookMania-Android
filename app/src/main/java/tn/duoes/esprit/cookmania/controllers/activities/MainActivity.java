@@ -1,10 +1,11 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,6 +15,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        TextInputLayout loginInputLayout = findViewById(R.id.login_input_layout);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment_container);
+        if(fragment == null) {
+            fragment = MainLoginFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().add(R.id.login_fragment_container, fragment).commit();
+        }
     }
 }
