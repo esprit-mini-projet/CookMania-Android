@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
     tools:context=".controllers.fragments.SuggestedFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <android.support.v7.widget.GridLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/gridLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         app:columnCount="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,49 +21,77 @@
 
         <ImageView
             android:id="@+id/suggested_first"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="0dp"
+            android:layout_height="170dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
-            app:layout_gravity="center_vertical|center_horizontal"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"
             tools:src="@tools:sample/avatars" />
 
         <ImageView
             android:id="@+id/suggested_second"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
-            app:layout_gravity="center_vertical|center_horizontal"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"
             tools:src="@tools:sample/avatars" />
 
         <ImageView
             android:id="@+id/suggested_third"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="0dp"
+            android:layout_height="170dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
-            app:layout_gravity="center_vertical|center_horizontal"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"
             tools:src="@tools:sample/avatars" />
 
         <ImageView
             android:id="@+id/suggested_forth"
-            android:layout_width="150dp"
-            android:layout_height="140dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:scaleType="centerCrop"
-            app:layout_gravity="center_vertical|center_horizontal"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1"
             tools:src="@tools:sample/avatars" />
 
     </android.support.v7.widget.GridLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="115dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:alpha="0.9"
+        android:background="@drawable/gradient_shadow_color"
+        app:layout_constraintBottom_toBottomOf="@+id/gridLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:text="TextView"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/view"
+        app:layout_constraintEnd_toEndOf="@+id/view"
+        app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view" />
 
 </android.support.constraint.ConstraintLayout>
