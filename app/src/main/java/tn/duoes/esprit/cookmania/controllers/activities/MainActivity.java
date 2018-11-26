@@ -3,11 +3,14 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.fragments.EmailLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
 
 public class MainActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment_container);
         if(fragment == null) {
-            fragment = MainLoginFragment.newInstance();
+            fragment = MainLoginFragment.newInstance(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.login_fragment_container, EmailLoginFragment.newInstance())
+                            .commit();
+                }
+            });
             getSupportFragmentManager().beginTransaction().add(R.id.login_fragment_container, fragment).commit();
         }
     }

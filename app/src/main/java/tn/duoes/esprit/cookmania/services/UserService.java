@@ -19,7 +19,7 @@ public class UserService {
 
     private static final String TAG = "UserService";
 
-    private static final String Base_Url = "http://192.168.1.9:3000/users/";
+    private static final String Base_Url = "http://192.168.1.2:3000/users/";
     private static UserService instance;
 
     private UserApi mUserApi;
@@ -40,31 +40,32 @@ public class UserService {
         mUserApi = retrofit.create(UserApi.class);
     }
 
-    public void create(User user, final UserServiceCallBack callBack){
-        Call<Object> call = mUserApi.create(user);
+    public void createFromSocialMedia(User user, final UserServiceCallBack callBack){
+        Call<Object> call = mUserApi.createFromSocialMedia(user);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                if(response.isSuccessful()){
-                    String id = null;
-                    try {
-                        String body = new Gson().toJson(response.body());
-                        Log.d(TAG, "onResponse: body: " + body);
-                        JSONObject json = new JSONObject(body);
-                        id = json.getString("id");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    callBack.onCreateCompleted(id);
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Error " + response.errorBody());
+                    callBack.onCreateFromSocialMediaCompleted(null);
                     return;
                 }
-                Log.d(TAG, "onResponse: Error " + response.errorBody());
+                String id = null;
+                try {
+                    String body = new Gson().toJson(response.body());
+                    Log.d(TAG, "onResponse: body: " + body);
+                    JSONObject json = new JSONObject(body);
+                    id = json.getString("id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                callBack.onCreateFromSocialMediaCompleted(id);
             }
 
             @Override
             public void onFailure(Call<Object> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
-                callBack.onCreateCompleted(null);
+                callBack.onCreateFromSocialMediaCompleted(null);
             }
         });
     }
@@ -74,6 +75,6 @@ public class UserService {
          * @param id
          * returns null if operation failed
          */
-        void onCreateCompleted(String id);
+        void onCreateFromSocialMediaCompleted(String id);
     }
 }
