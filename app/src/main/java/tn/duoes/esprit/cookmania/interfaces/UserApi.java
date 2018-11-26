@@ -7,6 +7,6 @@ import tn.duoes.esprit.cookmania.models.User;
 
 public interface UserApi {
 
-    @POST("social/add")
-    Call<Object> createFromSocialMedia(@Body User user);
+    @POST("social/check")
+    Call<User> createFromSocialMedia(@Body User user);
 }

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -16,6 +17,8 @@ import com.squareup.picasso.Picasso;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
+import tn.duoes.esprit.cookmania.utils.GlideApp;
+import tn.duoes.esprit.cookmania.utils.MyAppGlideModule;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -26,6 +29,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         ImageView photo = findViewById(R.id.profile_picture);
+        ImageView photo2 = findViewById(R.id.profile_picture2);
         TextView name = findViewById(R.id.name_text);
         TextView method = findViewById(R.id.method_text);
         Button logoutButton = findViewById(R.id.logout_button);
@@ -34,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
         String nameString = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_USERNAME, null);
         final String methodString = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_SIGNIN_METHOD, null);
 
-        Picasso.get().load(photoUrl).into(photo);
+        GlideApp.with(this).load(photoUrl).centerCrop().into(photo);
         name.setText(nameString);
         method.setText("By " + methodString);
         logoutButton.setOnClickListener(new View.OnClickListener() {

@@ -42,6 +42,7 @@ import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
+import tn.duoes.esprit.cookmania.utils.Constants;
 
 public class MainLoginFragment extends Fragment {
 
@@ -164,16 +165,16 @@ public class MainLoginFragment extends Fragment {
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
         UserService.getInstance().createFromSocialMedia(user, new UserService.UserServiceCallBack() {
             @Override
-            public void onCreateFromSocialMediaCompleted(String id) {
+            public void onCreateFromSocialMediaCompleted(User user) {
                 hideProgressBar();
-                if(id == null){
+                if(user == null){
                     showErrorAlert();
                     return;
                 }
                 getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                         .edit()
                         .putString(PREF_SIGNIN_METHOD, signInMethod)
-                        .putString(PREF_USER_ID, id)
+                        .putString(PREF_USER_ID, user.getId())
                         .putString(PREF_IMAGE_URL, user.getImageUrl())
                         .putString(PREF_USERNAME, user.getUserName())
                         .apply();
@@ -247,7 +248,7 @@ public class MainLoginFragment extends Fragment {
             user.setEmail(account.getEmail());
             user.setPassword("");
             user.setUserName(account.getDisplayName());
-            user.setImageUrl(account.getPhotoUrl().toString());
+            user.setImageUrl(account.getPhotoUrl() == null ? Constants.DEFAULT_PROFILE_PICTURE_URL : account.getPhotoUrl().toString());
             loginOrCreateFromSocialMedia(user, METHOD_GOOGLE);
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
