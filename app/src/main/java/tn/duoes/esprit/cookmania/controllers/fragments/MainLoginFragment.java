@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.User;
