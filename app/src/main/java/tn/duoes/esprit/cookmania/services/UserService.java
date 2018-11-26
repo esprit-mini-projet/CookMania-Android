@@ -19,7 +19,7 @@ public class UserService {
 
     private static final String TAG = "UserService";
 
-    private static final String Base_Url = "http://192.168.1.2:3000/users/";
+    private static final String Base_Url = "http://192.168.43.254:3000/users/";
     private static UserService instance;
 
     private UserApi mUserApi;
