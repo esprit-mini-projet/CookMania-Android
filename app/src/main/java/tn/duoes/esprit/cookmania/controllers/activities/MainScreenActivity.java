@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.MainScreenPagerAdapter;
+import tn.duoes.esprit.cookmania.controllers.fragments.CategoryRecipesFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
@@ -17,7 +18,8 @@ public class MainScreenActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
         ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener,
-        SuggestedFragment.OnFragmentInteractionListener {
+        SuggestedFragment.OnFragmentInteractionListener,
+        CategoryRecipesFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

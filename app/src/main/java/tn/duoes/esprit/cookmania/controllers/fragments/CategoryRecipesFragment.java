@@ -3,29 +3,31 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.adapters.CategoryRecipeRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.models.Recipe;
-import tn.duoes.esprit.cookmania.services.RecipeService;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
+ * {@link CategoryRecipesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link CategoryRecipesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment{
+public class CategoryRecipesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,7 +39,7 @@ public class HomeFragment extends Fragment{
 
     private OnFragmentInteractionListener mListener;
 
-    public HomeFragment() {
+    public CategoryRecipesFragment() {
         // Required empty public constructor
     }
 
@@ -45,13 +47,13 @@ public class HomeFragment extends Fragment{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter ap_1.
+     * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
+     * @return A new instance of fragment CategoryRecipesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static CategoryRecipesFragment newInstance(String param1, String param2) {
+        CategoryRecipesFragment fragment = new CategoryRecipesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -68,40 +70,37 @@ public class HomeFragment extends Fragment{
         }
     }
 
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private RecyclerView.Adapter mAdapter;
+    private List<Recipe> mRecipes;
+    private String mCategoryName;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.fragment_home, container, false);
+        View fragment = inflater.inflate(R.layout.fragment_categorie_recipes, container, false);
 
-        Fragment suggestedFragment = SuggestedFragment.newInstance(null, null);
-        getFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();
+        Bundle bundle = getArguments();
+        mRecipes = bundle.getParcelableArrayList("recipes");
+        mCategoryName = bundle.getString("categoryName");
 
-        //Top rated recipes
-        ArrayList<Recipe> topRatedRecipes = (ArrayList) RecipeService.getTopRatedRecipes();
-        Fragment topRatedRecipesFragment = CategoryRecipesFragment.newInstance(null, null);
-        Bundle topRatedBundle = new Bundle();
-        topRatedBundle.putString("categoryName", "Top rated");
-        topRatedBundle.putParcelableArrayList("recipes", topRatedRecipes);
-        topRatedRecipesFragment.setArguments(topRatedBundle);
-        getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedRecipesFragment).commit();
+        TextView categoryNameTV = fragment.findViewById(R.id.category_name_tv);
+        categoryNameTV.setText(mCategoryName);
 
-        //Healthy recipes
-        ArrayList<Recipe> healthyRecipes = (ArrayList) RecipeService.getHealthyRecipes();
-        Fragment healthyRecipesFragment = CategoryRecipesFragment.newInstance(null, null);
-        Bundle healthyBundle = new Bundle();
-        healthyBundle.putString("categoryName", "Healthy");
-        healthyBundle.putParcelableArrayList("recipes", healthyRecipes);
-        healthyRecipesFragment.setArguments(healthyBundle);
-        getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyRecipesFragment).commit();
+        fragment.findViewById(R.id.category_more_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("More clicked for "+mCategoryName);
+            }
+        });
 
-        //Cheap recipes
-        ArrayList<Recipe> cheapRecipes = (ArrayList) RecipeService.getHealthyRecipes();
-        Fragment cheapRecipesFragment = CategoryRecipesFragment.newInstance(null, null);
-        Bundle cheapBundle = new Bundle();
-        cheapBundle.putString("categoryName", "Cheap");
-        cheapBundle.putParcelableArrayList("recipes", cheapRecipes);
-        cheapRecipesFragment.setArguments(cheapBundle);
-        getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapRecipesFragment).commit();
+        mRecyclerView = fragment.findViewById(R.id.categorie_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new CategoryRecipeRecyclerViewAdapter(mRecipes);
+        mRecyclerView.setAdapter(mAdapter);
 
         return fragment;
     }
