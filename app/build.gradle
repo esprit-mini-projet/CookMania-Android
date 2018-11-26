@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "tn.duoes.esprit.cookmania"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -49,5 +49,15 @@ dependencies {
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     androidTestImplementation 'android.arch.persistence.room:testing:1.1.1'
+
+    //fb sdk
+    implementation 'com.facebook.android:facebook-login:4.38.1'
+
+    //google play services
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation 'com.android.support:gridlayout-v7:28.0.0'
 }
