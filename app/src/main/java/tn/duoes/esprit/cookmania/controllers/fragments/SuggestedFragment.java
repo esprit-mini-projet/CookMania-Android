@@ -1,15 +1,28 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.models.Suggestion;
+import tn.duoes.esprit.cookmania.services.SuggestionService;
+import tn.duoes.esprit.cookmania.utils.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,18 +78,55 @@ public class SuggestedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.fragment_suggested, container, false);
+        final View fragment = inflater.inflate(R.layout.fragment_suggested, container, false);
 
-        ImageView firstImageView = fragment.findViewById(R.id.suggested_first);
-        ImageView secondImageView = fragment.findViewById(R.id.suggested_second);
-        ImageView thirdImageView = fragment.findViewById(R.id.suggested_third);
-        ImageView forthImageView = fragment.findViewById(R.id.suggested_forth);
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        SuggestionService.getSuggestions(getContext(), new SuggestionService.DataListener() {
+            @Override
+            public void onResponse(Suggestion suggestion) {
+                TextView suggestionTitleTV = fragment.findViewById(R.id.suggested_title_tv);
+                suggestionTitleTV.setText(suggestion.getTitle());
 
 
-        firstImageView.setImageResource(R.drawable.im_1);
+                NetworkImageView firstImageView = fragment.findViewById(R.id.suggested_first);
+                NetworkImageView secondImageView = fragment.findViewById(R.id.suggested_second);
+                NetworkImageView thirdImageView = fragment.findViewById(R.id.suggested_third);
+                NetworkImageView forthImageView = fragment.findViewById(R.id.suggested_forth);
+
+                RequestQueue mRequestQueue = Volley.newRequestQueue(getContext());
+                ImageLoader mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
+                    private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
+                    public void putBitmap(String url, Bitmap bitmap) {
+                        mCache.put(url, bitmap);
+                    }
+                    public Bitmap getBitmap(String url) {
+                        return mCache.get(url);
+                    }
+                });
+
+                firstImageView.setImageUrl(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(0).getImageURL(), mImageLoader);
+                secondImageView.setImageUrl(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(1).getImageURL(), mImageLoader);
+                thirdImageView.setImageUrl(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(2).getImageURL(), mImageLoader);
+                forthImageView.setImageUrl(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(3).getImageURL(), mImageLoader);
+
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                System.out.println(error);
+                progressDialog.dismiss();
+            }
+        });
+
+
+        /*firstImageView.setImageResource(R.drawable.im_1);
         secondImageView.setImageResource(R.drawable.im_2);
         thirdImageView.setImageResource(R.drawable.im_3);
-        forthImageView.setImageResource(R.drawable.im_4);
+        forthImageView.setImageResource(R.drawable.im_4);*/
         return fragment;
     }
 

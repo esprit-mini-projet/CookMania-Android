@@ -14,12 +14,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/cat_res_row_iv"
             android:layout_width="match_parent"
             android:layout_height="170dp"
-            android:scaleType="centerCrop"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/cat_res_row_tv"

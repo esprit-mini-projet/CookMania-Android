@@ -99,7 +99,7 @@ public class CategoryRecipesFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new CategoryRecipeRecyclerViewAdapter(mRecipes);
+        mAdapter = new CategoryRecipeRecyclerViewAdapter(mRecipes, getContext());
         mRecyclerView.setAdapter(mAdapter);
 
         return fragment;

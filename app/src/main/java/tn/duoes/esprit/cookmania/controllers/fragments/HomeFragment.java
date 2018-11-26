@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,31 +80,82 @@ public class HomeFragment extends Fragment{
         getFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();
 
         //Top rated recipes
-        ArrayList<Recipe> topRatedRecipes = (ArrayList) RecipeService.getTopRatedRecipes();
-        Fragment topRatedRecipesFragment = CategoryRecipesFragment.newInstance(null, null);
-        Bundle topRatedBundle = new Bundle();
-        topRatedBundle.putString("categoryName", "Top rated");
-        topRatedBundle.putParcelableArrayList("recipes", topRatedRecipes);
-        topRatedRecipesFragment.setArguments(topRatedBundle);
-        getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedRecipesFragment).commit();
+        final ProgressDialog toRatedProgressDialog = new ProgressDialog(getContext());
+        toRatedProgressDialog.setMessage("Loading...");
+        toRatedProgressDialog.show();
+
+        RecipeService.getTopRatedRecipes(getContext(), new RecipeService.DataListener() {
+            @Override
+            public void onResponse(List<Recipe> recipes) {
+                Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryName", "Top rated");
+                bundle.putParcelableArrayList("recipes", (ArrayList)recipes);
+                fragment.setArguments(bundle);
+
+                toRatedProgressDialog.dismiss();
+
+                getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, fragment).commit();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                System.out.println(error);
+                toRatedProgressDialog.dismiss();
+            }
+        });
 
         //Healthy recipes
-        ArrayList<Recipe> healthyRecipes = (ArrayList) RecipeService.getHealthyRecipes();
-        Fragment healthyRecipesFragment = CategoryRecipesFragment.newInstance(null, null);
-        Bundle healthyBundle = new Bundle();
-        healthyBundle.putString("categoryName", "Healthy");
-        healthyBundle.putParcelableArrayList("recipes", healthyRecipes);
-        healthyRecipesFragment.setArguments(healthyBundle);
-        getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyRecipesFragment).commit();
+        final ProgressDialog healthyProgressDialog = new ProgressDialog(getContext());
+        healthyProgressDialog.setMessage("Loading...");
+        healthyProgressDialog.show();
+
+        RecipeService.getHealthyRecipes(getContext(), new RecipeService.DataListener() {
+            @Override
+            public void onResponse(List<Recipe> recipes) {
+                Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryName", "Healthy");
+                bundle.putParcelableArrayList("recipes", (ArrayList)recipes);
+                fragment.setArguments(bundle);
+
+                healthyProgressDialog.dismiss();
+
+                getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, fragment).commit();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                System.out.println(error);
+                healthyProgressDialog.dismiss();
+            }
+        });
 
         //Cheap recipes
-        ArrayList<Recipe> cheapRecipes = (ArrayList) RecipeService.getHealthyRecipes();
-        Fragment cheapRecipesFragment = CategoryRecipesFragment.newInstance(null, null);
-        Bundle cheapBundle = new Bundle();
-        cheapBundle.putString("categoryName", "Cheap");
-        cheapBundle.putParcelableArrayList("recipes", cheapRecipes);
-        cheapRecipesFragment.setArguments(cheapBundle);
-        getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapRecipesFragment).commit();
+        final ProgressDialog cheapProgressDialog = new ProgressDialog(getContext());
+        healthyProgressDialog.setMessage("Loading...");
+        healthyProgressDialog.show();
+
+        RecipeService.getCheapRecipes(getContext(), new RecipeService.DataListener() {
+            @Override
+            public void onResponse(List<Recipe> recipes) {
+                Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryName", "Cheap");
+                bundle.putParcelableArrayList("recipes", (ArrayList)recipes);
+                fragment.setArguments(bundle);
+
+                cheapProgressDialog.dismiss();
+
+                getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, fragment).commit();
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                System.out.println(error);
+                cheapProgressDialog.dismiss();
+            }
+        });
 
         return fragment;
     }
