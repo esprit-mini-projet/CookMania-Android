@@ -5,9 +5,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import retrofit2.Call;
@@ -50,17 +47,17 @@ public class UserService {
             public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()){
                     Log.d(TAG, "onResponse: Error " + response.errorBody());
-                    callBack.onCreateFromSocialMediaCompleted(null);
+                    callBack.onCompletion(null);
                     return;
                 }
                 Log.d(TAG, "onResponse: body: " + response.body());
-                callBack.onCreateFromSocialMediaCompleted(response.body());
+                callBack.onCompletion(response.body());
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
-                callBack.onCreateFromSocialMediaCompleted(null);
+                callBack.onCompletion(null);
             }
         });
     }
@@ -72,7 +69,7 @@ public class UserService {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if(!response.isSuccessful()){
                     Log.d(TAG, "onResponse: Error " + response.errorBody());
-                    callBack.onCheckEmailCompleted(null);
+                    callBack.onCompletion(null);
                     return;
                 }
                 Log.d(TAG, "onResponse: body: " + response.body());
@@ -82,13 +79,13 @@ public class UserService {
                 } catch (NullPointerException e){
                     Log.e(TAG, "onResponse: ", e);
                 }
-                callBack.onCheckEmailCompleted(exists);
+                callBack.onCompletion(exists);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
-                callBack.onCheckEmailCompleted(null);
+                callBack.onCompletion(null);
             }
         });
     }
@@ -104,7 +101,7 @@ public class UserService {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    callBack.onCreateFromEmailCompleted(null);
+                    callBack.onCompletion(null);
                     return;
                 }
                 Log.d(TAG, "onResponse: body: " + response.body());
@@ -114,25 +111,54 @@ public class UserService {
                 } catch (NullPointerException e){
                     Log.e(TAG, "onResponse: ", e);
                 }
-                callBack.onCreateFromEmailCompleted(id);
+                callBack.onCompletion(id);
             }
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
-                callBack.onCreateFromEmailCompleted(null);
+                callBack.onCompletion(null);
+            }
+        });
+    }
+
+    public void signInWithEmail(User user, final SignInWithEmailCallBack callBack){
+        Call<User> call = mUserApi.signInWithEmail(user);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "onResponse: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(null, response.code());
+                    return;
+                }
+                Log.d(TAG, "onResponse: body: " + response.body());
+                callBack.onCompletion(response.body(), 200);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onCompletion(null, 500);
             }
         });
     }
 
 
     public interface CreateFromSocialMediaCallBack{
-        void onCreateFromSocialMediaCompleted(User user);
+        void onCompletion(User user);
     }
     public interface CreateFromEmailCallBack{
-        void onCreateFromEmailCompleted(String id);
+        void onCompletion(String id);
     }
     public interface CheckEmailCallBack{
-        void onCheckEmailCompleted(Boolean exists);
+        void onCompletion(Boolean exists);
+    }
+    public interface SignInWithEmailCallBack{
+        void onCompletion(User user, int statusCode);
     }
 }

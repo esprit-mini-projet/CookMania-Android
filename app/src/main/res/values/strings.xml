@@ -30,4 +30,5 @@
     <string name="method_email">email</string>
     <string name="method_facebook">facebook</string>
     <string name="method_google">google</string>
+    <string name="signin">sign in</string>
 </resources>

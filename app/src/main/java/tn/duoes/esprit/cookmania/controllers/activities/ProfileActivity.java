@@ -52,7 +52,9 @@ public class ProfileActivity extends AppCompatActivity {
                     GoogleSignIn.getClient(ProfileActivity.this, gso).signOut();
                 }
                 getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
 

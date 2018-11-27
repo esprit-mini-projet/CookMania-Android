@@ -20,25 +20,21 @@ import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
-import tn.duoes.esprit.cookmania.utils.Constants;
 
-public class RegistrationFragment extends Fragment {
+public class PasswordLoginFragment extends Fragment {
 
-    private static final String TAG = "RegistrationFragment";
-
+    private static final String TAG = "PasswordLoginFragment";
     public static final String ARG_EMAIL = "email";
 
-    private TextInputLayout mUsernameLayout;
-    private TextInputLayout mPasswordLayout;
-    private TextInputLayout mConfirmPasswordLayout;
-    private Button mRegisterButton;
+    private TextInputLayout mPasswordInputLayout;
+    private Button mSignInButton;
     private LinearLayout mProgressBar;
 
-    public static RegistrationFragment newInstance(String email) {
+    public static PasswordLoginFragment newInstance(String email) {
 
         Bundle args = new Bundle();
         args.putString(ARG_EMAIL, email);
-        RegistrationFragment fragment = new RegistrationFragment();
+        PasswordLoginFragment fragment = new PasswordLoginFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,59 +42,43 @@ public class RegistrationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_registration, container, false);
+        View v = inflater.inflate(R.layout.fragment_password_login, container, false);
 
-        mUsernameLayout = v.findViewById(R.id.activity_main_username_input_layout);
-        mPasswordLayout = v.findViewById(R.id.activity_main_password_input_layout);
-        mConfirmPasswordLayout = v.findViewById(R.id.activity_main_password_confirm_input_layout);
-        mRegisterButton = v.findViewById(R.id.activity_main_register_button);
-        mProgressBar = v.findViewById(R.id.fragment_registration_progress_bar);
+        mPasswordInputLayout = v.findViewById(R.id.fragment_password_login_password_input_layout);
+        mSignInButton = v.findViewById(R.id.fragment_password_login_signin_button);
+        mProgressBar = v.findViewById(R.id.fragment_password_login_progress_bar);
 
-        mUsernameLayout.requestFocus();
-        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+        mPasswordInputLayout.requestFocus();
+        mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = mUsernameLayout.getEditText().getText().toString();
-                String password = mPasswordLayout.getEditText().getText().toString();
-                String confirm = mConfirmPasswordLayout.getEditText().getText().toString();
-                boolean valid = true;
-                if(username.isEmpty()){
-                    mUsernameLayout.getEditText().setError(getString(R.string.empty_field_warning));
-                    valid = false;
-                }
-                if(password.length() < 4){
-                    mPasswordLayout.getEditText().setError(getString(R.string.password_short_error));
-                    valid = false;
-                }
-                if(!confirm.equals(password)){
-                    mConfirmPasswordLayout.getEditText().setError(getString(R.string.password_match_error));
-                    valid = false;
-                }
-                if(confirm.isEmpty()){
-                    mConfirmPasswordLayout.getEditText().setError(getString(R.string.empty_field_warning));
-                    valid = false;
-                }
-                if(!valid){
+                final String password = mPasswordInputLayout.getEditText().getText().toString();
+                if(password.isEmpty()) {
+                    mPasswordInputLayout.getEditText().setError(getString(R.string.empty_field_warning));
                     return;
                 }
-
-                final User user = new User();
-                user.setEmail(getArguments().getString(ARG_EMAIL));
-                user.setUserName(username);
-                user.setPassword(password);
-                user.setImageUrl(Constants.DEFAULT_PROFILE_PICTURE_URL);
-
+                if(password.length() < 4){
+                    mPasswordInputLayout.getEditText().setError(getString(R.string.password_short_error));
+                    return;
+                }
                 showProgressBar();
-                UserService.getInstance().createFromEmail(user, new UserService.CreateFromEmailCallBack() {
+
+                User user = new User();
+                user.setEmail(getArguments().getString(ARG_EMAIL));
+                user.setPassword(password);
+                UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {
                     @Override
-                    public void onCompletion(String id) {
+                    public void onCompletion(User user, int statusCode) {
                         hideProgressBar();
-                        if(id == null){
+                        if(statusCode == 500){
                             showAlert();
                             return;
                         }
-                        Log.d(TAG, "onCompletion: user created with id " + id);
-                        user.setId(id);
+                        if(statusCode == 400){
+                            mPasswordInputLayout.getEditText().setError(getString(R.string.wrong_password));
+                            return;
+                        }
+                        Log.d(TAG, "onCompletion: user verified");
                         saveUserData(user);
                         hideSoftKeyboard();
                         goToProfile();
@@ -125,19 +105,19 @@ public class RegistrationFragment extends Fragment {
                 .apply();
     }
 
-    private void showProgressBar() {
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-    private void hideProgressBar() {
-        mProgressBar.setVisibility(View.GONE);
-    }
-
     private void showAlert(){
         new AlertDialog.Builder(getActivity())
                 .setMessage("We're sorry. An error has occured!")
                 .setTitle("Connection problem")
                 .setPositiveButton("ok", null)
                 .show();
+    }
+
+    private void showProgressBar() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

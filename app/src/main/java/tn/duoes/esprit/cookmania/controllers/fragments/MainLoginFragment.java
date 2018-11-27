@@ -165,7 +165,7 @@ public class MainLoginFragment extends Fragment {
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
         UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
             @Override
-            public void onCreateFromSocialMediaCompleted(User user) {
+            public void onCompletion(User user) {
                 hideProgressBar();
                 if(user == null){
                     showErrorAlert();
@@ -184,8 +184,9 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void goToProfile() {
-        Intent i = new Intent(getActivity(), ProfileActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void showErrorAlert() {

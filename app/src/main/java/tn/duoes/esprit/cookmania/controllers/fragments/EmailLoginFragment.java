@@ -8,7 +8,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 
 public class EmailLoginFragment extends Fragment {
@@ -71,7 +69,7 @@ public class EmailLoginFragment extends Fragment {
                 showProgressBar();
                 UserService.getInstance().checkEmail(email, new UserService.CheckEmailCallBack() {
                     @Override
-                    public void onCheckEmailCompleted(Boolean exists) {
+                    public void onCompletion(Boolean exists) {
                         hideProgressBar();
                         if(exists == null){
                             showAlert();
@@ -81,8 +79,8 @@ public class EmailLoginFragment extends Fragment {
                             mCallBack.register(email);
                             return;
                         }
-                        Log.d(TAG, "onCheckEmailCompleted: user exists");
-                        mCallBack.login(email);
+                        Log.d(TAG, "onCompletion: user exists");
+                        mCallBack.continueToPassword(email);
                     }
                 });
             }
@@ -109,13 +107,17 @@ public class EmailLoginFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showSoftKeyboard();
+    }
+
+    private void showSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        imm.showSoftInput(getActivity().getWindow().getDecorView().getRootView(),InputMethodManager.SHOW_FORCED);
     }
 
     public interface EmailLoginFragmentCallBack{
         void register(String email);
-        void login(String email);
+        void continueToPassword(String email);
     }
 
     public EmailLoginFragmentCallBack getCallBack() {

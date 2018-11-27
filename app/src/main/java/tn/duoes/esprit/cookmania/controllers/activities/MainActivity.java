@@ -8,6 +8,7 @@ import android.view.View;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.EmailLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.PasswordLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.RegistrationFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,8 +36,11 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void login(String email) {
-
+                        public void continueToPassword(String email) {
+                            getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.login_fragment_container, PasswordLoginFragment.newInstance(email))
+                                .addToBackStack(PasswordLoginFragment.class.getName())
+                                .commit();
                         }
                     }))
                     .addToBackStack(EmailLoginFragment.class.getName())
