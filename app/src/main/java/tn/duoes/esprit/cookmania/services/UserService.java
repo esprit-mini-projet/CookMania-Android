@@ -3,9 +3,12 @@ package tn.duoes.esprit.cookmania.services;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +43,7 @@ public class UserService {
         mUserApi = retrofit.create(UserApi.class);
     }
 
-    public void createFromSocialMedia(User user, final UserServiceCallBack callBack){
+    public void createFromSocialMedia(User user, final CreateFromSocialMediaCallBack callBack){
         Call<User> call = mUserApi.createFromSocialMedia(user);
         call.enqueue(new Callback<User>() {
             @Override
@@ -62,11 +65,74 @@ public class UserService {
         });
     }
 
-    public interface UserServiceCallBack {
-        /**
-         * @param user
-         * returns null if operation failed
-         */
+    public void checkEmail(String email, final CheckEmailCallBack callBack){
+        Call<JsonObject> call = mUserApi.checkEmail(email);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: Error " + response.errorBody());
+                    callBack.onCheckEmailCompleted(null);
+                    return;
+                }
+                Log.d(TAG, "onResponse: body: " + response.body());
+                Boolean exists = null;
+                try{
+                    exists = response.body().get("result").getAsBoolean();
+                } catch (NullPointerException e){
+                    Log.e(TAG, "onResponse: ", e);
+                }
+                callBack.onCheckEmailCompleted(exists);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onCheckEmailCompleted(null);
+            }
+        });
+    }
+
+    public void createFromEmail(User user, final CreateFromEmailCallBack callBack){
+        Call<JsonObject> call = mUserApi.createFromEmail(user);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "onResponse: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCreateFromEmailCompleted(null);
+                    return;
+                }
+                Log.d(TAG, "onResponse: body: " + response.body());
+                String id = null;
+                try{
+                    id = response.body().get("id").getAsString();
+                } catch (NullPointerException e){
+                    Log.e(TAG, "onResponse: ", e);
+                }
+                callBack.onCreateFromEmailCompleted(id);
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onCreateFromEmailCompleted(null);
+            }
+        });
+    }
+
+
+    public interface CreateFromSocialMediaCallBack{
         void onCreateFromSocialMediaCompleted(User user);
+    }
+    public interface CreateFromEmailCallBack{
+        void onCreateFromEmailCompleted(String id);
+    }
+    public interface CheckEmailCallBack{
+        void onCheckEmailCompleted(Boolean exists);
     }
 }

@@ -163,7 +163,7 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
-        UserService.getInstance().createFromSocialMedia(user, new UserService.UserServiceCallBack() {
+        UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
             @Override
             public void onCreateFromSocialMediaCompleted(User user) {
                 hideProgressBar();

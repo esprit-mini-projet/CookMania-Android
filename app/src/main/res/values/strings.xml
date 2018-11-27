@@ -13,4 +13,21 @@
     <string name="login_password_confirm_hint">Confirm password…</string>
   
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="register">register</string>
+
+    <string name="empty_field_warning">This field is empty</string>
+    <string name="wrong_password">Wrong password</string>
+    <string name="password_match_error">Passwords don\'t match</string>
+    <string name="email_not_valid">This email is not valid</string>
+    <string name="password_short_error">Password must have at least 4 characters</string>
+
+    <!-- Application Configuration -->
+    <string name="prefs_name">prefs</string>
+    <string name="pref_image_url">image_url</string>
+    <string name="prefs_username">username</string>
+    <string name="prefs_user_id">user_id</string>
+    <string name="prefs_signin_method">signin_method</string>
+    <string name="method_email">email</string>
+    <string name="method_facebook">facebook</string>
+    <string name="method_google">google</string>
 </resources>

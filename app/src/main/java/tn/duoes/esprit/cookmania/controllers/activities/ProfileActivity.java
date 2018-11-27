@@ -29,7 +29,6 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         ImageView photo = findViewById(R.id.profile_picture);
-        ImageView photo2 = findViewById(R.id.profile_picture2);
         TextView name = findViewById(R.id.name_text);
         TextView method = findViewById(R.id.method_text);
         Button logoutButton = findViewById(R.id.logout_button);
