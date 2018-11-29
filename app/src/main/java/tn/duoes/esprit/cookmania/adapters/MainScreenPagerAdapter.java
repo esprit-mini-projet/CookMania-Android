@@ -13,7 +13,6 @@ public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
 
     public MainScreenPagerAdapter(FragmentManager fm, int tabsCount) {
         super(fm);
-        System.out.println(tabsCount);
         this.mTabsCount = tabsCount;
     }
 

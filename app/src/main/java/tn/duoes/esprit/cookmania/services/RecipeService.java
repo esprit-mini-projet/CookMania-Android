@@ -1,90 +1,106 @@
 package tn.duoes.esprit.cookmania.services;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
 
 public final class RecipeService {
 
-    public interface DataListener{
-        public void onResponse(List<Recipe> recipes);
-        public void onError(VolleyError error);
+    public static final String TAG = "RecipeService";
+
+    public interface RecipeServiceCallBack{
+        void onResponse(List<Recipe> recipes);
+        void onFailure();
     }
 
-    public static void getTopRatedRecipes(Context context, final DataListener listener){
-        StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, Constants.RECIPES_ROUTE + "/top", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Type listType = new TypeToken<ArrayList<Recipe>>(){}.getType();
-                List<Recipe> recipes = new Gson().fromJson(response, listType);
-                listener.onResponse(recipes);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onError(error);
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+    private static RecipeService instance;
+
+    private RecipeApi mRecipeApi;
+
+    public static RecipeService getInstance(){
+        if(instance == null){
+            instance = new RecipeService();
+        }
+        return instance;
     }
 
-    public static void getHealthyRecipes(Context context, final DataListener listener){
-        StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, Constants.RECIPES_ROUTE + "/label/Healthy", new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Type listType = new TypeToken<ArrayList<Recipe>>(){}.getType();
-                List<Recipe> recipes = new Gson().fromJson(response, listType);
-                listener.onResponse(recipes);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onError(error);
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+    private RecipeService(){
+        Gson gson = new Gson().newBuilder().setLenient().create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.RECIPES_ROUTE)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        mRecipeApi = retrofit.create(RecipeApi.class);
     }
 
-    public static void getCheapRecipes(Context context, final DataListener listener){
-        StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, Constants.RECIPES_ROUTE + "/label/Cheap", new Response.Listener<String>() {
+    public void getTopRatedRecipes(final RecipeServiceCallBack callBack){
+        Call<List<Recipe>> call = mRecipeApi.getTopRatedRecipes();
+        call.enqueue(new Callback<List<Recipe>>() {
             @Override
-            public void onResponse(String response) {
-                Type listType = new TypeToken<ArrayList<Recipe>>(){}.getType();
-                List<Recipe> recipes = new Gson().fromJson(response, listType);
-                listener.onResponse(recipes);
+            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onFailure();
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onError(error);
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
             }
         });
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+    }
+
+    public void getHealthyRecipes(final RecipeServiceCallBack callBack){
+        Call<List<Recipe>> call = mRecipeApi.getHealthyRecipes();
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onFailure();
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
+    public void getCheapRecipes(final RecipeServiceCallBack callBack){
+        Call<List<Recipe>> call = mRecipeApi.getCheapRecipes();
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onFailure();
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
     }
 
 }

@@ -1,45 +1,65 @@
 package tn.duoes.esprit.cookmania.services;
 
-import android.content.Context;
+import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-import tn.duoes.esprit.cookmania.models.Recipe;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import tn.duoes.esprit.cookmania.interfaces.SuggestionApi;
 import tn.duoes.esprit.cookmania.models.Suggestion;
 import tn.duoes.esprit.cookmania.utils.Constants;
 
 public final class SuggestionService {
 
-    public interface DataListener{
-        public void onResponse(Suggestion suggestion);
-        public void onError(VolleyError error);
+
+    public static final String TAG = "SuggestionService";
+
+    public interface SuggestionServiceCallback{
+        void onResponse(Suggestion suggestion);
+        void onFailure();
     }
 
-    public static void getSuggestions(Context context, final DataListener listener){
-        StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, Constants.RECIPES_ROUTE + "/suggestions", new Response.Listener<String>() {
+    private static SuggestionService instance;
+
+    private SuggestionApi mSuggestionApi;
+
+    public static SuggestionService getInstance(){
+        if(instance == null){
+            instance = new SuggestionService();
+        }
+        return instance;
+    }
+
+    private SuggestionService(){
+        Gson gson = new Gson().newBuilder().setLenient().create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.RECIPES_ROUTE)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        mSuggestionApi = retrofit.create(SuggestionApi.class);
+    }
+
+    public void getSuggestions(final SuggestionService.SuggestionServiceCallback callBack){
+        Call<Suggestion> call = mSuggestionApi.getSuggestions();
+        call.enqueue(new Callback<Suggestion>() {
             @Override
-            public void onResponse(String response) {
-                Suggestion suggestion = new Gson().fromJson(response, Suggestion.class);
-                listener.onResponse(suggestion);
+            public void onResponse(Call<Suggestion> call, retrofit2.Response<Suggestion> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onFailure();
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onError(error);
+            public void onFailure(Call<Suggestion> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
             }
         });
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
     }
 
 }
