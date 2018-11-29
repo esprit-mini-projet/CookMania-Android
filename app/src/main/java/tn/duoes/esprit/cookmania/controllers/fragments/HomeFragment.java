@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,9 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-
-import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +86,7 @@ public class HomeFragment extends Fragment{
         toRatedProgressDialog.setMessage("Loading...");
         toRatedProgressDialog.show();
 
-        RecipeService.getTopRatedRecipes(getContext(), new RecipeService.DataListener() {
+        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
@@ -105,8 +101,7 @@ public class HomeFragment extends Fragment{
             }
 
             @Override
-            public void onError(VolleyError error) {
-                System.out.println(error);
+            public void onFailure() {
                 toRatedProgressDialog.dismiss();
             }
         });
@@ -116,7 +111,7 @@ public class HomeFragment extends Fragment{
         healthyProgressDialog.setMessage("Loading...");
         healthyProgressDialog.show();
 
-        RecipeService.getHealthyRecipes(getContext(), new RecipeService.DataListener() {
+        RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
@@ -131,8 +126,7 @@ public class HomeFragment extends Fragment{
             }
 
             @Override
-            public void onError(VolleyError error) {
-                System.out.println(error);
+            public void onFailure() {
                 healthyProgressDialog.dismiss();
             }
         });
@@ -142,7 +136,7 @@ public class HomeFragment extends Fragment{
         healthyProgressDialog.setMessage("Loading...");
         healthyProgressDialog.show();
 
-        RecipeService.getCheapRecipes(getContext(), new RecipeService.DataListener() {
+        RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
@@ -157,8 +151,7 @@ public class HomeFragment extends Fragment{
             }
 
             @Override
-            public void onError(VolleyError error) {
-                System.out.println(error);
+            public void onFailure() {
                 cheapProgressDialog.dismiss();
             }
         });
