@@ -1,49 +1,30 @@
 package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
-import tn.duoes.esprit.cookmania.utils.ImageUtils;
 
 public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecipeRecyclerViewAdapter.ViewHolder> {
 
     private List<Recipe> mRecipes;
-    private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
 
     public CategoryRecipeRecyclerViewAdapter(List<Recipe> recipes, Context context){
         super();
         mRecipes = recipes;
-
-        mRequestQueue = Volley.newRequestQueue(context);
-        mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
-            private final LruCache<String, Bitmap> mCache = new LruCache<String, Bitmap>(10);
-            public void putBitmap(String url, Bitmap bitmap) {
-                mCache.put(url, bitmap);
-            }
-            public Bitmap getBitmap(String url) {
-                return mCache.get(url);
-            }
-        });
     }
 
     @NonNull
@@ -59,7 +40,7 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
         Context context = viewHolder.recipeImageView.getContext();
         Recipe recipe = mRecipes.get(position);
 
-        viewHolder.recipeImageView.setImageUrl(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL(), mImageLoader);
+        Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.recipeImageView);
         viewHolder.recipeNameTV.setText(recipe.getName());
         viewHolder.id = recipe.getId();
     }
@@ -71,7 +52,7 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView recipeNameTV;
-        public NetworkImageView recipeImageView;
+        public ImageView recipeImageView;
         public int id;
 
         public ViewHolder(@NonNull View itemView) {
