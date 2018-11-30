@@ -32,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
         TextView name = findViewById(R.id.name_text);
         TextView method = findViewById(R.id.method_text);
         Button logoutButton = findViewById(R.id.logout_button);
+        Button recipeButton = findViewById(R.id.recipe_button);
 
         String photoUrl = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_IMAGE_URL, null);
         String nameString = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_USERNAME, null);
@@ -62,6 +63,13 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(ProfileActivity.this, MainScreenActivity.class));
+            }
+        });
+
+        recipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this, RecipeDetailsActivity.class));
             }
         });
     }
