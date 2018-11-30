@@ -1,6 +1,5 @@
 package tn.duoes.esprit.cookmania.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +21,7 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
 
     private List<Recipe> mRecipes;
 
-    public CategoryRecipeRecyclerViewAdapter(List<Recipe> recipes, Context context){
+    public CategoryRecipeRecyclerViewAdapter(List<Recipe> recipes){
         super();
         mRecipes = recipes;
     }
@@ -31,13 +30,11 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.category_recipe_recycler_row, viewGroup, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        Context context = viewHolder.recipeImageView.getContext();
         Recipe recipe = mRecipes.get(position);
 
         Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.recipeImageView);
@@ -51,11 +48,11 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView recipeNameTV;
-        public ImageView recipeImageView;
+        TextView recipeNameTV;
+        ImageView recipeImageView;
         public int id;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             final CardView cardView = (CardView) itemView;
             cardView.setPreventCornerOverlap(false);
