@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<ShoppingListVi
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         ShoppingListItem item = mItems.get(position);
 
-        Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+item.getRecipe().getImageURL()).into(viewHolder.imageView);
+        Glide.with(viewHolder.imageView).load(Constants.UPLOAD_FOLDER_URL+"/"+item.getRecipe().getImageURL()).into(viewHolder.imageView);
         viewHolder.textView.setText(item.getRecipe().getName());
     }
 

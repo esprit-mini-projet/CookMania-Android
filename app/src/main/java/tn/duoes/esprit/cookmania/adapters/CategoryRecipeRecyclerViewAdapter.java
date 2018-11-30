@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Recipe recipe = mRecipes.get(position);
 
-        Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.recipeImageView);
+        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.recipeImageView);
         viewHolder.recipeNameTV.setText(recipe.getName());
         viewHolder.id = recipe.getId();
     }
