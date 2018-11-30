@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.Suggestion;
@@ -70,7 +71,7 @@ public class SuggestedFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View fragment = inflater.inflate(R.layout.fragment_suggested, container, false);
 
@@ -90,10 +91,10 @@ public class SuggestedFragment extends Fragment {
                 ImageView thirdImageView = fragment.findViewById(R.id.suggested_third);
                 ImageView forthImageView = fragment.findViewById(R.id.suggested_forth);
 
-                Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(0).getImageURL()).into(firstImageView);
-                Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(1).getImageURL()).into(secondImageView);
-                Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(2).getImageURL()).into(thirdImageView);
-                Picasso.get().load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(3).getImageURL()).into(forthImageView);
+                Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(0).getImageURL()).into(firstImageView);
+                Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(1).getImageURL()).into(secondImageView);
+                Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(2).getImageURL()).into(thirdImageView);
+                Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(3).getImageURL()).into(forthImageView);
 
                 progressDialog.dismiss();
             }
