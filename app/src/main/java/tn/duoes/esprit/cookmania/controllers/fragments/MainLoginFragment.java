@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import tn.duoes.esprit.cookmania.controllers.activities.MainActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.R;
@@ -78,8 +79,8 @@ public class MainLoginFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_login, container, false);
-        LoginButton facebookButton = v.findViewById(R.id.button_login_fb);
-        SignInButton googleButton = v.findViewById(R.id.button_login_google);
+        Button facebookButton = v.findViewById(R.id.button_login_fb);
+        Button googleButton = v.findViewById(R.id.button_login_google);
         Button emailButton = v.findViewById(R.id.button_login_email);
         mProgressBar = v.findViewById(R.id.fragment_login_progress_bar);
 
@@ -91,25 +92,10 @@ public class MainLoginFragment extends Fragment {
             }
         });
 
-        mCallbackManager = CallbackManager.Factory.create();
-        facebookButton.setFragment(this);
-        facebookButton.setReadPermissions(Arrays.asList(PER_FB_PUBLIC));
-        facebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "onSuccess: id: " + loginResult.getAccessToken().getUserId());
-                retrieveFbUserProfile(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "onCancel: ");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Log.d(TAG, "onError: ");
-                showErrorAlert();
+            public void onClick(View v) {
+                LoginManager.getInstance().logInWithReadPermissions(MainLoginFragment.this, Arrays.asList(PER_FB_PUBLIC));
             }
         });
 
@@ -210,6 +196,26 @@ public class MainLoginFragment extends Fragment {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "onSuccess: id: " + loginResult.getAccessToken().getUserId());
+                retrieveFbUserProfile(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Log.d(TAG, "onError: ");
+                showErrorAlert();
+            }
+        });
     }
 
     private boolean isLoggedIn() {

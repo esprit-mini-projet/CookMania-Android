@@ -7,7 +7,7 @@
 
     <string name="facebook_app_id">2345180169101572</string>
     <string name="fb_login_protocol_scheme">fb2345180169101572</string>
-    <string name="email_login_button_text">Connect with email</string>
+    <string name="email_login_button_text">"Connect with Email        "</string>
     <string name="next">next</string>
     <string name="login_username_hint">Username…</string>
     <string name="login_password_confirm_hint">Confirm password…</string>
@@ -30,5 +30,9 @@
     <string name="method_email">email</string>
     <string name="method_facebook">facebook</string>
     <string name="method_google">google</string>
+
+    <!-- -->
     <string name="signin">sign in</string>
+    <string name="connect_with_google">"Connect with Google     "</string>
+    <string name="connect_with_facebook">Connect with Facebook</string>
 </resources>
