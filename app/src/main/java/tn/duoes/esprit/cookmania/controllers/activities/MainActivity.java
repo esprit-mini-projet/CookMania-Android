@@ -8,6 +8,8 @@ import android.view.View;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.EmailLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.PasswordLoginFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.RegistrationFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,9 +25,26 @@ public class MainActivity extends AppCompatActivity {
             fragment = MainLoginFragment.newInstance(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.login_fragment_container, EmailLoginFragment.newInstance())
-                            .commit();
+                getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.login_fragment_container, EmailLoginFragment.newInstance(new EmailLoginFragment.EmailLoginFragmentCallBack() {
+                        @Override
+                        public void register(String email) {
+                            getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.login_fragment_container, RegistrationFragment.newInstance(email))
+                                .addToBackStack(RegistrationFragment.class.getName())
+                                .commit();
+                        }
+
+                        @Override
+                        public void continueToPassword(String email) {
+                            getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.login_fragment_container, PasswordLoginFragment.newInstance(email))
+                                .addToBackStack(PasswordLoginFragment.class.getName())
+                                .commit();
+                        }
+                    }))
+                    .addToBackStack(EmailLoginFragment.class.getName())
+                    .commit();
                 }
             });
             getSupportFragmentManager().beginTransaction().add(R.id.login_fragment_container, fragment).commit();

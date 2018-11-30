@@ -37,11 +37,13 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import tn.duoes.esprit.cookmania.controllers.activities.MainActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
+import tn.duoes.esprit.cookmania.utils.Constants;
 
 public class MainLoginFragment extends Fragment {
 
@@ -77,8 +79,8 @@ public class MainLoginFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main_login, container, false);
-        LoginButton facebookButton = v.findViewById(R.id.button_login_fb);
-        SignInButton googleButton = v.findViewById(R.id.button_login_google);
+        Button facebookButton = v.findViewById(R.id.button_login_fb);
+        Button googleButton = v.findViewById(R.id.button_login_google);
         Button emailButton = v.findViewById(R.id.button_login_email);
         mProgressBar = v.findViewById(R.id.fragment_login_progress_bar);
 
@@ -90,25 +92,10 @@ public class MainLoginFragment extends Fragment {
             }
         });
 
-        mCallbackManager = CallbackManager.Factory.create();
-        facebookButton.setFragment(this);
-        facebookButton.setReadPermissions(Arrays.asList(PER_FB_PUBLIC));
-        facebookButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+        facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "onSuccess: id: " + loginResult.getAccessToken().getUserId());
-                retrieveFbUserProfile(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "onCancel: ");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Log.d(TAG, "onError: ");
-                showErrorAlert();
+            public void onClick(View v) {
+                LoginManager.getInstance().logInWithReadPermissions(MainLoginFragment.this, Arrays.asList(PER_FB_PUBLIC));
             }
         });
 
@@ -162,18 +149,18 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
-        UserService.getInstance().createFromSocialMedia(user, new UserService.UserServiceCallBack() {
+        UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
             @Override
-            public void onCreateFromSocialMediaCompleted(String id) {
+            public void onCompletion(User user) {
                 hideProgressBar();
-                if(id == null){
+                if(user == null){
                     showErrorAlert();
                     return;
                 }
                 getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
                         .edit()
                         .putString(PREF_SIGNIN_METHOD, signInMethod)
-                        .putString(PREF_USER_ID, id)
+                        .putString(PREF_USER_ID, user.getId())
                         .putString(PREF_IMAGE_URL, user.getImageUrl())
                         .putString(PREF_USERNAME, user.getUserName())
                         .apply();
@@ -183,8 +170,9 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void goToProfile() {
-        Intent i = new Intent(getActivity(), ProfileActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void showErrorAlert() {
@@ -208,6 +196,26 @@ public class MainLoginFragment extends Fragment {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+
+        mCallbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "onSuccess: id: " + loginResult.getAccessToken().getUserId());
+                retrieveFbUserProfile(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "onCancel: ");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Log.d(TAG, "onError: ");
+                showErrorAlert();
+            }
+        });
     }
 
     private boolean isLoggedIn() {
@@ -247,7 +255,7 @@ public class MainLoginFragment extends Fragment {
             user.setEmail(account.getEmail());
             user.setPassword("");
             user.setUserName(account.getDisplayName());
-            user.setImageUrl(account.getPhotoUrl().toString());
+            user.setImageUrl(account.getPhotoUrl() == null ? Constants.DEFAULT_PROFILE_PICTURE_URL : account.getPhotoUrl().toString());
             loginOrCreateFromSocialMedia(user, METHOD_GOOGLE);
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
