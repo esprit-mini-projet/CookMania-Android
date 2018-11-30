@@ -1,24 +1,20 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.squareup.picasso.Picasso;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
-import tn.duoes.esprit.cookmania.utils.MyAppGlideModule;
 
 public class ProfileActivity extends AppCompatActivity {
 
