@@ -7,7 +7,7 @@ import java.net.URL;
 
 public final class ImageUtils {
 
-    public static Drawable LoadImageFromWebOperations(String uri) {
+    public static Drawable loadImageFromWebOperations(String uri) {
         try {
             String url = Constants.UPLOAD_FOLDER_URL+"/"+uri;
             System.out.println(url);
