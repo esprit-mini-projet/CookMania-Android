@@ -30,6 +30,7 @@ public final class ShoppingListDAO {
         );
 
         items.add(new ShoppingListItem(recipe, ingredients));
+        items.add(new ShoppingListItem(recipe, ingredients));
 
         return items;
     }
