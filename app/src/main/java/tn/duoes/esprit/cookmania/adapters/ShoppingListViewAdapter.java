@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.dao.ShoppingListDAO;
 import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
@@ -25,17 +26,21 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private List<Object> mItems;
 
-    public ShoppingListViewAdapter(List<ShoppingListItem> items){
+    public ShoppingListViewAdapter(){
         super();
+        updateDataSource();
+    }
+
+    private void updateDataSource(){
+        List<ShoppingListItem> items = ShoppingListDAO.getInstance().getShoppingItems();
         mItems = ListUtils.flattenList(new ArrayList<Object>(items), new ListUtils.IListUtils<Ingredient>() {
             @Override
-            public Object key(Object o) {
-                return ((ShoppingListItem) o).getRecipe();
-            }
-
-            @Override
             public List<Ingredient> nested(Object o) {
-                return ((ShoppingListItem) o).getIngredients();
+                ShoppingListItem shoppingItem = (ShoppingListItem) o;
+                for (Ingredient ingredient : shoppingItem.getIngredients()) {
+                    ingredient.setShoppingListItem(shoppingItem);
+                }
+                return shoppingItem.getIngredients();
             }
         });
     }
@@ -43,7 +48,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemViewType(int position) {
         Object item = mItems.get(position);
-        if (item instanceof Recipe){
+        if (item instanceof ShoppingListItem){
             return R.layout.shopping_list_row;
         }else {
             return R.layout.shopping_list_item_row;
@@ -64,6 +69,8 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    private ShoppingListItem shoppingListItem;
+
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof IngredientViewHolder){
@@ -71,11 +78,12 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             IngredientViewHolder holder = (IngredientViewHolder) viewHolder;
             holder.nameTextView.setText(ingredient.getName());
             holder.unitTextView.setText(ingredient.getQuantity()+" "+ingredient.getUnit());
+            holder.itemView.setTag(shoppingListItem);
         }else{
-            Recipe recipe = (Recipe) mItems.get(position);
+            shoppingListItem = (ShoppingListItem) mItems.get(position);
             RecipeViewHolder holder = (RecipeViewHolder) viewHolder;
-            Glide.with(holder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(holder.recipeImageView);
-            holder.recipeTextView.setText(recipe.getName());
+            Glide.with(holder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+shoppingListItem.getRecipe().getImageURL()).into(holder.recipeImageView);
+            holder.recipeTextView.setText(shoppingListItem.getRecipe().getName());
         }
     }
 
@@ -84,35 +92,74 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         return mItems.size();
     }
 
-    class RecipeViewHolder extends RecyclerView.ViewHolder{
+    public class RecipeViewHolder extends RecyclerView.ViewHolder{
         ImageView recipeImageView;
         TextView recipeTextView;
+        public View foregroundView, backgroundView;
 
         RecipeViewHolder(@NonNull View itemView){
             super(itemView);
-            recipeImageView = itemView.findViewById(R.id.shopping_row_iv);
-            recipeTextView = itemView.findViewById(R.id.shopping_row_tv);
+            foregroundView = itemView.findViewById(R.id.shopping_list_foreground);
+            backgroundView = itemView.findViewById(R.id.shopping_list_background);
+            recipeImageView = foregroundView.findViewById(R.id.shopping_row_iv);
+            recipeTextView = foregroundView.findViewById(R.id.shopping_row_tv);
         }
     }
 
-    class IngredientViewHolder extends RecyclerView.ViewHolder{
+    public class IngredientViewHolder extends RecyclerView.ViewHolder{
         TextView nameTextView;
         TextView unitTextView;
+        public View foregroundView, backgroundView;
 
         IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.shopping_ingredient_row_name);
-            unitTextView = itemView.findViewById(R.id.shopping_ingredient_row_unit);
+            foregroundView = itemView.findViewById(R.id.shopping_list_item_row_foreground);
+            backgroundView = itemView.findViewById(R.id.shopping_list_item_row_background);
+            nameTextView = foregroundView.findViewById(R.id.shopping_ingredient_row_name);
+            unitTextView = foregroundView.findViewById(R.id.shopping_ingredient_row_unit);
         }
     }
 
     public void removeItem(int position){
-        mItems.remove(position);
+        Object item = mItems.get(position);
+        if (item instanceof ShoppingListItem){
+            ShoppingListItem shoppingListItem = (ShoppingListItem) item;
+            mItems.subList(position, position+shoppingListItem.getIngredients().size()+1).clear();
+            notifyItemRangeRemoved(position, shoppingListItem.getIngredients().size()+1);
+        }else{
+            Ingredient ingredient = (Ingredient) item;
+            if (ingredient.getShoppingListItem().getIngredients().size() == 1){
+                removeItem(position-1);
+                return;
+            }
+            mItems.remove(ingredient);
+            ingredient.getShoppingListItem().getIngredients().remove(ingredient);
+            notifyItemRemoved(position);
+        }
     }
 
     public void restoreItem(Object object, int position){
-        mItems.add(position, object);
-        notifyItemInserted(position);
+        if(object instanceof ShoppingListItem){
+            ShoppingListItem shoppingListItem = (ShoppingListItem) object;
+            mItems.add(position, object);
+            mItems.addAll(position+1, shoppingListItem.getIngredients());
+            notifyItemInserted(position);
+        }else{
+            Ingredient ingredient = (Ingredient) object;
+            mItems.add(position, ingredient);
+            ingredient.getShoppingListItem().getIngredients().add(ingredient);
+            notifyItemInserted(position);
+        }
+    }
+
+    public void persist(){
+        List<ShoppingListItem> shoppingListItems = new ArrayList<>();
+        for (Object o : mItems){
+            if (o instanceof ShoppingListItem){
+                shoppingListItems.add((ShoppingListItem) o);
+            }
+        }
+        ShoppingListDAO.getInstance().persistShoppingListItems(shoppingListItems);
     }
 
     public List<Object> getMItems(){

@@ -9,14 +9,13 @@ import java.util.List;
 public final class ListUtils {
 
     public interface IListUtils<T>{
-        Object key(Object o);
         List<T> nested(Object o);
     }
 
     public static List<Object> flattenList(List<Object> list, IListUtils iListUtils){
         List<Object> flatList = new ArrayList<>();
         for (Object item : list){
-            flatList.add(iListUtils.key(item));
+            flatList.add(item);
             flatList.addAll(iListUtils.nested(item));
         }
         return flatList;

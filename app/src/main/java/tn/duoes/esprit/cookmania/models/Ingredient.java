@@ -6,6 +6,16 @@ public class Ingredient {
     private int quantity;
     private String unit;
 
+    private ShoppingListItem shoppingListItem;
+
+    public ShoppingListItem getShoppingListItem() {
+        return shoppingListItem;
+    }
+
+    public void setShoppingListItem(ShoppingListItem shoppingListItem) {
+        this.shoppingListItem = shoppingListItem;
+    }
+
     public Ingredient(String name, int quantity, String unit) {
         this.name = name;
         this.quantity = quantity;
