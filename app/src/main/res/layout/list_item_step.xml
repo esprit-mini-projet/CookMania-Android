@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/step_item_line_container"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <FrameLayout
+            android:id="@+id/step_item_top_line"
+            android:layout_width="5dp"
+            android:layout_height="10dp"
+            android:background="@color/colorPrimary"/>
+
+
+        <LinearLayout
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/circle_shape_primary"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/step_item_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="13"
+                android:textSize="22sp"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/step_item_bottom_line"
+            android:layout_width="5dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/step_item_line_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/step_item_description_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lorem_ipsum_medium"
+            android:textColor="@color/colorDark"
+            android:layout_marginBottom="8dp"/>
+
+        <ImageView
+            android:id="@+id/step_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@drawable/im_2"
+            android:scaleType="centerCrop"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

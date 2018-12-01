@@ -38,4 +38,13 @@
     <string name="ingredients">Ingredients</string>
     <string name="calories">Calories</string>
     <string name="minutes">Minutes</string>
+    <string name="servings">Servings</string>
+    <string name="lorem_ipsum_long">Lorem ipsum dolor sit amet, sagittis tellus pharetra in lectus, pretium pellentesque ut donec, venenatis vehicula odio, nunc volutpat duis bibendum tempus. Amet non. Sem consectetuer aliquam, quis quis quis turpis quos, vehicula odio nascetur. Porttitor lorem, id pulvinar viverra ipsum libero, suspendisse nulla id luctus tempor.</string>
+    <string name="lorem_ipsum_medium">Lorem ipsum dolor sit amet, sagittis tellus pharetra in lectus, pretium pellentesque ut donec, venenatis vehicula odio, nunc volutpat duis bibendum tempus. Amet non.</string>
+    <string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, sagittis tellus pharetra in lectus, pretium pellentesque ut donec.</string>
+    <string name="shop">Shop</string>
+    <string name="steps">Steps</string>
+    <string name="rate_recipe">Rate this recipe</string>
+    <string name="leave_review">Leave a short review</string>
+    <string name="review_comment_hint">Tell us what you think</string>
 </resources>
