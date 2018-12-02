@@ -1,11 +1,16 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +20,7 @@ import java.util.List;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
+import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -83,7 +89,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(){
-        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).centerCrop().into(mRecipeImageView);
+        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
         mCaloriesTextView.setText("" + mRecipe.getCalories());
@@ -108,8 +114,57 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure() {
-
+                new AlertDialog.Builder(RecipeDetailsActivity.this)
+                        .setTitle("Sorry")
+                        .setMessage("An error has occured with the server.")
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(this).inflate(R.menu.menu_recipe_details, menu);
+        MenuItem item = menu.getItem(0);
+        String userId = getSharedPreferences(getResources().getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getResources().getString(R.string.prefs_user_id), null);
+        int recipeId = Integer.parseInt(getIntent().getStringExtra(EXTRA_RECIPE_ID));
+        if(!FavoriteLab.getInstance(this).recipeExists(userId, recipeId)){
+            item.setTitle(R.string.favorite);
+            item.setIcon(R.drawable.icon_heart_full);
+        }else{
+            item.setTitle(R.string.remove_favorite);
+            item.setIcon(R.drawable.icon_heart_outline);
+        }
+        Log.d(TAG, "onCreateOptionsMenu: " + FavoriteLab.getInstance(this).getList(userId));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.menu_favorite){
+            String userId = getSharedPreferences(getResources().getString(R.string.prefs_name), MODE_PRIVATE)
+                    .getString(getResources().getString(R.string.prefs_user_id), null);
+            int recipeId = Integer.parseInt(getIntent().getStringExtra(EXTRA_RECIPE_ID));
+
+            if(item.getTitle() == getResources().getString(R.string.favorite)){
+                item.setTitle(R.string.remove_favorite);
+                item.setIcon(R.drawable.icon_heart_outline);
+                FavoriteLab.getInstance(this).insert(recipeId, userId);
+            }else{
+                item.setTitle(R.string.favorite);
+                item.setIcon(R.drawable.icon_heart_full);
+                FavoriteLab.getInstance(this).delete(recipeId, userId);
+            }
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
