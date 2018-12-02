@@ -47,4 +47,5 @@
     <string name="rate_recipe">Rate this recipe</string>
     <string name="leave_review">Leave a short review</string>
     <string name="review_comment_hint">Tell us what you think</string>
+    <string name="about">About</string>
 </resources>

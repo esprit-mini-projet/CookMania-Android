@@ -7,14 +7,14 @@
     android:background="@drawable/border_bottom_shape">
 
     <ImageButton
-        android:id="@+id/fragment_ingredient_add_button"
+        android:id="@+id/list_item_ingredient_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_add_circle_full_accent"
         android:background="@android:color/transparent"/>
 
     <TextView
-        android:id="@+id/fragment_ingredient_quantity_text"
+        android:id="@+id/list_item_ingredient_quantity_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="12.5 ml"
@@ -22,7 +22,7 @@
         android:layout_marginEnd="4dp"/>
 
     <TextView
-        android:id="@+id/fragment_ingredient_name_text"
+        android:id="@+id/list_item_ingredient_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Water"
