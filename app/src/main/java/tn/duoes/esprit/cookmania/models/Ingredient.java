@@ -6,14 +6,14 @@ public class Ingredient {
     private int quantity;
     private String unit;
 
-    private ShoppingListItem shoppingListItem;
+    private int shoppingListItemIndex;
 
-    public ShoppingListItem getShoppingListItem() {
-        return shoppingListItem;
+    public int getShoppingListItemIndex() {
+        return shoppingListItemIndex;
     }
 
-    public void setShoppingListItem(ShoppingListItem shoppingListItem) {
-        this.shoppingListItem = shoppingListItem;
+    public void setShoppingListItemIndex(int shoppingListItemIndex) {
+        this.shoppingListItemIndex = shoppingListItemIndex;
     }
 
     public Ingredient(String name, int quantity, String unit) {
@@ -68,6 +68,7 @@ public class Ingredient {
                 ", name='" + name + '\'' +
                 ", quantity=" + quantity +
                 ", unit='" + unit + '\'' +
+                ", shoppingListItemIndex=" + shoppingListItemIndex +
                 '}';
     }
 }

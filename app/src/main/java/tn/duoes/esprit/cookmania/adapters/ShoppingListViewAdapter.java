@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.adapters;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,21 +25,25 @@ import tn.duoes.esprit.cookmania.utils.ListUtils;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private Context mContext;
     private List<Object> mItems;
 
-    public ShoppingListViewAdapter(){
+    public ShoppingListViewAdapter(Context context){
         super();
+        this.mContext = context;
         updateDataSource();
     }
 
     private void updateDataSource(){
-        List<ShoppingListItem> items = ShoppingListDAO.getInstance().getShoppingItems();
+        List<ShoppingListItem> items = ShoppingListDAO.getInstance(mContext).getShoppingItems();
+        if (items == null) items = new ArrayList<>();
         mItems = ListUtils.flattenList(new ArrayList<Object>(items), new ListUtils.IListUtils<Ingredient>() {
             @Override
-            public List<Ingredient> nested(Object o) {
+            public List<Ingredient> nested(Object o, int index) {
                 ShoppingListItem shoppingItem = (ShoppingListItem) o;
-                for (Ingredient ingredient : shoppingItem.getIngredients()) {
-                    ingredient.setShoppingListItem(shoppingItem);
+                List<Ingredient> ingredients = new ArrayList<>(shoppingItem.getIngredients());
+                for (Ingredient ingredient : ingredients) {
+                    ingredient.setShoppingListItemIndex(index);
                 }
                 return shoppingItem.getIngredients();
             }
@@ -128,12 +133,12 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             notifyItemRangeRemoved(position, shoppingListItem.getIngredients().size()+1);
         }else{
             Ingredient ingredient = (Ingredient) item;
-            if (ingredient.getShoppingListItem().getIngredients().size() == 1){
+            if (((ShoppingListItem)mItems.get(ingredient.getShoppingListItemIndex())).getIngredients().size() == 1){
                 removeItem(position-1);
                 return;
             }
             mItems.remove(ingredient);
-            ingredient.getShoppingListItem().getIngredients().remove(ingredient);
+            ((ShoppingListItem)mItems.get(ingredient.getShoppingListItemIndex())).getIngredients().remove(ingredient);
             notifyItemRemoved(position);
         }
     }
@@ -147,7 +152,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }else{
             Ingredient ingredient = (Ingredient) object;
             mItems.add(position, ingredient);
-            ingredient.getShoppingListItem().getIngredients().add(ingredient);
+            ((ShoppingListItem) mItems.get(ingredient.getShoppingListItemIndex())).getIngredients().add(ingredient);
             notifyItemInserted(position);
         }
     }
@@ -159,7 +164,8 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 shoppingListItems.add((ShoppingListItem) o);
             }
         }
-        ShoppingListDAO.getInstance().persistShoppingListItems(shoppingListItems);
+        ShoppingListDAO.getInstance(mContext).persistShoppingListItems(shoppingListItems);
+        updateDataSource();
     }
 
     public List<Object> getMItems(){

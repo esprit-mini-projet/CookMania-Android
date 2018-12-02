@@ -18,6 +18,7 @@ import tn.duoes.esprit.cookmania.adapters.ShoppingListViewAdapter;
 import tn.duoes.esprit.cookmania.dao.ShoppingListDAO;
 import tn.duoes.esprit.cookmania.helpers.ShoppingListRecyclerItemTouchHelper;
 import tn.duoes.esprit.cookmania.models.Ingredient;
+import tn.duoes.esprit.cookmania.models.ShoppingListItem;
 
 public class ShoppingListActivity extends AppCompatActivity {
 
@@ -31,7 +32,7 @@ public class ShoppingListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_list);
 
         mShoppingRecyclerView = findViewById(R.id.shooping_list_view);
-        mViewAdapter = new ShoppingListViewAdapter();
+        mViewAdapter = new ShoppingListViewAdapter(getBaseContext());
 
         mShoppingRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -47,7 +48,7 @@ public class ShoppingListActivity extends AppCompatActivity {
                 final Object toRestoreItem;
                 final int toRestoreIndex;
 
-                if ((deletedItem instanceof Ingredient) && ((Ingredient) deletedItem).getShoppingListItem().getIngredients().size() == 1){
+                if ((deletedItem instanceof Ingredient) && ((ShoppingListItem)mViewAdapter.getMItems().get(((Ingredient) deletedItem).getShoppingListItemIndex())).getIngredients().size() == 1){
                     toRestoreItem = (mViewAdapter.getMItems().get(deletedIndex-1));
                     toRestoreIndex = deletedIndex - 1;
                     System.out.println(deletedItem);

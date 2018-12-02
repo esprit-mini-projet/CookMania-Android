@@ -12,6 +12,8 @@ public class ShoppingListItem {
         this.ingredients = ingredients;
     }
 
+
+
     public Recipe getRecipe() {
         return recipe;
     }
