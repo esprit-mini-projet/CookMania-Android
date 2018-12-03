@@ -44,5 +44,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Recipe" />
+  
+    <Button
+        android:id="@+id/recipe_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recipe"/>
 
 </LinearLayout>

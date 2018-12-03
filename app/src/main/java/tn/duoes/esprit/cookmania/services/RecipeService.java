@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -108,8 +110,29 @@ public final class RecipeService {
             }
         });
     }
+    
+  public void getRecipeById(String id, final RecipeServiceCallBack callBack){
+        Call<Recipe> call = mRecipeApi.getRecipeById(id);
+        call.enqueue(new Callback<Recipe>() {
+            @Override
+            public void onResponse(Call<Recipe> call, retrofit2.Response<Recipe> response) {
+                if(response.isSuccessful()){
+                    final Recipe recipe = response.body();
+                    callBack.onResponse(new ArrayList<Recipe>(Arrays.asList(recipe)));
+                    return;
+                }
+                callBack.onFailure();
+            }
 
-    public void insertRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
+            @Override
+            public void onFailure(Call<Recipe> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+  
+  public void insertRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
         Call<Integer> call = mRecipeApi.createRecipe(recipe);
         call.enqueue(new Callback<Integer>() {
             @Override
@@ -127,5 +150,5 @@ public final class RecipeService {
                 callBack.onFailure();
             }
         });
-    }
+  }
 }

@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import tn.duoes.esprit.cookmania.models.Recipe;
 
 public interface RecipeApi {
@@ -18,8 +19,11 @@ public interface RecipeApi {
 
     @GET("label/Cheap")
     Call<List<Recipe>> getCheapRecipes();
-
+  
     @POST("create")
     Call<Integer> createRecipe(@Body Recipe recipe);
+  
+    @GET("{id}")
+    Call<Recipe> getRecipeById(@Path("id") String id);
 
 }

@@ -1,11 +1,14 @@
 package tn.duoes.esprit.cookmania.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Step {
     private int id;
     private String description;
+    @SerializedName("image_url")
     private String imageUrl;
     private int time;
     private List<Ingredient> ingredients;

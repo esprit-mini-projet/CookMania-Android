@@ -6,7 +6,15 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
         <item name="colorControlNormal">@color/colorFaded</item> <!-- color for bottom border of textinputedittext -->
+    </style>
+
+    <style name="RatingBar" parent="@style/Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressBackgroundTint">@android:color/white</item>
+        <item name="android:backgroundTint">@android:color/white</item>
+        <item name="android:indeterminateTint">@android:color/white</item>
+        <item name="android:isIndicator">false</item>
     </style>
 
 </resources>

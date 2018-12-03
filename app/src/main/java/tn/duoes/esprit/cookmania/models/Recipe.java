@@ -30,6 +30,7 @@ public class Recipe implements Parcelable {
     private List<Step> steps;
 
     public Recipe() {
+        steps = new ArrayList<>();
     }
 
     public Recipe(Parcel in){
@@ -195,6 +196,14 @@ public class Recipe implements Parcelable {
         this.rating = rating;
     }
 
+    public List<Step> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<Step> steps) {
+        this.steps = steps;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -233,6 +242,13 @@ public class Recipe implements Parcelable {
         dest.writeFloat(rating);
     }
 
+    public List<Ingredient> getIngredients(){
+        List<Ingredient> ingredients = new ArrayList<>();
+        for(Step step : steps){
+            ingredients.addAll(step.getIngredients());
+        }
+        return ingredients;
+    }
 
     /*
 
