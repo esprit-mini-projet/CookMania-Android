@@ -60,5 +60,12 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(ProfileActivity.this, MainScreenActivity.class));
             }
         });
+
+        findViewById(R.id.profile_add_recipe_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileActivity.this, AddRecipeActivity.class));
+            }
+        });
     }
 }

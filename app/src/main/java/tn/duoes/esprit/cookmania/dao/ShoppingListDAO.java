@@ -84,6 +84,10 @@ public final class ShoppingListDAO {
     }
 
     public void persistShoppingListItems(List<ShoppingListItem> items){
+        if (items.size() == 0){
+            deleteShoppingList();
+            return;
+        }
         ShoppingListSerialization shoppingListSerialization = new ShoppingListSerialization();
         shoppingListSerialization.setUserId(userId);
         shoppingListSerialization.setShoppingItems(items);
@@ -98,7 +102,10 @@ public final class ShoppingListDAO {
 
             db.update(ShoppingListSerialization.TABLE_NAME, values, ShoppingListSerialization.USER_ID+" = ?", new String[]{userId});
         }
-        //mItems =
+    }
+
+    private void deleteShoppingList(){
+        db.delete(ShoppingListSerialization.TABLE_NAME, ShoppingListSerialization.USER_ID+" = ?", new String[]{userId});
     }
 
 }
