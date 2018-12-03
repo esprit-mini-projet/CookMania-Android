@@ -18,8 +18,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +32,7 @@ import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
+import tn.duoes.esprit.cookmania.utils.GlideApp;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -113,7 +112,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(){
-        Picasso.get().load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
+        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
         mCaloriesTextView.setText("" + mRecipe.getCalories());
@@ -128,7 +127,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private void getRecipe(String id) {
-        RecipeService.getInstance().getRecipeById(id, new RecipeService.RecipeServiceCallBack() {
+        RecipeService.getInstance().getRecipeById(id, new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 mRecipe = recipes.get(0);

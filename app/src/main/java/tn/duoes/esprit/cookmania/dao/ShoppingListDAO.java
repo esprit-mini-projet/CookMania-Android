@@ -1,6 +1,5 @@
 package tn.duoes.esprit.cookmania.dao;
 
-import android.arch.persistence.room.Database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -64,7 +63,7 @@ public final class ShoppingListDAO {
 
         mItems.add(new ShoppingListItem(recipe, ingredients));
         mItems.add(new ShoppingListItem(recipe1, ingredients1));
-        //persistShoppingListItems(mItems);
+        persistShoppingListItems(mItems);
     }
 
     public static ShoppingListDAO getInstance(Context context){

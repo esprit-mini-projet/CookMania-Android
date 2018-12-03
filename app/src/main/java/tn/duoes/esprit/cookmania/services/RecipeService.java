@@ -111,7 +111,7 @@ public final class RecipeService {
         });
     }
     
-  public void getRecipeById(String id, final RecipeServiceCallBack callBack){
+  public void getRecipeById(String id, final RecipeServiceGetCallBack callBack){
         Call<Recipe> call = mRecipeApi.getRecipeById(id);
         call.enqueue(new Callback<Recipe>() {
             @Override
