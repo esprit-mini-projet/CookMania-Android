@@ -10,6 +10,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
@@ -20,8 +21,13 @@ public final class RecipeService {
 
     public static final String TAG = "RecipeService";
 
-    public interface RecipeServiceCallBack{
+    public interface RecipeServiceGetCallBack{
         void onResponse(List<Recipe> recipes);
+        void onFailure();
+    }
+
+    public interface RecipeServiceInsertCallBack{
+        void onResponse(int recipeId);
         void onFailure();
     }
 
@@ -45,7 +51,7 @@ public final class RecipeService {
         mRecipeApi = retrofit.create(RecipeApi.class);
     }
 
-    public void getTopRatedRecipes(final RecipeServiceCallBack callBack){
+    public void getTopRatedRecipes(final RecipeServiceGetCallBack callBack){
         Call<List<Recipe>> call = mRecipeApi.getTopRatedRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
@@ -65,7 +71,7 @@ public final class RecipeService {
         });
     }
 
-    public void getHealthyRecipes(final RecipeServiceCallBack callBack){
+    public void getHealthyRecipes(final RecipeServiceGetCallBack callBack){
         Call<List<Recipe>> call = mRecipeApi.getHealthyRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
@@ -85,7 +91,7 @@ public final class RecipeService {
         });
     }
 
-    public void getCheapRecipes(final RecipeServiceCallBack callBack){
+    public void getCheapRecipes(final RecipeServiceGetCallBack callBack){
         Call<List<Recipe>> call = mRecipeApi.getCheapRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
@@ -104,8 +110,8 @@ public final class RecipeService {
             }
         });
     }
-
-    public void getRecipeById(String id, final RecipeServiceCallBack callBack){
+    
+  public void getRecipeById(String id, final RecipeServiceCallBack callBack){
         Call<Recipe> call = mRecipeApi.getRecipeById(id);
         call.enqueue(new Callback<Recipe>() {
             @Override
@@ -125,5 +131,24 @@ public final class RecipeService {
             }
         });
     }
+  
+  public void insertRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
+        Call<Integer> call = mRecipeApi.createRecipe(recipe);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onFailure();
+            }
 
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+  }
 }
