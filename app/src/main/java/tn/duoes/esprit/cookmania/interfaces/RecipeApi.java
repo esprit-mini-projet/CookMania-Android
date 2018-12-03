@@ -4,6 +4,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import tn.duoes.esprit.cookmania.models.Recipe;
 
 public interface RecipeApi {
@@ -16,5 +17,8 @@ public interface RecipeApi {
 
     @GET("label/Cheap")
     Call<List<Recipe>> getCheapRecipes();
+
+    @GET("{id}")
+    Call<Recipe> getRecipeById(@Path("id") String id);
 
 }
