@@ -50,4 +50,5 @@
     <string name="about">About</string>
     <string name="favorite">Add to favorites</string>
     <string name="remove_favorite">Remove from favorites</string>
+    <string name="add_photo">Add a photo</string>
 </resources>

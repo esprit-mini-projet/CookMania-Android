@@ -2,6 +2,9 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatRatingBar;
@@ -15,16 +18,22 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
+import tn.duoes.esprit.cookmania.controllers.fragments.RatingBarFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.RatingCommentFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.RatingPhotoFragment;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
-import tn.duoes.esprit.cookmania.utils.GlideApp;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -45,6 +54,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private ImageView mShopCartImageView;
     private RecyclerView mIngredientList;
     private RecyclerView mStepList;
+    private ViewPager mRatingViewPager;
+    private TabLayout mRatingTabLayout;
 
     private Recipe mRecipe;
 
@@ -56,7 +67,18 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         getViewReferences();
         setupIngredientList();
         setupStepList();
+        setupViewPager();
         getRecipe(getIntent().getStringExtra(EXTRA_RECIPE_ID));
+    }
+
+    private void setupViewPager() {
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(RatingBarFragment.newInstance());
+        fragments.add(RatingPhotoFragment.newInstance());
+        fragments.add(RatingCommentFragment.newInstance());
+        RatingPagerAdapter adapter = new RatingPagerAdapter(getSupportFragmentManager(), fragments);
+        mRatingViewPager.setAdapter(adapter);
+        mRatingTabLayout.setupWithViewPager(mRatingViewPager, true);
     }
 
     private void setupStepList() {
@@ -86,10 +108,12 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         mShopCartImageView = findViewById(R.id.details_recipe_shop_cart_image);
         mIngredientList = findViewById(R.id.details_recipe_ingredients_recycler);
         mStepList = findViewById(R.id.details_recipe_steps_recycler);
+        mRatingViewPager = findViewById(R.id.details_recipe_rating_viewpager);
+        mRatingTabLayout = findViewById(R.id.details_recipe_rating_tab_layout);
     }
 
     private void updateUI(){
-        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
+        Picasso.get().load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
         mCaloriesTextView.setText("" + mRecipe.getCalories());
