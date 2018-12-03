@@ -3,6 +3,8 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import tn.duoes.esprit.cookmania.R;
+
 public class AddStepActivity extends AppCompatActivity {
 
     @Override

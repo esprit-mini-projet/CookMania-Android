@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment{
         toRatedProgressDialog.setMessage("Loading...");
         toRatedProgressDialog.show();
 
-        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceCallBack() {
+        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
@@ -111,7 +111,7 @@ public class HomeFragment extends Fragment{
         healthyProgressDialog.setMessage("Loading...");
         healthyProgressDialog.show();
 
-        RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceCallBack() {
+        RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
@@ -136,7 +136,7 @@ public class HomeFragment extends Fragment{
         healthyProgressDialog.setMessage("Loading...");
         healthyProgressDialog.show();
 
-        RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceCallBack() {
+        RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
