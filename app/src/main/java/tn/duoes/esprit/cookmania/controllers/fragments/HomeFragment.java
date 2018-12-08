@@ -2,14 +2,10 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 
@@ -63,6 +58,12 @@ public class HomeFragment extends Fragment{
         return fragment;
     }
 
+    private Fragment suggestedFragment;
+    private Fragment topRatedFragment;
+    private Fragment healthyFragment;
+    private Fragment cheapFragment;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +72,17 @@ public class HomeFragment extends Fragment{
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        suggestedFragment = SuggestedFragment.newInstance(null, null);
+    }
+
+    private Fragment buildCategoryFragment(String name, List<Recipe> recipes){
+        Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
+        Bundle bundle = new Bundle();
+        bundle.putString(CategoryRecipesFragment.CATEGORY_NAME_KEY, name);
+        bundle.putParcelableArrayList(CategoryRecipesFragment.RECIPES_KEY, (ArrayList)recipes);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -78,102 +90,75 @@ public class HomeFragment extends Fragment{
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Fragment suggestedFragment = SuggestedFragment.newInstance(null, null);
+        //Fragment suggestedFragment = SuggestedFragment.newInstance(null, null);
         getFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();
 
-        //Top rated recipes
-        final ProgressDialog toRatedProgressDialog = new ProgressDialog(getContext());
-        toRatedProgressDialog.setMessage("Loading...");
-        toRatedProgressDialog.show();
 
-        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
-            @Override
-            public void onResponse(List<Recipe> recipes) {
-                Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
-                Bundle bundle = new Bundle();
-                bundle.putString("categoryName", "Top rated");
-                bundle.putParcelableArrayList("recipes", (ArrayList)recipes);
-                fragment.setArguments(bundle);
+        if(topRatedFragment == null || healthyFragment == null || cheapFragment == null){
+            //Top rated recipes
+            final ProgressDialog topRatedProgressDialog = new ProgressDialog(getContext());
+            topRatedProgressDialog.setMessage("Loading...");
+            topRatedProgressDialog.show();
 
-                toRatedProgressDialog.dismiss();
+            RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                @Override
+                public void onResponse(List<Recipe> recipes) {
+                    topRatedFragment = buildCategoryFragment("Top rated", recipes);
+                    topRatedProgressDialog.dismiss();
+                    getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
+                }
 
-                getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, fragment).commit();
-            }
+                @Override
+                public void onFailure() {
+                    topRatedProgressDialog.dismiss();
+                }
+            });
 
-            @Override
-            public void onFailure() {
-                toRatedProgressDialog.dismiss();
-            }
-        });
+            //Healthy recipes
+            final ProgressDialog healthyProgressDialog = new ProgressDialog(getContext());
+            healthyProgressDialog.setMessage("Loading...");
+            healthyProgressDialog.show();
 
-        //Healthy recipes
-        final ProgressDialog healthyProgressDialog = new ProgressDialog(getContext());
-        healthyProgressDialog.setMessage("Loading...");
-        healthyProgressDialog.show();
+            RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                @Override
+                public void onResponse(List<Recipe> recipes) {
+                    healthyFragment = buildCategoryFragment("Healthy", recipes);
+                    healthyProgressDialog.dismiss();
+                    getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
+                }
 
-        RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceGetCallBack() {
-            @Override
-            public void onResponse(List<Recipe> recipes) {
-                Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
-                Bundle bundle = new Bundle();
-                bundle.putString("categoryName", "Healthy");
-                bundle.putParcelableArrayList("recipes", (ArrayList)recipes);
-                fragment.setArguments(bundle);
+                @Override
+                public void onFailure() {
+                    healthyProgressDialog.dismiss();
+                }
+            });
 
-                healthyProgressDialog.dismiss();
+            //Cheap recipes
+            final ProgressDialog cheapProgressDialog = new ProgressDialog(getContext());
+            healthyProgressDialog.setMessage("Loading...");
+            healthyProgressDialog.show();
 
-                getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, fragment).commit();
-            }
+            RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                @Override
+                public void onResponse(List<Recipe> recipes) {
+                    cheapFragment = buildCategoryFragment("Cheap", recipes);
+                    cheapProgressDialog.dismiss();
+                    getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
+                }
 
-            @Override
-            public void onFailure() {
-                healthyProgressDialog.dismiss();
-            }
-        });
+                @Override
+                public void onFailure() {
+                    cheapProgressDialog.dismiss();
+                }
+            });
 
-        //Cheap recipes
-        final ProgressDialog cheapProgressDialog = new ProgressDialog(getContext());
-        healthyProgressDialog.setMessage("Loading...");
-        healthyProgressDialog.show();
-
-        RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceGetCallBack() {
-            @Override
-            public void onResponse(List<Recipe> recipes) {
-                Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
-                Bundle bundle = new Bundle();
-                bundle.putString("categoryName", "Cheap");
-                bundle.putParcelableArrayList("recipes", (ArrayList)recipes);
-                fragment.setArguments(bundle);
-
-                cheapProgressDialog.dismiss();
-
-                getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, fragment).commit();
-            }
-
-            @Override
-            public void onFailure() {
-                cheapProgressDialog.dismiss();
-            }
-        });
+            return fragment;
+        }
+        getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
 
         return fragment;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.home_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.home_menu_shopping:
-                Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
-                startActivity(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

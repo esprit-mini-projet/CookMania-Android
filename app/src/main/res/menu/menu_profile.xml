@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/home_menu_shopping"
-        android:title="Shopping"
+        android:id="@+id/menu_settings"
+        android:icon="@drawable/ic_bar_settings"
+        android:title="Settings"
         app:showAsAction="always" />
 </menu>

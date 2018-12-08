@@ -1,7 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -33,6 +35,7 @@ import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -62,6 +65,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mRecipe = new Recipe();
         getViewReferences();
         setupIngredientList();
@@ -189,5 +193,11 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         }else{
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Nullable
+    @Override
+    public Intent getSupportParentActivityIntent() {
+        return NavigationUtils.getParentActivityIntent(this, getIntent());
     }
 }

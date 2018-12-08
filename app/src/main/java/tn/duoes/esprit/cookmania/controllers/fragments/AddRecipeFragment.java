@@ -1,39 +1,32 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickResult;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.SettingsActivity;
-import tn.duoes.esprit.cookmania.dao.FavoriteLab;
-import tn.duoes.esprit.cookmania.utils.GlideApp;
-import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
+ * {@link AddRecipeFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
+ * Use the {@link AddRecipeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class AddRecipeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,7 +38,7 @@ public class ProfileFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ProfileFragment() {
+    public AddRecipeFragment() {
         // Required empty public constructor
     }
 
@@ -53,13 +46,13 @@ public class ProfileFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter ap_1.
+     * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
+     * @return A new instance of fragment AddRecipeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
+    public static AddRecipeFragment newInstance(String param1, String param2) {
+        AddRecipeFragment fragment = new AddRecipeFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -76,42 +69,40 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    private ImageView imageView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.fragment_profile, container, false);
-        setHasOptionsMenu(true);
-        ImageView photo = fragment.findViewById(R.id.profile_picture);
-        TextView name = fragment.findViewById(R.id.name_text);
-        TextView method = fragment.findViewById(R.id.method_text);
+        View fragment = inflater.inflate(R.layout.fragment_add_recipe, container, false);
 
-        Activity activity = getActivity();
+        imageView = fragment.findViewById(R.id.add_recipe_image_view);
+        fragment.findViewById(R.id.add_recipe_add_image_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PickSetup pickSetup = new PickSetup();
+                pickSetup.setGalleryIcon(R.mipmap.gallery_colored);
+                pickSetup.setCameraIcon(R.mipmap.camera_colored);
+                PickImageDialog.build(pickSetup).setOnPickResult(new IPickResult() {
+                    @Override
+                    public void onPickResult(PickResult pickResult) {
+                        if (pickResult.getError() == null) {
+                            Glide.with(getActivity()).load(pickResult.getUri()).into(imageView);
+                        } else {
+                            Toast.makeText(getContext(), pickResult.getError().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }).show(getFragmentManager());
+            }
+        });
+        fragment.findViewById(R.id.add_recipe_next_bt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        String photoUrl = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_IMAGE_URL, null);
-        String nameString = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_USERNAME, null);
-        final String methodString = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_SIGNIN_METHOD, null);
-
-        GlideApp.with(this).load(photoUrl).centerCrop().into(photo);
-        name.setText(nameString);
-        method.setText("By " + methodString);
+            }
+        });
 
         return fragment;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.menu_settings:
-                startActivity(NavigationUtils.getNavigationFormattedIntent(getContext(), SettingsActivity.class));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

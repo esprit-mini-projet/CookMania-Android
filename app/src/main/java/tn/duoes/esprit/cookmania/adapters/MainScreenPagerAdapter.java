@@ -4,9 +4,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 
 public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
     private int mTabsCount;
@@ -27,6 +29,12 @@ public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
                 fragment = SearchFragment.newInstance(null, null);
                 break;
             case 2:
+                fragment = AddRecipeFragment.newInstance(null, null);
+                break;
+            case 3:
+                fragment = ShoppingListFragment.newInstance(null, null);
+                break;
+            case 4:
                 fragment = ProfileFragment.newInstance(null, null);
                 break;
         }
