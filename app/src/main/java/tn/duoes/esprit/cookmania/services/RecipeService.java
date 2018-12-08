@@ -51,6 +51,26 @@ public final class RecipeService {
         mRecipeApi = retrofit.create(RecipeApi.class);
     }
 
+    public void getAllRecipesByLabel(String label, final RecipeServiceGetCallBack callBack){
+        Call<List<Recipe>> call = mRecipeApi.getAllRecipiesByLabel(label);
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onFailure();
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
     public void getTopRatedRecipes(final RecipeServiceGetCallBack callBack){
         Call<List<Recipe>> call = mRecipeApi.getTopRatedRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
@@ -111,7 +131,7 @@ public final class RecipeService {
         });
     }
     
-  public void getRecipeById(String id, final RecipeServiceGetCallBack callBack){
+    public void getRecipeById(String id, final RecipeServiceGetCallBack callBack){
         Call<Recipe> call = mRecipeApi.getRecipeById(id);
         call.enqueue(new Callback<Recipe>() {
             @Override
@@ -131,8 +151,8 @@ public final class RecipeService {
             }
         });
     }
-  
-  public void insertRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
+
+    public void insertRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
         Call<Integer> call = mRecipeApi.createRecipe(recipe);
         call.enqueue(new Callback<Integer>() {
             @Override
@@ -150,5 +170,5 @@ public final class RecipeService {
                 callBack.onFailure();
             }
         });
-  }
+    }
 }

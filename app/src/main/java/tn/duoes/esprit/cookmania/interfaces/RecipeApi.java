@@ -14,6 +14,9 @@ public interface RecipeApi {
     @GET("top")
     Call<List<Recipe>> getTopRatedRecipes();
 
+    @GET("all/{label}")
+    Call<List<Recipe>> getAllRecipiesByLabel(@Path("label") String label);
+
     @GET("label/Healthy")
     Call<List<Recipe>> getHealthyRecipes();
 
