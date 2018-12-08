@@ -2,14 +2,10 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 
@@ -157,23 +152,6 @@ public class HomeFragment extends Fragment{
         });
 
         return fragment;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.home_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.home_menu_shopping:
-                Intent intent = new Intent(getActivity(), ShoppingListActivity.class);
-                startActivity(intent);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
