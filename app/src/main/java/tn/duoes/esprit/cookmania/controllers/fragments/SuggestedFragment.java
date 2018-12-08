@@ -2,6 +2,7 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,9 +16,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Suggestion;
 import tn.duoes.esprit.cookmania.services.SuggestionService;
 import tn.duoes.esprit.cookmania.utils.Constants;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,15 +84,50 @@ public class SuggestedFragment extends Fragment {
 
         SuggestionService.getInstance().getSuggestions(new SuggestionService.SuggestionServiceCallback() {
             @Override
-            public void onResponse(Suggestion suggestion) {
+            public void onResponse(final Suggestion suggestion) {
                 TextView suggestionTitleTV = fragment.findViewById(R.id.suggested_title_tv);
                 suggestionTitleTV.setText(suggestion.getTitle());
 
 
                 ImageView firstImageView = fragment.findViewById(R.id.suggested_first);
+                firstImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
+                        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(0).getId()+"");
+                        v.getContext().startActivity(i);
+                    }
+                });
+
                 ImageView secondImageView = fragment.findViewById(R.id.suggested_second);
+                secondImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
+                        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(1).getId()+"");
+                        v.getContext().startActivity(i);
+                    }
+                });
+
                 ImageView thirdImageView = fragment.findViewById(R.id.suggested_third);
+                thirdImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
+                        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(2).getId()+"");
+                        v.getContext().startActivity(i);
+                    }
+                });
+
                 ImageView forthImageView = fragment.findViewById(R.id.suggested_forth);
+                forthImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
+                        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(3).getId()+"");
+                        v.getContext().startActivity(i);
+                    }
+                });
 
                 Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(0).getImageURL()).into(firstImageView);
                 Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(1).getImageURL()).into(secondImageView);

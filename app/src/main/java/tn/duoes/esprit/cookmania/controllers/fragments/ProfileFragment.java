@@ -1,14 +1,29 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.app.Activity;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.SettingsActivity;
+import tn.duoes.esprit.cookmania.dao.FavoriteLab;
+import tn.duoes.esprit.cookmania.utils.GlideApp;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,8 +79,39 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View fragment = inflater.inflate(R.layout.fragment_profile, container, false);
+        setHasOptionsMenu(true);
+        ImageView photo = fragment.findViewById(R.id.profile_picture);
+        TextView name = fragment.findViewById(R.id.name_text);
+        TextView method = fragment.findViewById(R.id.method_text);
+
+        Activity activity = getActivity();
+
+        String photoUrl = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_IMAGE_URL, null);
+        String nameString = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_USERNAME, null);
+        final String methodString = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_SIGNIN_METHOD, null);
+
+        GlideApp.with(this).load(photoUrl).centerCrop().into(photo);
+        name.setText(nameString);
+        method.setText("By " + methodString);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_profile, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_settings:
+                startActivity(NavigationUtils.getNavigationFormattedIntent(getContext(), SettingsActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

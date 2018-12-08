@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.adapters;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +15,11 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecipeRecyclerViewAdapter.ViewHolder> {
 
@@ -59,7 +63,9 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.out.println("Recipe with id = "+id+" clicked!");
+                    Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
+                    i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, id+"");
+                    v.getContext().startActivity(i);
                 }
             });
             recipeNameTV = itemView.findViewById(R.id.cat_res_row_tv);

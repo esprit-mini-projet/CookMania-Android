@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
 
     <application
@@ -28,6 +29,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/picker_provider_paths" />
         </provider>
+
         <activity android:name=".controllers.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,8 +60,9 @@
             android:value="@string/facebook_app_id" />
 
         <activity android:name=".controllers.activities.ProfileActivity" />
-        <activity android:name=".controllers.activities.AddStepActivity"></activity>
-        <activity android:name=".controllers.activities.RecipeDetailsActivity"></activity>
+        <activity android:name=".controllers.activities.AddStepActivity" />
+        <activity android:name=".controllers.activities.RecipeDetailsActivity" />
+        <activity android:name=".controllers.activities.SettingsActivity"></activity>
     </application>
 
 </manifest>
