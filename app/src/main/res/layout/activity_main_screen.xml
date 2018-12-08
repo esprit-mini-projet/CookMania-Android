@@ -19,19 +19,33 @@
         app:tabTextColor="@android:color/white">
 
         <android.support.design.widget.TabItem
+            android:id="@+id/home_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/ic_tab_home" />
 
         <android.support.design.widget.TabItem
+            android:id="@+id/search_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Center" />
+            android:icon="@drawable/ic_tab_search" />
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/add_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_tab_add" />
+
+        <android.support.design.widget.TabItem
+            android:id="@+id/shopping_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_tab_shopping" />
 
         <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/ic_tab_home" />
+            android:icon="@drawable/ic_tab_profile" />
     </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager

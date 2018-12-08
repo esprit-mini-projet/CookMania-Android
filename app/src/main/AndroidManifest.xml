@@ -58,12 +58,6 @@
             android:value="@string/facebook_app_id" />
 
         <activity android:name=".controllers.activities.ProfileActivity" />
-        <activity
-            android:name=".controllers.activities.ShoppingListActivity"
-            android:parentActivityName=".controllers.activities.MainScreenActivity" />
-        <activity
-            android:name=".controllers.activities.AddRecipeActivity"
-            android:parentActivityName=".controllers.activities.ProfileActivity" />
         <activity android:name=".controllers.activities.AddStepActivity"></activity>
         <activity android:name=".controllers.activities.RecipeDetailsActivity"></activity>
     </application>
