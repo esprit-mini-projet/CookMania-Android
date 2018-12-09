@@ -26,6 +26,7 @@ public class RatingPhotoFragment extends Fragment {
 
     private ImageView mImageView;
     private ImageButton mDeleteButton;
+
     private boolean mImageChanged = false;
 
     public static RatingPhotoFragment newInstance() {
@@ -65,6 +66,8 @@ public class RatingPhotoFragment extends Fragment {
                 mDeleteButton.setEnabled(false);
             }
         });
+
+
 
         return view;
     }

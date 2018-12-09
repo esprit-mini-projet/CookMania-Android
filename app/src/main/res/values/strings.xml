@@ -53,4 +53,11 @@
     <string name="add_photo">Add a photo</string>
     <string name="submit">Submit</string>
     <string name="finish">Finish</string>
+    <string-array name="rating_opinions">
+        <item>Ughh!</item>
+        <item>Meh</item>
+        <item>Nothing special</item>
+        <item>I eat this!</item>
+        <item>I\'m in love !</item>
+    </string-array>
 </resources>

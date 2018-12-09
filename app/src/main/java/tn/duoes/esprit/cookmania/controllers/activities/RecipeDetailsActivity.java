@@ -1,12 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatRatingBar;
@@ -16,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,7 +33,7 @@ import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
-import tn.duoes.esprit.cookmania.utils.NavigationUtils;
+import tn.duoes.esprit.cookmania.views.RatingViewPager;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -56,7 +54,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private ImageView mShopCartImageView;
     private RecyclerView mIngredientList;
     private RecyclerView mStepList;
-    private ViewPager mRatingViewPager;
+    private RatingViewPager mRatingViewPager;
     private TabLayout mRatingTabLayout;
 
     private Recipe mRecipe;
@@ -75,13 +73,27 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(RatingBarFragment.newInstance());
+        final List<Fragment> fragments = new ArrayList<>();
+        fragments.add(RatingBarFragment.newInstance(new RatingBarFragment.RatingBarCallBack() {
+            @Override
+            public void onSubmitClickListener(boolean canSwipe) {
+                if (canSwipe){
+                    mRatingViewPager.setPagingEnabled(true);
+                    mRatingTabLayout.setVisibility(View.VISIBLE);
+                    mRatingViewPager.setCurrentItem(1, true);
+                }else{
+                    mRatingViewPager.setPagingEnabled(false);
+                    mRatingTabLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        }));
         fragments.add(RatingPhotoFragment.newInstance());
         fragments.add(RatingCommentFragment.newInstance());
         RatingPagerAdapter adapter = new RatingPagerAdapter(getSupportFragmentManager(), fragments);
+        mRatingViewPager.setPagingEnabled(false);
         mRatingViewPager.setAdapter(adapter);
         mRatingTabLayout.setupWithViewPager(mRatingViewPager, true);
+        mRatingTabLayout.setVisibility(View.INVISIBLE);
     }
 
     private void setupStepList() {
@@ -195,9 +207,9 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @Nullable
     @Override
-    public Intent getSupportParentActivityIntent() {
-        return NavigationUtils.getParentActivityIntent(this, getIntent());
+    public boolean onNavigateUp() {
+        //finish();
+        return super.onNavigateUp();
     }
 }
