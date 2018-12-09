@@ -1,22 +1,39 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.AddStepActivity;
+import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.services.RecipeService;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,6 +48,8 @@ public class AddRecipeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private static final String TAG = AddRecipeFragment.class.getSimpleName();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -74,8 +93,8 @@ public class AddRecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.fragment_add_recipe, container, false);
-
+        final View fragment = inflater.inflate(R.layout.fragment_add_recipe, container, false);
+        toAddStepActivity(new Recipe());
         imageView = fragment.findViewById(R.id.add_recipe_image_view);
         fragment.findViewById(R.id.add_recipe_add_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,10 +118,60 @@ public class AddRecipeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                EditText nameEditText;
+                if((nameEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_name_layout)).getEditText())).getText().toString().isEmpty()){
+                    nameEditText.setError("Recipe name is required!");
+                    return;
+                }
+
+                EditText descriptionEditText;
+                if((descriptionEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_description_layout)).getEditText())).getText().toString().isEmpty()){
+                    descriptionEditText.setError("Recipe description is required!");
+                    return;
+                }
+
+                EditText durationEditText;
+                if((durationEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_duration_layout)).getEditText())).getText().toString().isEmpty()){
+                    durationEditText.setError("Recipe duration is required!");
+                    return;
+                }
+
+                EditText servingsEditText;
+                if((servingsEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_servings_layout)).getEditText())).getText().toString().isEmpty()){
+                    servingsEditText.setError("Recipe servings is required!");
+                    return;
+                }
+
+                EditText caloriesEditText;
+                if((caloriesEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_calories_layout)).getEditText())).getText().toString().isEmpty()){
+                    caloriesEditText.setError("Recipe calories is required!");
+                    return;
+                }
+
+                Recipe recipe = new Recipe(
+                        nameEditText.getText().toString(),
+                        descriptionEditText.getText().toString(),
+                        Integer.valueOf(caloriesEditText.getText().toString()),
+                        Integer.valueOf(servingsEditText.getText().toString()),
+                        "",
+                        new Date(),
+                        0,
+                        0,
+                        Integer.valueOf(durationEditText.getText().toString()),
+                        getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("user_id", ""),
+                        0.0f);
+                toAddStepActivity(recipe);
             }
         });
 
         return fragment;
+    }
+
+    private void toAddStepActivity(Recipe recipe){
+        Intent intent = NavigationUtils.getNavigationFormattedIntent(getContext(), AddStepActivity.class);
+        Gson gson = new Gson();
+        intent.putExtra(AddStepActivity.RECIPE_KEY, gson.toJson(recipe));
+        startActivity(intent);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +59,7 @@ public class Recipe implements Parcelable {
         this.time = time;
         this.userId = userId;
         this.rating = rating;
+        steps = new ArrayList<>();
     }
 
     public Recipe(String name, String description, int calories, int servings, String imageURL, Date date, int views, int favorites, int time, String userId, float rating) {
@@ -72,6 +74,7 @@ public class Recipe implements Parcelable {
         this.time = time;
         this.userId = userId;
         this.rating = rating;
+        steps = new ArrayList<>();
     }
 
     public Recipe(int id, String name, String description, int calories, int servings, String imageURL, Date date, int views, int favorites, int time, String userId) {
@@ -86,6 +89,7 @@ public class Recipe implements Parcelable {
         this.favorites = favorites;
         this.time = time;
         this.userId = userId;
+        steps = new ArrayList<>();
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -219,6 +223,7 @@ public class Recipe implements Parcelable {
                 ", time=" + time +
                 ", userId='" + userId + '\'' +
                 ", rating=" + rating +
+                ", steps=" + steps +
                 '}';
     }
 
