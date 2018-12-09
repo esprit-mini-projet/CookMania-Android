@@ -11,9 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.fxn.pix.Pix;
+
+import java.util.ArrayList;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.utils.GlideApp;
 
 public class RatingPhotoFragment extends Fragment {
 
@@ -21,8 +25,8 @@ public class RatingPhotoFragment extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private ImageView mImageView;
-    private ImageButton mImageButton;
-    private TextView mAddTextView;
+    private ImageButton mDeleteButton;
+    private boolean mImageChanged = false;
 
     public static RatingPhotoFragment newInstance() {
 
@@ -38,10 +42,29 @@ public class RatingPhotoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_rating_photo, container, false);
 
-        mAddTextView = view.findViewById(R.id.fragment_rating_photo_add_text);
         mImageView = view.findViewById(R.id.fragment_rating_photo_image_view);
-        mImageButton = view.findViewById(R.id.fragment_rating_photo_button);
-        //mImageButton.setOnClickListener();
+
+        ImageButton imageButton = view.findViewById(R.id.fragment_rating_photo_button);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Pix.start(RatingPhotoFragment.this, REQUEST_IMAGE_CAPTURE, 1);
+            }
+        });
+
+        mDeleteButton = view.findViewById(R.id.fragment_rating_delete_button);
+        mDeleteButton.setEnabled(false);
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlideApp.with(RatingPhotoFragment.this)
+                        .load(getActivity().getDrawable(R.drawable.image_placeholder))
+                        .centerCrop()
+                        .into(mImageView);
+                mImageChanged = false;
+                mDeleteButton.setEnabled(false);
+            }
+        });
 
         return view;
     }
@@ -55,10 +78,10 @@ public class RatingPhotoFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            mImageView.setVisibility(View.VISIBLE);
-            mImageButton.setVisibility(View.GONE);
-            mAddTextView.setVisibility(View.GONE);
-            //GlideApp.with(this).load(mCurrentPath).into(mImageView);
+            ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+            GlideApp.with(this).load(returnValue.get(0)).centerCrop().into(mImageView);
+            mDeleteButton.setEnabled(true);
+            mImageChanged = true;
         }
     }
 }

@@ -51,4 +51,6 @@
     <string name="favorite">Add to favorites</string>
     <string name="remove_favorite">Remove from favorites</string>
     <string name="add_photo">Add a photo</string>
+    <string name="submit">Submit</string>
+    <string name="finish">Finish</string>
 </resources>
