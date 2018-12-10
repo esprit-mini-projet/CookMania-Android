@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -23,5 +24,10 @@ public class RatingPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return mFragments.size();
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 }

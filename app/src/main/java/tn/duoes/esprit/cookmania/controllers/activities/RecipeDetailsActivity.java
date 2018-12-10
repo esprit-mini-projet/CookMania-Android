@@ -2,6 +2,7 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -18,24 +19,39 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
+import tn.duoes.esprit.cookmania.controllers.fragments.RatingBarDoneFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.RatingBarFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.RatingCommentFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.RatingPhotoFragment;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
+import tn.duoes.esprit.cookmania.models.Experience;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.services.ExperienceService;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
 import tn.duoes.esprit.cookmania.views.RatingViewPager;
 
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends AppCompatActivity
+        implements RatingBarFragment.RatingBarCallBack,
+        RatingCommentFragment.RatingCommentCallBack,
+        RatingPhotoFragment.RatingPhotoCallBack,
+        RatingBarDoneFragment.RatingBarDoneCallBack,
+        ExperienceService.AddExperienceCallBack,
+        ExperienceService.DeleteExperienceCallBack,
+        ExperienceService.GetExperienceCallBack
+{
 
     private static final String TAG = "RecipeDetailsActivity";
     public static final String EXTRA_RECIPE_ID = "recipeId";
@@ -58,42 +74,51 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private TabLayout mRatingTabLayout;
 
     private Recipe mRecipe;
+    private int mRating;
+    private String mRatingImagePath;
+    private String mComment;
+    private String mUserId;
+    private List<Fragment> mRatingFragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mUserId = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
         mRecipe = new Recipe();
         getViewReferences();
         setupIngredientList();
         setupStepList();
-        setupViewPager();
         getRecipe(getIntent().getStringExtra(EXTRA_RECIPE_ID));
     }
 
-    private void setupViewPager() {
-        final List<Fragment> fragments = new ArrayList<>();
-        fragments.add(RatingBarFragment.newInstance(new RatingBarFragment.RatingBarCallBack() {
-            @Override
-            public void onSubmitClickListener(boolean canSwipe) {
-                if (canSwipe){
-                    mRatingViewPager.setPagingEnabled(true);
-                    mRatingTabLayout.setVisibility(View.VISIBLE);
-                    mRatingViewPager.setCurrentItem(1, true);
-                }else{
-                    mRatingViewPager.setPagingEnabled(false);
-                    mRatingTabLayout.setVisibility(View.INVISIBLE);
-                }
-            }
-        }));
-        fragments.add(RatingPhotoFragment.newInstance());
-        fragments.add(RatingCommentFragment.newInstance());
-        RatingPagerAdapter adapter = new RatingPagerAdapter(getSupportFragmentManager(), fragments);
+    private void setupViewPager(Experience experience) {
+        mRatingFragments = new ArrayList<>();
+        Fragment ratingBarFragment = null;
+        if(experience == null){
+            ratingBarFragment = RatingBarFragment.newInstance(this);
+        }else{
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String date = df.format(experience.getDate());
+            ratingBarFragment = RatingBarDoneFragment.newInstance(
+                    experience.getRating(),
+                    getString(R.string.rated_on) + " " + date,
+                    this);
+        }
+        mRatingFragments.add(ratingBarFragment);
+        mRatingFragments.add(RatingPhotoFragment.newInstance(this));
+        mRatingFragments.add(RatingCommentFragment.newInstance(this));
+        RatingPagerAdapter adapter = new RatingPagerAdapter(getSupportFragmentManager(), mRatingFragments);
         mRatingViewPager.setPagingEnabled(false);
         mRatingViewPager.setAdapter(adapter);
         mRatingTabLayout.setupWithViewPager(mRatingViewPager, true);
         mRatingTabLayout.setVisibility(View.INVISIBLE);
+    }
+
+    private void getCurrentExperience() {
+        ExperienceService.getInstance().getExperience(mRecipe.getId(), mUserId, this);
     }
 
     private void setupStepList() {
@@ -140,6 +165,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         mStepList.getAdapter().notifyDataSetChanged();
         ((RecipeDetailsIngredientsAdapter)mIngredientList.getAdapter()).setIngredients(mRecipe.getIngredients());
         mIngredientList.getAdapter().notifyDataSetChanged();
+        getCurrentExperience();
     }
 
     private void getRecipe(String id) {
@@ -202,14 +228,117 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 FavoriteLab.getInstance(this).delete(recipeId, userId);
             }
             return true;
+        }else if(item.getItemId() == android.R.id.home){
+            finish();
+            return true;
         }else{
             return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public boolean onNavigateUp() {
-        //finish();
-        return super.onNavigateUp();
+    public void onSubmitClickListener(boolean canSwipe) {
+        if (canSwipe){
+            mRatingViewPager.setPagingEnabled(true);
+            mRatingTabLayout.setVisibility(View.VISIBLE);
+            mRatingViewPager.setCurrentItem(1, true);
+        }else{
+            mRatingViewPager.setPagingEnabled(false);
+            mRatingTabLayout.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onRatingChangedListener(int rating) {
+        mRating = rating;
+    }
+
+    @Override
+    public void onImageChangedListener(String path) {
+        mRatingImagePath = path;
+    }
+
+    @Override
+    public void onFinishButtonClickListener(String comment) {
+        mComment = comment;
+        addExperience();
+    }
+
+    private void addExperience() {
+        Experience experience = new Experience();
+        experience.setComment(mComment);
+        experience.setRating(mRating);
+        experience.setRecipeId(mRecipe.getId());
+        experience.setUserId(mUserId);
+        ExperienceService.getInstance().addExperience(experience, mRatingImagePath, this);
+    }
+
+    @Override
+    public void onAddExperienceSuccess() {
+        Snackbar.make(findViewById(R.id.activity_recipe_details_coordinator_layout),
+                R.string.experience_added,
+                Snackbar.LENGTH_LONG)
+                .show();
+
+        mRatingFragments.remove(0);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String date = df.format(new Date());
+        mRatingFragments.add(0, RatingBarDoneFragment.newInstance(mRating,
+                getString(R.string.rated_on) + " " + date,
+                this));
+        mRatingViewPager.setCurrentItem(0, true);
+        mRatingViewPager.getAdapter().notifyDataSetChanged();
+        mRatingTabLayout.setVisibility(View.INVISIBLE);
+        mRatingViewPager.setPagingEnabled(false);
+    }
+
+    @Override
+    public void onAddExperienceFailure() {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_recipe_details_coordinator_layout),
+                R.string.experience_not_added,
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addExperience();
+            }
+        });
+        snackbar.show();
+    }
+
+    @Override
+    public void onDeleteExperienceClickListener() {
+        ExperienceService.getInstance().deleteExperience(mRecipe.getId(), mUserId, this);
+    }
+
+    @Override
+    public void onDeleteExperienceSuccess() {
+        mRatingFragments.remove(0);
+        mRatingFragments.add(0, RatingBarFragment.newInstance(this));
+        mRatingViewPager.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDeleteExperienceFailure() {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_recipe_details_coordinator_layout),
+                R.string.experience_not_deleted,
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDeleteExperienceClickListener();
+            }
+        });
+        snackbar.show();
+    }
+
+    @Override
+    public void onGetExperienceSuccess(Experience experience) {
+        setupViewPager(experience);
+    }
+
+    @Override
+    public void onGetExperienceFailure() {
+        mRatingViewPager.setVisibility(View.GONE);
     }
 }

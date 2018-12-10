@@ -27,14 +27,15 @@ public class RatingPhotoFragment extends Fragment {
     private ImageView mImageView;
     private ImageButton mDeleteButton;
 
-    private boolean mImageChanged = false;
+    private RatingPhotoCallBack mCallBack;
 
-    public static RatingPhotoFragment newInstance() {
+    public static RatingPhotoFragment newInstance(RatingPhotoCallBack callBack) {
 
         Bundle args = new Bundle();
 
         RatingPhotoFragment fragment = new RatingPhotoFragment();
         fragment.setArguments(args);
+        fragment.setCallBack(callBack);
         return fragment;
     }
 
@@ -62,7 +63,7 @@ public class RatingPhotoFragment extends Fragment {
                         .load(getActivity().getDrawable(R.drawable.image_placeholder))
                         .centerCrop()
                         .into(mImageView);
-                mImageChanged = false;
+                mCallBack.onImageChangedListener(null);
                 mDeleteButton.setEnabled(false);
             }
         });
@@ -84,7 +85,15 @@ public class RatingPhotoFragment extends Fragment {
             ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
             GlideApp.with(this).load(returnValue.get(0)).centerCrop().into(mImageView);
             mDeleteButton.setEnabled(true);
-            mImageChanged = true;
+            mCallBack.onImageChangedListener(returnValue.get(0));
         }
+    }
+
+    public interface RatingPhotoCallBack{
+        void onImageChangedListener(String path);
+    }
+
+    public void setCallBack(RatingPhotoCallBack callBack) {
+        mCallBack = callBack;
     }
 }

@@ -57,6 +57,7 @@ public class RatingBarFragment extends Fragment {
                 mRating = (int) rating;
                 if(mRating == 0){
                     mCallBack.onSubmitClickListener(false);
+                    mCallBack.onRatingChangedListener(mRating);
                     submitButton.setEnabled(false);
                     opinionText.setVisibility(View.INVISIBLE);
                     return;
@@ -64,6 +65,7 @@ public class RatingBarFragment extends Fragment {
                 submitButton.setEnabled(true);
                 opinionText.setText(mOpinions.get(mRating - 1));
                 opinionText.setVisibility(View.VISIBLE);
+                mCallBack.onRatingChangedListener(mRating);
             }
         });
 
@@ -78,6 +80,7 @@ public class RatingBarFragment extends Fragment {
 
     public interface RatingBarCallBack{
         void onSubmitClickListener(boolean canSwipe);
+        void onRatingChangedListener(int rating);
     }
 
     public RatingBarCallBack getCallBack() {

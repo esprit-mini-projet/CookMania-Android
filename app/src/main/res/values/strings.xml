@@ -53,9 +53,15 @@
     <string name="add_photo">Add a photo</string>
     <string name="submit">Submit</string>
     <string name="finish">Finish</string>
+    <string name="experience_added">Your experience has been added.</string>
+    <string name="retry">Retry</string>
+    <string name="delete">Delete</string>
+    <string name="experience_not_added">Could not save experience.</string>
+    <string name="experience_not_deleted">Could not delete experience.</string>
+    <string name="rated_on">Rated on</string>
     <string-array name="rating_opinions">
-        <item>Ughh!</item>
-        <item>Meh</item>
+        <item>7acha ne3met rabi!</item>
+        <item>Meh..</item>
         <item>Nothing special</item>
         <item>I eat this!</item>
         <item>I\'m in love !</item>
