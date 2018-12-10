@@ -62,7 +62,8 @@
         <activity android:name=".controllers.activities.ProfileActivity" />
         <activity android:name=".controllers.activities.AddStepActivity" />
         <activity android:name=".controllers.activities.RecipeDetailsActivity" />
-        <activity android:name=".controllers.activities.SettingsActivity"></activity>
+        <activity android:name=".controllers.activities.SettingsActivity" />
+        <activity android:name=".controllers.activities.CategoryRecipesActivity"></activity>
     </application>
 
 </manifest>

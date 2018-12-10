@@ -13,15 +13,14 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.dao.ShoppingListDAO;
 import tn.duoes.esprit.cookmania.models.Ingredient;
-import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.ListUtils;
+import tn.duoes.esprit.cookmania.utils.SwipableViewHolder;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -54,9 +53,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public int getItemViewType(int position) {
         Object item = mItems.get(position);
         if (item instanceof ShoppingListItem){
-            return R.layout.shopping_list_row;
+            return R.layout.row_shopping_list;
         }else {
-            return R.layout.shopping_list_item_row;
+            return R.layout.row_shopping_list_item;
         }
     }
 
@@ -65,9 +64,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(viewType, viewGroup, false);
         switch (viewType){
-            case R.layout.shopping_list_row:
+            case R.layout.row_shopping_list:
                 return new RecipeViewHolder(v);
-            case R.layout.shopping_list_item_row:
+            case R.layout.row_shopping_list_item:
                 return new IngredientViewHolder(v);
             default:
                 return new RecipeViewHolder(v);
@@ -97,10 +96,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         return mItems.size();
     }
 
-    public class RecipeViewHolder extends RecyclerView.ViewHolder{
+    public class RecipeViewHolder extends SwipableViewHolder {
         ImageView recipeImageView;
         TextView recipeTextView;
-        public View foregroundView, backgroundView;
 
         RecipeViewHolder(@NonNull View itemView){
             super(itemView);
@@ -111,10 +109,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public class IngredientViewHolder extends RecyclerView.ViewHolder{
+    public class IngredientViewHolder extends SwipableViewHolder{
         TextView nameTextView;
         TextView unitTextView;
-        public View foregroundView, backgroundView;
 
         IngredientViewHolder(@NonNull View itemView) {
             super(itemView);

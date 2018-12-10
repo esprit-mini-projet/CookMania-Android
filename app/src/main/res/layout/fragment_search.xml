@@ -1,14 +1,438 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".controllers.fragments.SearchFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello Search" />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/labels_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--Labels layout-->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/search_filters_card_drop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="1"
+                            android:text="Filters"
+                            android:textColor="@android:color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:alpha="0.8"
+                            android:src="@drawable/ic_icon_down_arrow" />
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/search_filter_collapsable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/Healthy"
+                                android:layout_width="148dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Healthy"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/Cheap"
+                                android:layout_width="98dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Cheap"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/Easy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Easy"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/Fast"
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Fast"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/Vegetarian"
+                                android:layout_width="153dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Vegetarian"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/Breakfast"
+                                android:layout_width="153dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Breakfast"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/For_Kids"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="For Kids"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/Dinner"
+                                android:layout_width="33dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Dinner"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/Date_Night"
+                                android:layout_width="169dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="15dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/shape_unselected_label"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:tag="false"
+                                android:text="Date Night"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/textView3"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="10dp"
+                                    android:text="Calories:"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/search_calories_min"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TextView"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:text="-" />
+
+                                <TextView
+                                    android:id="@+id/search_calories_max"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TextView"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <io.apptik.widget.MultiSlider
+                                android:id="@+id/search_calories_slider"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="10dp"
+                                    android:text="Servings:"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/search_servings_min"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TextView"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:text="-" />
+
+                                <TextView
+                                    android:id="@+id/search_sevings_max"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TextView"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <io.apptik.widget.MultiSlider
+                                android:id="@+id/search_servings_slider"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginBottom="5dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="10dp"
+                                    android:text="Duration:"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/search_duration_min"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TextView"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:text="-" />
+
+                                <TextView
+                                    android:id="@+id/search_duration_max"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TextView"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <io.apptik.widget.MultiSlider
+                                android:id="@+id/search_durantion_slider"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!--Filters layout-->
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

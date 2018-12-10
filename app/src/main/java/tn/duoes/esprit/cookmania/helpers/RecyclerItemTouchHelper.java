@@ -7,12 +7,13 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import tn.duoes.esprit.cookmania.adapters.ShoppingListViewAdapter;
+import tn.duoes.esprit.cookmania.utils.SwipableViewHolder;
 
-public class ShoppingListRecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
-    private ShoppingListRecyclerItemTouchHelperListener mListener;
+public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
+    private RecyclerItemTouchHelperListener mListener;
 
 
-    public ShoppingListRecyclerItemTouchHelper(int dragDirs, int swipeDirs, ShoppingListRecyclerItemTouchHelperListener listener) {
+    public RecyclerItemTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener) {
         super(dragDirs, swipeDirs);
         this.mListener = listener;
     }
@@ -21,11 +22,7 @@ public class ShoppingListRecyclerItemTouchHelper extends ItemTouchHelper.SimpleC
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
             View foregroundView;
-            if(viewHolder instanceof ShoppingListViewAdapter.RecipeViewHolder){
-                foregroundView = ((ShoppingListViewAdapter.RecipeViewHolder) viewHolder).foregroundView;
-            }else{
-                foregroundView = ((ShoppingListViewAdapter.IngredientViewHolder) viewHolder).foregroundView;
-            }
+            foregroundView = ((SwipableViewHolder)viewHolder).foregroundView;
             getDefaultUIUtil().onSelected(foregroundView);
         }
     }
@@ -33,33 +30,21 @@ public class ShoppingListRecyclerItemTouchHelper extends ItemTouchHelper.SimpleC
     @Override
     public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         View foregroundView;
-        if (viewHolder instanceof ShoppingListViewAdapter.RecipeViewHolder){
-            foregroundView = ((ShoppingListViewAdapter.RecipeViewHolder) viewHolder).foregroundView;
-        }else{
-            foregroundView = ((ShoppingListViewAdapter.IngredientViewHolder) viewHolder).foregroundView;
-        }
+        foregroundView = ((SwipableViewHolder)viewHolder).foregroundView;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         View foregroundView;
-        if (viewHolder instanceof ShoppingListViewAdapter.RecipeViewHolder){
-            foregroundView = ((ShoppingListViewAdapter.RecipeViewHolder) viewHolder).foregroundView;
-        }else{
-            foregroundView = ((ShoppingListViewAdapter.IngredientViewHolder) viewHolder).foregroundView;
-        }
+        foregroundView = ((SwipableViewHolder)viewHolder).foregroundView;
         getDefaultUIUtil().clearView(foregroundView);
     }
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         View foregroundView;
-        if (viewHolder instanceof ShoppingListViewAdapter.RecipeViewHolder){
-            foregroundView = ((ShoppingListViewAdapter.RecipeViewHolder) viewHolder).foregroundView;
-        }else{
-            foregroundView = ((ShoppingListViewAdapter.IngredientViewHolder) viewHolder).foregroundView;
-        }
+        foregroundView = ((SwipableViewHolder)viewHolder).foregroundView;
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
@@ -78,7 +63,7 @@ public class ShoppingListRecyclerItemTouchHelper extends ItemTouchHelper.SimpleC
         mListener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
     }
 
-    public interface ShoppingListRecyclerItemTouchHelperListener {
+    public interface RecyclerItemTouchHelperListener {
         void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
     }
 }

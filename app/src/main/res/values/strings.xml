@@ -51,6 +51,13 @@
     <string name="favorite">Add to favorites</string>
     <string name="remove_favorite">Remove from favorites</string>
     <string name="add_photo">Add a photo</string>
+
+    <string-array name="unit_names">
+        <item></item>
+        <item>g</item>
+        <item>ml</item>
+    </string-array>
+
     <string name="submit">Submit</string>
     <string name="finish">Finish</string>
     <string name="experience_added">Your experience has been added.</string>

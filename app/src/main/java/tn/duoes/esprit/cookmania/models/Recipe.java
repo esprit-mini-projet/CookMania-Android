@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +29,10 @@ public class Recipe implements Parcelable {
     @SerializedName("user_id")
     private String userId;
     private float rating;
+    private List<String> labels;
     private List<Step> steps;
+
+    private File image;
 
     public Recipe() {
         steps = new ArrayList<>();
@@ -49,6 +54,17 @@ public class Recipe implements Parcelable {
         this.steps = (ArrayList<Step>) in.readSerializable();
     }
 
+    public Recipe(String name, String description, int calories, int servings, int time, String userId, File image, List<String> labels) {
+        this.name = name;
+        this.description = description;
+        this.calories = calories;
+        this.servings = servings;
+        this.time = time;
+        this.userId = userId;
+        this.image = image;
+        this.labels = labels;
+    }
+
     public Recipe(String name, String description, int calories, int servings, String imageURL, int time, String userId, float rating) {
         this.name = name;
         this.description = description;
@@ -58,6 +74,7 @@ public class Recipe implements Parcelable {
         this.time = time;
         this.userId = userId;
         this.rating = rating;
+        steps = new ArrayList<>();
     }
 
     public Recipe(String name, String description, int calories, int servings, String imageURL, Date date, int views, int favorites, int time, String userId, float rating) {
@@ -72,6 +89,7 @@ public class Recipe implements Parcelable {
         this.time = time;
         this.userId = userId;
         this.rating = rating;
+        steps = new ArrayList<>();
     }
 
     public Recipe(int id, String name, String description, int calories, int servings, String imageURL, Date date, int views, int favorites, int time, String userId) {
@@ -86,6 +104,7 @@ public class Recipe implements Parcelable {
         this.favorites = favorites;
         this.time = time;
         this.userId = userId;
+        steps = new ArrayList<>();
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -204,6 +223,22 @@ public class Recipe implements Parcelable {
         this.steps = steps;
     }
 
+    public File getImage() {
+        return image;
+    }
+
+    public void setImage(File image) {
+        this.image = image;
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -219,6 +254,8 @@ public class Recipe implements Parcelable {
                 ", time=" + time +
                 ", userId='" + userId + '\'' +
                 ", rating=" + rating +
+                ", steps=" + steps +
+                ", labels= "+labels+
                 '}';
     }
 
