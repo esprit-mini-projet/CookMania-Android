@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class HomeFragment extends Fragment{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private static final String TAG = HomeFragment.class.getSimpleName();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -105,7 +108,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     topRatedFragment = buildCategoryFragment("Top rated", recipes);
                     topRatedProgressDialog.dismiss();
-                    getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
                 }
 
                 @Override
@@ -124,7 +127,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     healthyFragment = buildCategoryFragment("Healthy", recipes);
                     healthyProgressDialog.dismiss();
-                    getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
                 }
 
                 @Override
@@ -143,7 +146,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     cheapFragment = buildCategoryFragment("Cheap", recipes);
                     cheapProgressDialog.dismiss();
-                    getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
                 }
 
                 @Override
