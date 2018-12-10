@@ -64,4 +64,8 @@ dependencies {
 
     //PickImage
     implementation 'com.github.jrvansuita:PickImage:2.2.4'
+
+    //Pix
+    implementation  'com.fxn769:pix:1.2.5'
+
 }

@@ -20,6 +20,7 @@ import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.ListUtils;
+import tn.duoes.esprit.cookmania.utils.SwipableViewHolder;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -95,10 +96,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         return mItems.size();
     }
 
-    public class RecipeViewHolder extends RecyclerView.ViewHolder{
+    public class RecipeViewHolder extends SwipableViewHolder {
         ImageView recipeImageView;
         TextView recipeTextView;
-        public View foregroundView, backgroundView;
 
         RecipeViewHolder(@NonNull View itemView){
             super(itemView);
@@ -109,10 +109,9 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-    public class IngredientViewHolder extends RecyclerView.ViewHolder{
+    public class IngredientViewHolder extends SwipableViewHolder{
         TextView nameTextView;
         TextView unitTextView;
-        public View foregroundView, backgroundView;
 
         IngredientViewHolder(@NonNull View itemView) {
             super(itemView);

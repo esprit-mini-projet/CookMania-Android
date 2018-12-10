@@ -3,6 +3,7 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -12,17 +13,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.fxn.pix.Pix;
 import com.google.gson.Gson;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +55,8 @@ public class AddRecipeFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private static final String TAG = AddRecipeFragment.class.getSimpleName();
+    public static final int PICK_REQUEST_CODE = 100;
+    public static final int STEP_REQUEST_CODE = 110;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -89,62 +96,114 @@ public class AddRecipeFragment extends Fragment {
     }
 
     private ImageView imageView;
+    private Button addImageBTError;
+    private File image;
+    private List<String> labels = new ArrayList<>();
+    TextView labelTV;
+
+    View.OnClickListener labelCliecked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Button button = (Button)v;
+            boolean isSelected = Boolean.valueOf((String)button.getTag());
+            if(!isSelected){
+                labels.add(button.getText().toString());
+                button.setBackground(getContext().getDrawable(R.drawable.shape_selected_label));
+                button.setTextColor(getContext().getResources().getColorStateList(R.color.colorAccent));
+            }else{
+                labels.remove(button.getText().toString());
+                button.setBackground(getContext().getDrawable(R.drawable.shape_unselected_label));
+                button.setTextColor(getContext().getResources().getColorStateList(R.color.colorPrimary));
+            }
+            button.setTag(String.valueOf(!isSelected));
+            labelTV.setError(null);
+        }
+    };
+
+    private EditText nameEditText;
+    private EditText descriptionEditText;
+    private EditText durationEditText;
+    private EditText servingsEditText;
+    private EditText caloriesEditText;
+
+    private Button healthyButton;
+    private Button cheapButton;
+    private Button easyButton;
+    private Button fastButton;
+    private Button vegButton;
+    private Button kidsButton;
+    private Button breakfastButton;
+    private Button dinnerButton;
+    private Button dateButton;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK && requestCode == AddRecipeFragment.PICK_REQUEST_CODE) {
+            ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+            Glide.with(getActivity()).load(returnValue.get(0)).into(imageView);
+            image = new File(returnValue.get(0));
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: image: "+image+" labels: "+labels);
         final View fragment = inflater.inflate(R.layout.fragment_add_recipe, container, false);
-        toAddStepActivity(new Recipe());
         imageView = fragment.findViewById(R.id.add_recipe_image_view);
+        labelTV = fragment.findViewById(R.id.add_recipe_label_tv);
+        addImageBTError = fragment.findViewById(R.id.add_recipe_add_image_error);
         fragment.findViewById(R.id.add_recipe_add_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PickSetup pickSetup = new PickSetup();
-                pickSetup.setGalleryIcon(R.mipmap.gallery_colored);
-                pickSetup.setCameraIcon(R.mipmap.camera_colored);
-                PickImageDialog.build(pickSetup).setOnPickResult(new IPickResult() {
-                    @Override
-                    public void onPickResult(PickResult pickResult) {
-                        if (pickResult.getError() == null) {
-                            Glide.with(getActivity()).load(pickResult.getUri()).into(imageView);
-                        } else {
-                            Toast.makeText(getContext(), pickResult.getError().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }).show(getFragmentManager());
+                Pix.start(AddRecipeFragment.this, AddRecipeFragment.PICK_REQUEST_CODE , 1);
+                addImageBTError.setError(null);
             }
         });
         fragment.findViewById(R.id.add_recipe_next_bt).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                EditText nameEditText;
+                if (image == null){
+                    addImageBTError.setError("Recipe image is required!");
+                    addImageBTError.requestFocus();
+                    return;
+                }
+
                 if((nameEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_name_layout)).getEditText())).getText().toString().isEmpty()){
                     nameEditText.setError("Recipe name is required!");
+                    nameEditText.requestFocus();
                     return;
                 }
 
-                EditText descriptionEditText;
                 if((descriptionEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_description_layout)).getEditText())).getText().toString().isEmpty()){
                     descriptionEditText.setError("Recipe description is required!");
+                    descriptionEditText.requestFocus();
                     return;
                 }
 
-                EditText durationEditText;
                 if((durationEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_duration_layout)).getEditText())).getText().toString().isEmpty()){
                     durationEditText.setError("Recipe duration is required!");
+                    durationEditText.requestFocus();
                     return;
                 }
 
-                EditText servingsEditText;
                 if((servingsEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_servings_layout)).getEditText())).getText().toString().isEmpty()){
                     servingsEditText.setError("Recipe servings is required!");
+                    servingsEditText.requestFocus();
                     return;
                 }
 
-                EditText caloriesEditText;
                 if((caloriesEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_calories_layout)).getEditText())).getText().toString().isEmpty()){
                     caloriesEditText.setError("Recipe calories is required!");
+                    caloriesEditText.requestFocus();
+                    return;
+                }
+
+                if(labels.isEmpty()){
+                    labelTV.setError("At least one label must be selected!");
+                    labelTV.requestFocus();
                     return;
                 }
 
@@ -153,16 +212,23 @@ public class AddRecipeFragment extends Fragment {
                         descriptionEditText.getText().toString(),
                         Integer.valueOf(caloriesEditText.getText().toString()),
                         Integer.valueOf(servingsEditText.getText().toString()),
-                        "",
-                        new Date(),
-                        0,
-                        0,
                         Integer.valueOf(durationEditText.getText().toString()),
                         getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("user_id", ""),
-                        0.0f);
+                        image,
+                        labels);
                 toAddStepActivity(recipe);
             }
         });
+
+        (healthyButton = fragment.findViewById(R.id.Healthy)).setOnClickListener(labelCliecked);
+        (cheapButton = fragment.findViewById(R.id.Cheap)).setOnClickListener(labelCliecked);
+        (easyButton = fragment.findViewById(R.id.Easy)).setOnClickListener(labelCliecked);
+        (fastButton = fragment.findViewById(R.id.Fast)).setOnClickListener(labelCliecked);
+        (vegButton = fragment.findViewById(R.id.Vegetarian)).setOnClickListener(labelCliecked);
+        (kidsButton = fragment.findViewById(R.id.For_Kids)).setOnClickListener(labelCliecked);
+        (breakfastButton = fragment.findViewById(R.id.Breakfast)).setOnClickListener(labelCliecked);
+        (dinnerButton = fragment.findViewById(R.id.Dinner)).setOnClickListener(labelCliecked);
+        (dateButton = fragment.findViewById(R.id.Date_Night)).setOnClickListener(labelCliecked);
 
         return fragment;
     }
@@ -171,7 +237,7 @@ public class AddRecipeFragment extends Fragment {
         Intent intent = NavigationUtils.getNavigationFormattedIntent(getContext(), AddStepActivity.class);
         Gson gson = new Gson();
         intent.putExtra(AddStepActivity.RECIPE_KEY, gson.toJson(recipe));
-        startActivity(intent);
+        startActivityForResult(intent, STEP_REQUEST_CODE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

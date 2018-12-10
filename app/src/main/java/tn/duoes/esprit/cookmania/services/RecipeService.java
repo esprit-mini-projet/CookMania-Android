@@ -8,11 +8,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Multipart;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -152,8 +157,20 @@ public final class RecipeService {
         });
     }
 
-    public void insertRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
-        Call<Integer> call = mRecipeApi.createRecipe(recipe);
+    public void addRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
+        RequestBody requestImage = RequestBody.create(MediaType.parse("image/*"), recipe.getImage());
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", recipe.getImage().getName(), requestImage);
+        Gson gson = new Gson();
+
+        Call<Integer> call = mRecipeApi.createRecipe(body,
+                RequestBody.create(MediaType.parse("text/plain"),recipe.getName()),
+                RequestBody.create(MediaType.parse("text/plain"), recipe.getDescription()),
+                RequestBody.create(MediaType.parse("text/plain"), String.valueOf(recipe.getCalories())),
+                RequestBody.create(MediaType.parse("text/plain"), String.valueOf(recipe.getServings())),
+                RequestBody.create(MediaType.parse("text/plain"), String.valueOf(recipe.getTime())),
+                RequestBody.create(MediaType.parse("text/plain"), recipe.getUserId()),
+                RequestBody.create(MediaType.parse("text/plain"), gson.toJson(recipe.getLabels())));
+
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {

@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     topRatedFragment = buildCategoryFragment("Top rated", recipes);
                     topRatedProgressDialog.dismiss();
-                    getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
                 }
 
                 @Override
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     healthyFragment = buildCategoryFragment("Healthy", recipes);
                     healthyProgressDialog.dismiss();
-                    getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
                 }
 
                 @Override
@@ -146,7 +146,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     cheapFragment = buildCategoryFragment("Cheap", recipes);
                     cheapProgressDialog.dismiss();
-                    getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
                 }
 
                 @Override

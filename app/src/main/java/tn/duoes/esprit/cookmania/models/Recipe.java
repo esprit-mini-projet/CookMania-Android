@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +29,10 @@ public class Recipe implements Parcelable {
     @SerializedName("user_id")
     private String userId;
     private float rating;
+    private List<String> labels;
     private List<Step> steps;
+
+    private File image;
 
     public Recipe() {
         steps = new ArrayList<>();
@@ -48,6 +52,17 @@ public class Recipe implements Parcelable {
         this.userId = in.readString();
         this.rating = in.readFloat();
         this.steps = (ArrayList<Step>) in.readSerializable();
+    }
+
+    public Recipe(String name, String description, int calories, int servings, int time, String userId, File image, List<String> labels) {
+        this.name = name;
+        this.description = description;
+        this.calories = calories;
+        this.servings = servings;
+        this.time = time;
+        this.userId = userId;
+        this.image = image;
+        this.labels = labels;
     }
 
     public Recipe(String name, String description, int calories, int servings, String imageURL, int time, String userId, float rating) {
@@ -208,6 +223,22 @@ public class Recipe implements Parcelable {
         this.steps = steps;
     }
 
+    public File getImage() {
+        return image;
+    }
+
+    public void setImage(File image) {
+        this.image = image;
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -224,6 +255,7 @@ public class Recipe implements Parcelable {
                 ", userId='" + userId + '\'' +
                 ", rating=" + rating +
                 ", steps=" + steps +
+                ", labels= "+labels+
                 '}';
     }
 
