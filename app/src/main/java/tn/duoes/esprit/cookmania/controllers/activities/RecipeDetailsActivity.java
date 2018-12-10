@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.adapters.ExperienceListAdapter;
 import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
@@ -50,7 +52,8 @@ public class RecipeDetailsActivity extends AppCompatActivity
         RatingBarDoneFragment.RatingBarDoneCallBack,
         ExperienceService.AddExperienceCallBack,
         ExperienceService.DeleteExperienceCallBack,
-        ExperienceService.GetExperienceCallBack
+        ExperienceService.GetExperienceCallBack,
+        ExperienceService.GetExperiencesCallBack
 {
 
     private static final String TAG = "RecipeDetailsActivity";
@@ -72,6 +75,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
     private RecyclerView mStepList;
     private RatingViewPager mRatingViewPager;
     private TabLayout mRatingTabLayout;
+    private RecyclerView mExperienceList;
 
     private Recipe mRecipe;
     private int mRating;
@@ -92,6 +96,13 @@ public class RecipeDetailsActivity extends AppCompatActivity
         setupIngredientList();
         setupStepList();
         getRecipe(getIntent().getStringExtra(EXTRA_RECIPE_ID));
+    }
+
+    private void setupExperienceList(List<Experience> experiences) {
+        ExperienceListAdapter adapter = new ExperienceListAdapter(experiences, this);
+        mExperienceList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mExperienceList.setAdapter(adapter);
+        Log.i(TAG, "setupExperienceList: ");
     }
 
     private void setupViewPager(Experience experience) {
@@ -150,6 +161,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
         mStepList = findViewById(R.id.details_recipe_steps_recycler);
         mRatingViewPager = findViewById(R.id.details_recipe_rating_viewpager);
         mRatingTabLayout = findViewById(R.id.details_recipe_rating_tab_layout);
+        mExperienceList = findViewById(R.id.details_recipe_experiences_recycler);
     }
 
     private void updateUI(){
@@ -166,6 +178,11 @@ public class RecipeDetailsActivity extends AppCompatActivity
         ((RecipeDetailsIngredientsAdapter)mIngredientList.getAdapter()).setIngredients(mRecipe.getIngredients());
         mIngredientList.getAdapter().notifyDataSetChanged();
         getCurrentExperience();
+        getExperienceList();
+    }
+
+    private void getExperienceList() {
+        ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), this);
     }
 
     private void getRecipe(String id) {
@@ -229,7 +246,8 @@ public class RecipeDetailsActivity extends AppCompatActivity
             }
             return true;
         }else if(item.getItemId() == android.R.id.home){
-            finish();
+            //finish();
+            startActivity(new Intent(this, MainScreenActivity.class));
             return true;
         }else{
             return super.onOptionsItemSelected(item);
@@ -340,5 +358,17 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onGetExperienceFailure() {
         mRatingViewPager.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onGetExperiencesSuccess(List<Experience> experiences) {
+        Log.i(TAG, "onGetExperiencesSuccess: ");
+        setupExperienceList(experiences);
+    }
+
+    @Override
+    public void onGetExperiencesFailure() {
+        mExperienceList.setVisibility(View.GONE);
+        Log.i(TAG, "onGetExperiencesFailure: ");
     }
 }

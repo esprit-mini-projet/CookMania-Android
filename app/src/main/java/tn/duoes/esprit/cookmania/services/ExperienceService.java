@@ -120,6 +120,26 @@ public class ExperienceService {
         });
     }
 
+    public void getExperiencesForRecipe(int recipeId, final GetExperiencesCallBack callBack){
+        Call<List<Experience>> call = mExperienceApi.getExperiencesForRecipe(recipeId);
+        call.enqueue(new Callback<List<Experience>>() {
+            @Override
+            public void onResponse(Call<List<Experience>> call, Response<List<Experience>> response) {
+                if(response.isSuccessful()){
+                    callBack.onGetExperiencesSuccess(response.body());
+                }else{
+                    callBack.onGetExperiencesFailure();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Experience>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onGetExperiencesFailure();
+            }
+        });
+    }
+
     public interface AddExperienceCallBack{
         void onAddExperienceSuccess();
         void onAddExperienceFailure();
@@ -131,5 +151,9 @@ public class ExperienceService {
     public interface DeleteExperienceCallBack{
         void onDeleteExperienceSuccess();
         void onDeleteExperienceFailure();
+    }
+    public interface GetExperiencesCallBack{
+        void onGetExperiencesSuccess(List<Experience> experiences);
+        void onGetExperiencesFailure();
     }
 }
