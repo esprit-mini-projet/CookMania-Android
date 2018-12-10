@@ -58,6 +58,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
     private static final String TAG = "RecipeDetailsActivity";
     public static final String EXTRA_RECIPE_ID = "recipeId";
+    public static final String EXTRA_PARENT_ACTIVITY_CLASS = "class";
 
     private ImageView mRecipeImageView;
     private AppCompatRatingBar mRatingInfoBar;
@@ -114,7 +115,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             String date = df.format(experience.getDate());
             ratingBarFragment = RatingBarDoneFragment.newInstance(
-                    experience.getRating(),
+                    (int)experience.getRating(),
                     getString(R.string.rated_on) + " " + date,
                     this);
         }
@@ -247,7 +248,11 @@ public class RecipeDetailsActivity extends AppCompatActivity
             return true;
         }else if(item.getItemId() == android.R.id.home){
             //finish();
-            startActivity(new Intent(this, MainScreenActivity.class));
+            try {
+                startActivity(new Intent(this, Class.forName(getIntent().getStringExtra(EXTRA_PARENT_ACTIVITY_CLASS))));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             return true;
         }else{
             return super.onOptionsItemSelected(item);

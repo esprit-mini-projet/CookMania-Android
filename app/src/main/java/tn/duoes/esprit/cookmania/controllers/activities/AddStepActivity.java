@@ -63,15 +63,15 @@ public class AddStepActivity extends AppCompatActivity {
     private IngredientsRecyclerViewAdapter mIngredientAdapter;
     private LinearLayoutManager mLayoutManager;
     private File image;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_step);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final Gson gson = new Gson();
-        mRecipe = gson.fromJson(getIntent().getStringExtra(RECIPE_KEY), Recipe.class);
-        Log.d(TAG, "onCreate: "+mRecipe);
+
+        gson = new Gson();
 
         mIngredientRecyclerView = findViewById(R.id.add_step_ingredients_rv);
         mIngredientRecyclerView.setHasFixedSize(true);
@@ -164,6 +164,7 @@ public class AddStepActivity extends AppCompatActivity {
                         Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipeId+"");
+                        intent.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                         progressDialog.dismiss();
                         Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
                         startActivity(intent);
@@ -229,10 +230,22 @@ public class AddStepActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRecipe = gson.fromJson(getIntent().getStringExtra(RECIPE_KEY), Recipe.class);
+        Log.d(TAG, "onCreate: "+mRecipe);
+    }
+
     @Nullable
     @Override
     public Intent getParentActivityIntent() {
-        return NavigationUtils.getParentActivityIntent(this, getIntent());
+        Intent intent = NavigationUtils.getParentActivityIntent(this, getIntent());
+        if(!mRecipe.getSteps().isEmpty()){
+            mRecipe.getSteps().remove(mRecipe.getSteps().size()-1);
+        }
+        intent.putExtra(RECIPE_KEY, gson.toJson(mRecipe));
+        return intent;
     }
 
     public class IngredientsRecyclerViewAdapter extends RecyclerView.Adapter<IngredientsRecyclerViewAdapter.ViewHolder>{
