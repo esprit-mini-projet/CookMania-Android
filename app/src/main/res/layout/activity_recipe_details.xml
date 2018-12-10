@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/activity_recipe_details_coordinator_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -472,18 +473,20 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <android.support.v4.view.ViewPager
+                    <tn.duoes.esprit.cookmania.views.RatingViewPager
                         android:id="@+id/details_recipe_rating_viewpager"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"/>
+                        android:layout_height="250dp">
 
-                    <android.support.design.widget.TabLayout
-                        android:id="@+id/details_recipe_rating_tab_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tabBackground="@drawable/tab_selector"
-                        app:tabGravity="center"
-                        app:tabIndicatorHeight="0dp"/>
+                        <android.support.design.widget.TabLayout
+                            android:id="@+id/details_recipe_rating_tab_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:tabBackground="@drawable/tab_selector"
+                            app:tabGravity="center"
+                            app:tabIndicatorHeight="0dp"/>
+
+                    </tn.duoes.esprit.cookmania.views.RatingViewPager>
 
                 </LinearLayout>
 

@@ -6,4 +6,6 @@
     <color name="colorBackground">#F7FAF6</color>
     <color name="colorFaded">#DDDEDD</color>
     <color name="colorDark">#212121</color>
+    <color name="colorPrimaryPix">@color/colorPrimary</color>
+    <color name="colorPrimaryLightPix">#305165</color>
 </resources>

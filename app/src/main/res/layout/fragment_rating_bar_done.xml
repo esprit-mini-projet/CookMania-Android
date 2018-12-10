@@ -10,35 +10,26 @@
     android:paddingStart="16dp"
     android:paddingBottom="8dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="@string/rate_recipe"
-        android:textColor="@color/colorDark"
-        android:textSize="20sp"/>
-
     <android.support.v7.widget.AppCompatRatingBar
-        android:id="@+id/fragment_rating_bar_rating_bar"
+        android:id="@+id/fragment_rating_bar_done_rating_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleX="0.75"
         android:scaleY="0.75"
+        android:scaleX="0.75"
         android:progressBackgroundTint="@android:color/darker_gray"
         android:progressTint="@color/colorPrimary"
         android:secondaryProgressTint="@color/colorPrimary"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:stepSize="1"/>
+        android:layout_marginBottom="16dp"
+        android:stepSize="1"
+        tools:rating="4"/>
 
     <TextView
-        android:id="@+id/fragment_rating_bar_opinion_text"
+        android:id="@+id/fragment_rating_bar_done_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorDark"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="I like it" />
+        tools:text="Rated on 09/12/2018" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,12 +37,12 @@
         android:gravity="end|bottom">
 
         <Button
-            android:id="@+id/fragment_rating_bar_submit_button"
+            android:id="@+id/fragment_rating_bar_done_delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/submit"
+            android:text="@string/delete"
             android:textAllCaps="false"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorDark"
             android:textAlignment="center"
             android:padding="20dp"
             style="?android:attr/buttonBarPositiveButtonStyle"
