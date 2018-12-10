@@ -65,9 +65,9 @@ dependencies {
     //PickImage
     implementation 'com.github.jrvansuita:PickImage:2.2.4'
 
-    //Pix
-    implementation  'com.fxn769:pix:1.2.5'
-
     //Range slider
     implementation 'io.apptik.widget:multislider:1.3'
+    
+    //PixImagePicker
+    implementation  'com.fxn769:pix:1.2.5'
 }
