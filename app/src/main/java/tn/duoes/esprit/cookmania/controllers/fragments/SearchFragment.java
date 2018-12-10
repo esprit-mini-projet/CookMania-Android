@@ -1,5 +1,7 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -61,11 +63,90 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    private View collapsablelayout;
+    private int finalHeight;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View fragment = inflater.inflate(R.layout.fragment_search, container, false);
+        collapsablelayout = fragment.findViewById(R.id.search_filter_collapsable);
+        fragment.findViewById(R.id.search_filters_card_drop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(collapsablelayout.getVisibility()==View.GONE)
+                {
+                    expand();
+                }
+                else
+                {
+                    collapse();
+                }
+            }
+        });
+        finalHeight = collapsablelayout.getHeight();
+        return fragment;
+    }
+
+    private void collapse() {
+        finalHeight = collapsablelayout.getHeight();
+
+        ValueAnimator mAnimator = slideAnimator(finalHeight, 0);
+
+        mAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                //Height=0, but it set visibility to GONE
+                collapsablelayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+
+        });
+        mAnimator.start();
+    }
+
+    private void expand()
+    {
+        collapsablelayout.setVisibility(View.VISIBLE);
+
+        final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        final int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        collapsablelayout.measure(widthSpec, heightSpec);
+
+        ValueAnimator mAnimator = slideAnimator(0, finalHeight);
+        mAnimator.start();
+    }
+
+    private ValueAnimator slideAnimator(int start, int end)
+    {
+
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //Update Height
+                int value = (Integer) valueAnimator.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = collapsablelayout.getLayoutParams();
+                layoutParams.height = value;
+                collapsablelayout.setLayoutParams(layoutParams);
+            }
+        });
+        return animator;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

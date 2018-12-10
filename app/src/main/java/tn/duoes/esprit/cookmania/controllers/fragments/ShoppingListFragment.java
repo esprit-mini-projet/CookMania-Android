@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ShoppingListViewAdapter;
-import tn.duoes.esprit.cookmania.helpers.ShoppingListRecyclerItemTouchHelper;
+import tn.duoes.esprit.cookmania.helpers.RecyclerItemTouchHelper;
 import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
 
@@ -88,7 +88,7 @@ public class ShoppingListFragment extends Fragment {
         mShoppingRecyclerView.setLayoutManager(mLayoutManager);
         mShoppingRecyclerView.setAdapter(mViewAdapter);
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ShoppingListRecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, new ShoppingListRecyclerItemTouchHelper.ShoppingListRecyclerItemTouchHelperListener() {
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, new RecyclerItemTouchHelper.RecyclerItemTouchHelperListener() {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
                 int deletedIndex = viewHolder.getAdapterPosition();
@@ -100,7 +100,6 @@ public class ShoppingListFragment extends Fragment {
                 if ((deletedItem instanceof Ingredient) && ((ShoppingListItem)mViewAdapter.getMItems().get(((Ingredient) deletedItem).getShoppingListItemIndex())).getIngredients().size() == 1){
                     toRestoreItem = (mViewAdapter.getMItems().get(deletedIndex-1));
                     toRestoreIndex = deletedIndex - 1;
-                    System.out.println(deletedItem);
                 }else {
                     toRestoreIndex = deletedIndex;
                     toRestoreItem = deletedItem;

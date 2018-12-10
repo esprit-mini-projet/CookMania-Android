@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,8 +17,10 @@ import java.util.List;
 import java.util.Objects;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.adapters.CategoryRecipeRecyclerViewAdapter;
+import tn.duoes.esprit.cookmania.adapters.HorizontalCategoryRecipeRecyclerViewAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.CategoryRecipesActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,7 +96,9 @@ public class CategoryRecipesFragment extends Fragment {
         fragment.findViewById(R.id.category_more_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("More clicked for "+mCategoryName);
+                Intent intent = NavigationUtils.getNavigationFormattedIntent(getContext(), CategoryRecipesActivity.class);
+                intent.putExtra(CategoryRecipesActivity.CATEGORY_NAME_KEY, mCategoryName);
+                startActivity(intent);
             }
         });
 
@@ -101,7 +106,7 @@ public class CategoryRecipesFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new CategoryRecipeRecyclerViewAdapter(mRecipes);
+        mAdapter = new HorizontalCategoryRecipeRecyclerViewAdapter(mRecipes);
         mRecyclerView.setAdapter(mAdapter);
 
         return fragment;

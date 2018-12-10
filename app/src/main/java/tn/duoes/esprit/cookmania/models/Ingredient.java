@@ -16,6 +16,9 @@ public class Ingredient {
         this.shoppingListItemIndex = shoppingListItemIndex;
     }
 
+    public Ingredient() {
+    }
+
     public Ingredient(String name, int quantity, String unit) {
         this.name = name;
         this.quantity = quantity;

@@ -15,17 +15,16 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
-public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecipeRecyclerViewAdapter.ViewHolder> {
+public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<HorizontalCategoryRecipeRecyclerViewAdapter.ViewHolder> {
 
     private List<Recipe> mRecipes;
 
-    public CategoryRecipeRecyclerViewAdapter(List<Recipe> recipes){
+    public HorizontalCategoryRecipeRecyclerViewAdapter(List<Recipe> recipes){
         super();
         mRecipes = recipes;
     }
@@ -33,7 +32,7 @@ public class CategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<Cate
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.category_recipe_recycler_row, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_horizontal_category_recipe_recycler, viewGroup, false);
         return new ViewHolder(v);
     }
 
