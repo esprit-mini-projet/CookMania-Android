@@ -27,4 +27,7 @@ public interface ExperienceApi {
 
     @GET("delete/{recipeID}/{userID}")
     Call<Void> deleteExperience(@Path("recipeID") int recipeId, @Path("userID") String userId);
+
+    @GET("recipe/{recipeID}")
+    Call<List<Experience>> getExperiencesForRecipe(@Path("recipeID") int recipeId);
 }
