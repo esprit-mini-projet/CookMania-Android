@@ -8,4 +8,5 @@
     <color name="colorDark">#212121</color>
     <color name="colorPrimaryPix">@color/colorPrimary</color>
     <color name="colorPrimaryLightPix">#305165</color>
+    <color name="colorPrimaryTransparent">#C0477998</color>
 </resources>

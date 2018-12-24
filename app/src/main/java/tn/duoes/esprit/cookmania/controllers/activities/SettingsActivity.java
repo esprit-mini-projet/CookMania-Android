@@ -1,9 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 
 import com.facebook.login.LoginManager;
@@ -12,6 +12,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.TimerFragment;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -39,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        getSupportFragmentManager().beginTransaction().add(R.id.setting_fragment_container, TimerFragment.newInstance(5)).commit();
     }
 
     @Nullable

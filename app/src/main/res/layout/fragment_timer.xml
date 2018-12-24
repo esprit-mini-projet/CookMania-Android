@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:backgroundTint="@color/colorBackground"
+    android:orientation="vertical">
+
+    <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+        android:id="@+id/fragment_timer_timer"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        app:progressBackgroundColor="@color/colorPrimaryTransparent"
+        app:progressBackgroundStrokeWidth="4dp"
+        app:progressCap="round"
+        app:progressStrokeWidth="8dp"
+        app:progressColor="@color/colorAccent"
+        app:textSize="68sp"
+        app:direction="clockwise"
+        app:drawDot="true"
+        app:dotWidth="16dp"
+        app:enableProgressAnimation="true"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/fragment_timer_play_button"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_play"
+            android:background="@drawable/ripple_rounded"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/fragment_timer_pause_button"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_pause"
+            android:background="@drawable/ripple_rounded"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/fragment_timer_stop_button"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_stop"
+            android:backgroundTint="@android:color/transparent"
+            app:layout_constraintTop_toTopOf="@id/fragment_timer_play_button"
+            app:layout_constraintBottom_toBottomOf="@id/fragment_timer_play_button"
+            app:layout_constraintStart_toEndOf="@id/fragment_timer_play_button"
+            android:layout_marginStart="8dp"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
