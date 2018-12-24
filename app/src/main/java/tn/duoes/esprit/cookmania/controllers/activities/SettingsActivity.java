@@ -13,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import io.alterac.blurkit.BlurLayout;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
-import tn.duoes.esprit.cookmania.controllers.fragments.TimerFragment;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -43,8 +42,6 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        mBlurLayout = findViewById(R.id.setting_fragment_container);
-        getSupportFragmentManager().beginTransaction().add(R.id.setting_fragment_container, TimerFragment.newInstance(5)).commit();
     }
 
     @Override

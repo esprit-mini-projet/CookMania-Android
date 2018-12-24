@@ -20,10 +20,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <io.alterac.blurkit.BlurLayout
-        android:id="@+id/setting_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="2dp"
-        app:blk_fps="0"/>
 </android.support.constraint.ConstraintLayout>
