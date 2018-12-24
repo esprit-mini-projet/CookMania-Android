@@ -50,7 +50,7 @@ public class TimerFragment extends Fragment {
 
         final int minutes = getArguments().getInt(ARGS_MINUTES);
         mTimer.setMaxProgress(minutes * 60);
-        mTimer.setCurrentProgress(0);
+        mTimer.setCurrentProgress(minutes * 60);
         mTimer.setProgressTextAdapter(new CircularProgressIndicator.ProgressTextAdapter() {
             @NonNull
             @Override
@@ -83,7 +83,7 @@ public class TimerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mCountDownTimer.cancel();
-                mTimer.setCurrentProgress(0);
+                mTimer.setCurrentProgress(minutes * 60);
                 mPauseImage.setVisibility(View.INVISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
             }
@@ -92,7 +92,7 @@ public class TimerFragment extends Fragment {
         mPlayImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startTimer(minutes * 60 * 1000 - (long)mTimer.getProgress() * 1000);
+                startTimer((long)mTimer.getProgress() * 1000);
                 mPauseImage.setVisibility(View.VISIBLE);
                 mPlayImage.setVisibility(View.INVISIBLE);
             }
@@ -107,7 +107,7 @@ public class TimerFragment extends Fragment {
         mCountDownTimer = new CountDownTimer(totalMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mTimer.setCurrentProgress(mTimer.getProgress() + 1);
+                mTimer.setCurrentProgress(mTimer.getProgress() - 1);
             }
 
             @Override

@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:backgroundTint="@color/colorBackground"
     android:orientation="vertical">
 
     <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
