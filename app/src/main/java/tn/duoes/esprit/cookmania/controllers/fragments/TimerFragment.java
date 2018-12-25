@@ -74,6 +74,7 @@ public class TimerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mCountDownTimer.cancel();
+                mTimerState = TimerState.PAUSE;
                 mPauseImage.setVisibility(View.INVISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
             }
@@ -83,6 +84,7 @@ public class TimerFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mCountDownTimer.cancel();
+                mTimerState = TimerState.STOP;
                 mTimer.setCurrentProgress(minutes * 60);
                 mPauseImage.setVisibility(View.INVISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
@@ -92,15 +94,19 @@ public class TimerFragment extends Fragment {
         mPlayImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTimerState = TimerState.PLAY;
                 startTimer((long)mTimer.getProgress() * 1000);
                 mPauseImage.setVisibility(View.VISIBLE);
                 mPlayImage.setVisibility(View.INVISIBLE);
             }
         });
 
-        startTimer(minutes * 60 * 1000);
-
         return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     private void startTimer(long totalMillis){
@@ -114,12 +120,25 @@ public class TimerFragment extends Fragment {
             public void onFinish() {
 
             }
-        }.start();
+        };
+        mCountDownTimer.start();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mCountDownTimer.cancel();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mCountDownTimer.cancel();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(mTimerState == TimerState.PLAY) startTimer((long) mTimer.getProgress() * 1000);
     }
 }

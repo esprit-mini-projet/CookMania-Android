@@ -1,7 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,7 +34,6 @@ import tn.duoes.esprit.cookmania.adapters.ExperienceListAdapter;
 import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
-import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Experience;
 import tn.duoes.esprit.cookmania.models.Recipe;
@@ -85,13 +83,15 @@ public class RecipeDetailsFragment extends Fragment
     private String mComment;
     private String mUserId;
     private List<Fragment> mRatingFragments;
+    private RecipeDetailsStepAdapter.StepItemCallBack mStepItemCallBack;
 
-    public static RecipeDetailsFragment newInstance(String recipeId) {
+    public static RecipeDetailsFragment newInstance(String recipeId, RecipeDetailsStepAdapter.StepItemCallBack callBack) {
 
         Bundle args = new Bundle();
         args.putString(ARGS_RECIPE_ID, recipeId);
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
         fragment.setArguments(args);
+        fragment.mStepItemCallBack = callBack;
         return fragment;
     }
 
@@ -150,7 +150,7 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     private void setupStepList() {
-        RecipeDetailsStepAdapter adapter = new RecipeDetailsStepAdapter(mRecipe.getSteps());
+        RecipeDetailsStepAdapter adapter = new RecipeDetailsStepAdapter(mRecipe.getSteps(), mStepItemCallBack);
         mStepList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mStepList.setAdapter(adapter);
     }
@@ -260,10 +260,6 @@ public class RecipeDetailsFragment extends Fragment
                 item.setIcon(R.drawable.icon_heart_full);
                 FavoriteLab.getInstance(getActivity()).delete(recipeId, userId);
             }
-            return true;
-        }else if(item.getItemId() == android.R.id.home){
-            //finish();
-            startActivity(new Intent(getActivity(), MainScreenActivity.class));
             return true;
         }else{
             return super.onOptionsItemSelected(item);
