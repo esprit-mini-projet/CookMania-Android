@@ -70,4 +70,10 @@ dependencies {
     
     //PixImagePicker
     implementation  'com.fxn769:pix:1.2.5'
+
+    //Circular progress bar
+    implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.2.2'
+
+    //Blur library
+    implementation 'io.alterac.blurkit:blurkit:1.1.0'
 }
