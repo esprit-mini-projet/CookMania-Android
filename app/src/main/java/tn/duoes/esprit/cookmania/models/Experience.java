@@ -10,7 +10,7 @@ public class Experience {
     private String userId;
     @SerializedName("recipe_id")
     private int recipeId;
-    private int rating;
+    private float rating;
     private String comment;
     @SerializedName("image_url")
     private String imageUrl;
@@ -59,11 +59,11 @@ public class Experience {
         this.recipeId = recipeId;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
