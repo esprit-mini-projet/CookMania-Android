@@ -18,6 +18,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
 
     private static final String TAG = "RecipeDetailsActivity";
     public static final String EXTRA_RECIPE_ID = "recipeId";
+    public static final String EXTRA_PARENT_ACTIVITY_CLASS = "class";
 
     private boolean timerIsShown = false;
     private BlurLayout mBlurLayout;
@@ -29,7 +30,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mBlurLayout = findViewById(R.id.timer_fragment_container);
-
+        
         Fragment detailsFragment = getSupportFragmentManager().findFragmentById(R.id.recipe_details_fragment_container);
         if(detailsFragment == null){
             detailsFragment = RecipeDetailsFragment.newInstance(getIntent().getStringExtra(EXTRA_RECIPE_ID), this);
@@ -63,7 +64,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
                 mBlurLayout.setVisibility(View.GONE);
                 return true;
             }
-            startActivity(new Intent(this, MainScreenActivity.class));
+            try {
+                startActivity(new Intent(this, Class.forName(getIntent().getStringExtra(EXTRA_PARENT_ACTIVITY_CLASS))));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             return true;
         }else{
             return super.onOptionsItemSelected(item);

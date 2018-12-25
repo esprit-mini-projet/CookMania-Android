@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -64,6 +65,7 @@ public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Ad
                 public void onClick(View v) {
                     Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
                     i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, id+"");
+                    i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                     v.getContext().startActivity(i);
                 }
             });
