@@ -194,8 +194,12 @@ public class RecipeDetailsFragment extends Fragment
         mStepList.getAdapter().notifyDataSetChanged();
         ((RecipeDetailsIngredientsAdapter)mIngredientList.getAdapter()).setIngredients(mRecipe.getIngredients());
         mIngredientList.getAdapter().notifyDataSetChanged();
-        getCurrentExperience();
         getExperienceList();
+        if(!mUserId.equals(mRecipe.getUserId())){
+            getCurrentExperience();
+        }else{
+            getView().findViewById(R.id.fragment_recipe_details_rating_cardview).setVisibility(View.GONE);
+        }
     }
 
     private void getExperienceList() {

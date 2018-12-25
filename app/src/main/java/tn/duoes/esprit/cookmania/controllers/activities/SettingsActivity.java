@@ -10,14 +10,11 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
-import io.alterac.blurkit.BlurLayout;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    private BlurLayout mBlurLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +44,11 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mBlurLayout.startBlur();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mBlurLayout.pauseBlur();
     }
 
     @Nullable

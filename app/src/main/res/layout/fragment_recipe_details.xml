@@ -463,6 +463,7 @@
 
             <!-- Rating -->
             <android.support.v7.widget.CardView
+                android:id="@+id/fragment_recipe_details_rating_cardview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
