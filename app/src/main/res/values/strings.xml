@@ -66,6 +66,8 @@
     <string name="experience_not_added">Could not save experience.</string>
     <string name="experience_not_deleted">Could not delete experience.</string>
     <string name="rated_on">Rated on</string>
+    <string name="stop_the_alarm">Stop the alarm</string>
+    <string name="time_is_up">Time is up!</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>
