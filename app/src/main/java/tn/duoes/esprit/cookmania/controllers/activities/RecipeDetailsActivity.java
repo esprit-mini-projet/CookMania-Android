@@ -13,7 +13,9 @@ import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.controllers.fragments.RecipeDetailsFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.TimerFragment;
 
-public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsStepAdapter.StepItemCallBack
+public class RecipeDetailsActivity extends AppCompatActivity
+        implements RecipeDetailsStepAdapter.StepItemCallBack,
+        TimerFragment.TimerFragmentCallBack
 {
 
     private static final String TAG = "RecipeDetailsActivity";
@@ -43,10 +45,10 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         mBlurLayout.setVisibility(View.VISIBLE);
         Fragment timerFragment = getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
         if(timerFragment == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, TimerFragment.newInstance(time))
+            getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
                     .commit();
         }else{
-            getSupportFragmentManager().beginTransaction().replace(R.id.timer_fragment_container, TimerFragment.newInstance(time))
+            getSupportFragmentManager().beginTransaction().replace(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
                     .commit();
         }
         mBlurLayout.startBlur();
@@ -57,11 +59,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
             if(timerIsShown){
-                getSupportFragmentManager().beginTransaction()
-                        .remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container)).commit();
-                timerIsShown = false;
-                mBlurLayout.pauseBlur();
-                mBlurLayout.setVisibility(View.GONE);
+                removeTimerFragment();
                 return true;
             }
             try {
@@ -73,6 +71,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         }else{
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void removeTimerFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container)).commit();
+        timerIsShown = false;
+        mBlurLayout.pauseBlur();
+        mBlurLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -90,12 +96,14 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     @Override
     public void onBackPressed() {
         if(timerIsShown){
-            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container));
-            timerIsShown = false;
-            mBlurLayout.pauseBlur();
-            mBlurLayout.setVisibility(View.GONE);
+            removeTimerFragment();
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void onViewClicked() {
+        removeTimerFragment();
     }
 }

@@ -24,17 +24,19 @@ public class TimerFragment extends Fragment {
     private ImageView mStopImage;
     private TimerState mTimerState = TimerState.PLAY;
     private CountDownTimer mCountDownTimer;
+    private TimerFragmentCallBack mCallBack;
 
     private enum TimerState{
         PLAY, PAUSE, STOP
     }
 
-    public static TimerFragment newInstance(int minutes) {
+    public static TimerFragment newInstance(int minutes, TimerFragmentCallBack callBack) {
 
         Bundle args = new Bundle();
         args.putInt(ARGS_MINUTES, minutes);
         TimerFragment fragment = new TimerFragment();
         fragment.setArguments(args);
+        fragment.mCallBack = callBack;
         return fragment;
     }
 
@@ -42,6 +44,13 @@ public class TimerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_timer, container, false);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallBack.onViewClicked();
+            }
+        });
 
         mTimer = view.findViewById(R.id.fragment_timer_timer);
         mPlayImage = view.findViewById(R.id.fragment_timer_play_button);
@@ -67,6 +76,12 @@ public class TimerFragment extends Fragment {
                 }
                 sb.append(seconds);
                 return sb.toString();
+            }
+        });
+        mTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Just to intercept the click event
             }
         });
 
@@ -140,5 +155,9 @@ public class TimerFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if(mTimerState == TimerState.PLAY) startTimer((long) mTimer.getProgress() * 1000);
+    }
+
+    public interface TimerFragmentCallBack{
+        void onViewClicked();
     }
 }
