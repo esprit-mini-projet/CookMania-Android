@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,9 +22,11 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
     private static final String TAG = "RecipeDetailsStepAdapte";
 
     private List<Step> mSteps;
+    private StepItemCallBack mCallBack;
 
-    public RecipeDetailsStepAdapter(List<Step> steps){
+    public RecipeDetailsStepAdapter(List<Step> steps, StepItemCallBack callBack){
         mSteps = steps;
+        mCallBack = callBack;
     }
 
     @NonNull
@@ -35,7 +38,7 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
 
     @Override
     public void onBindViewHolder(@NonNull StepHolder stepHolder, int i) {
-        stepHolder.bind(mSteps.get(i), i);
+        stepHolder.bind(mSteps.get(i), i, mCallBack);
     }
 
     @Override
@@ -57,6 +60,7 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
         private TextView mStepNumberTextView;
         private TextView mDescriptionTextView;
         private ImageView mImageView;
+        private LinearLayout mTimeLayout;
 
         StepHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,9 +68,10 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
             mStepNumberTextView = itemView.findViewById(R.id.step_item_number);
             mDescriptionTextView = itemView.findViewById(R.id.step_item_description_text);
             mImageView = itemView.findViewById(R.id.step_item_image);
+            mTimeLayout = itemView.findViewById(R.id.list_item_step_time_layout);
         }
 
-        void bind(Step step, int i){
+        void bind(final Step step, int i, final StepItemCallBack callBack){
             if(i == 0){
                 mTopLine.setVisibility(View.GONE);
             }else{
@@ -79,7 +84,22 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
                 GlideApp.with(mImageView).load(Constants.UPLOAD_FOLDER_URL + "/" + step.getImageUrl()).into(mImageView);
             }
             mDescriptionTextView.setText(step.getDescription());
-            mStepNumberTextView.setText("" + (i + 1));
+            if(step.getTime() > 0){
+                mStepNumberTextView.setText(step.getTime() + "'");
+                mTimeLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        callBack.onTimeLayoutClicked(step.getTime());
+                    }
+                });
+            }else{
+                mStepNumberTextView.setText("");
+                mTimeLayout.setOnClickListener(null);
+            }
         }
+    }
+
+    public interface StepItemCallBack{
+        void onTimeLayoutClicked(int time);
     }
 }
