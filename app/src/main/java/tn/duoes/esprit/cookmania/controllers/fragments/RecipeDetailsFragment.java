@@ -131,7 +131,7 @@ public class RecipeDetailsFragment extends Fragment
             DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             String date = df.format(experience.getDate());
             ratingBarFragment = RatingBarDoneFragment.newInstance(
-                    experience.getRating(),
+                    (int) experience.getRating(),
                     getString(R.string.rated_on) + " " + date,
                     this);
         }
@@ -290,6 +290,7 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onImageChangedListener(String path) {
         mRatingImagePath = path;
+        mRatingViewPager.setCurrentItem(2, true);
     }
 
     @Override
