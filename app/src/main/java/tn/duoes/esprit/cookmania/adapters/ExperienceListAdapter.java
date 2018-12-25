@@ -10,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.Experience;
@@ -18,6 +21,8 @@ import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
 
 public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAdapter.ExperienceViewHolder> {
+
+    private static final String TAG = "ExperienceListAdapter";
 
     private List<Experience> mExperiences;
     private Context mContext;
@@ -36,12 +41,12 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
 
     @Override
     public void onBindViewHolder(@NonNull ExperienceViewHolder experienceViewHolder, int i) {
-        //experienceViewHolder.bind(mExperiences.get(i));
+        experienceViewHolder.bind(mExperiences.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return 4;
+        return mExperiences.size();
     }
 
     static class ExperienceViewHolder extends RecyclerView.ViewHolder{
@@ -66,8 +71,21 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
         }
 
         void bind(Experience experience){
-            GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + experience.getImageUrl())
-                    .centerCrop().into(mImageView);
+            //set experience photo
+            if(experience.getImageUrl().isEmpty()){
+                GlideApp.with(mContext).load(mContext.getDrawable(R.drawable.image_placeholder)).centerCrop().into(mImageView);
+            }else{
+                GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + experience.getImageUrl())
+                        .centerCrop().into(mImageView);
+            }
+            //set user photo
+            GlideApp.with(mContext).load(experience.getUser().getImageUrl()).centerCrop().into(mUserImageView);
+            //set the remaining fields
+            mRatingBar.setRating(experience.getRating());
+            mUserNameText.setText(experience.getUser().getUserName());
+            mCommentText.setText(experience.getComment());
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            mDateText.setText(dateFormat.format(experience.getDate()));
         }
     }
 }

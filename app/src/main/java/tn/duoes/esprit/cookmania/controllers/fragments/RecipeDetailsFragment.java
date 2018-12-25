@@ -37,6 +37,7 @@ import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Experience;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.ExperienceService;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -304,7 +305,9 @@ public class RecipeDetailsFragment extends Fragment
         experience.setComment(mComment);
         experience.setRating(mRating);
         experience.setRecipeId(mRecipe.getId());
-        experience.setUserId(mUserId);
+        User user = new User();
+        user.setId(mUserId);
+        experience.setUser(user);
         ExperienceService.getInstance().addExperience(experience, mRatingImagePath, this);
     }
 

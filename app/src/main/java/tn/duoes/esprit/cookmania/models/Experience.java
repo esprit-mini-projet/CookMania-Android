@@ -6,8 +6,6 @@ import java.util.Date;
 
 public class Experience {
 
-    @SerializedName("user_id")
-    private String userId;
     @SerializedName("recipe_id")
     private int recipeId;
     private float rating;
@@ -15,40 +13,18 @@ public class Experience {
     @SerializedName("image_url")
     private String imageUrl;
     private Date date;
+    @SerializedName("user")
+    private User user;
 
     public Experience() {
     }
 
-    public Experience(String userId, int recipeId, int rating, String comment) {
-        this.userId = userId;
-        this.recipeId = recipeId;
-        this.rating = rating;
-        this.comment = comment;
+    public User getUser() {
+        return user;
     }
 
-    public Experience(String userId, int recipeId, int rating, String comment, String imageUrl) {
-        this.userId = userId;
-        this.recipeId = recipeId;
-        this.rating = rating;
-        this.comment = comment;
-        this.imageUrl = imageUrl;
-    }
-
-    public Experience(String userId, int recipeId, int rating, String comment, String imageUrl, Date date) {
-        this.userId = userId;
-        this.recipeId = recipeId;
-        this.rating = rating;
-        this.comment = comment;
-        this.imageUrl = imageUrl;
-        this.date = date;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getRecipeId() {
