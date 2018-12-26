@@ -84,8 +84,8 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
                     .into(mImageView);
             //set user photo
             GlideApp.with(mContext).load(experience.getUser().getImageUrl())
-                    .placeholder(R.drawable.image_placeholder)
-                    .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()))
+                    .placeholder(R.drawable.default_profile_picture)
+                    .error(GlideApp.with(mContext).load(R.drawable.default_profile_picture).apply(RequestOptions.circleCropTransform()))
                     .apply(RequestOptions.circleCropTransform())
                     .into(mUserImageView);
             //set the remaining fields

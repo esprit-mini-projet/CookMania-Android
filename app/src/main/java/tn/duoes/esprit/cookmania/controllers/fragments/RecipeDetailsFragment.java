@@ -10,7 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -120,12 +122,13 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceListAdapter adapter = new ExperienceListAdapter(experiences, getActivity());
         mExperienceList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mExperienceList.setAdapter(adapter);
-        Log.i(TAG, "setupExperienceList: ");
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mExperienceList);
     }
 
     private void setupViewPager(Experience experience) {
         mRatingFragments = new ArrayList<>();
-        Fragment ratingBarFragment = null;
+        Fragment ratingBarFragment;
         if(experience == null){
             ratingBarFragment = RatingBarFragment.newInstance(this);
         }else{
