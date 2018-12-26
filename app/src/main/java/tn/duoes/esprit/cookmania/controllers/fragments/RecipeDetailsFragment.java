@@ -272,15 +272,8 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     @Override
-    public void onSubmitClickListener(boolean canSwipe) {
-        if (canSwipe){
-            mRatingViewPager.setPagingEnabled(true);
-            mRatingTabLayout.setVisibility(View.VISIBLE);
-            mRatingViewPager.setCurrentItem(1, true);
-        }else{
-            mRatingViewPager.setPagingEnabled(false);
-            mRatingTabLayout.setVisibility(View.INVISIBLE);
-        }
+    public void onSubmitClickListener() {
+        mRatingViewPager.setCurrentItem(1, true);
     }
 
     @Override
@@ -290,8 +283,15 @@ public class RecipeDetailsFragment extends Fragment
 
     @Override
     public void onImageChangedListener(String path) {
-        mRatingImagePath = path;
-        mRatingViewPager.setCurrentItem(2, true);
+        if(path == null){
+            mRatingTabLayout.setVisibility(View.INVISIBLE);
+            mRatingViewPager.setPagingEnabled(false);
+        }else{
+            mRatingImagePath = path;
+            mRatingViewPager.setCurrentItem(2, true);
+            mRatingTabLayout.setVisibility(View.VISIBLE);
+            mRatingViewPager.setPagingEnabled(true);
+        }
     }
 
     @Override
@@ -328,6 +328,20 @@ public class RecipeDetailsFragment extends Fragment
         mRatingViewPager.getAdapter().notifyDataSetChanged();
         mRatingTabLayout.setVisibility(View.INVISIBLE);
         mRatingViewPager.setPagingEnabled(false);
+
+        ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
+            @Override
+            public void onGetExperiencesSuccess(List<Experience> experiences) {
+                ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
+                adapter.setExperiences(experiences);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onGetExperiencesFailure() {
+                //Do nothing
+            }
+        });
     }
 
     @Override
@@ -354,6 +368,20 @@ public class RecipeDetailsFragment extends Fragment
         mRatingFragments.remove(0);
         mRatingFragments.add(0, RatingBarFragment.newInstance(this));
         mRatingViewPager.getAdapter().notifyDataSetChanged();
+
+        ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
+            @Override
+            public void onGetExperiencesSuccess(List<Experience> experiences) {
+                ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
+                adapter.setExperiences(experiences);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onGetExperiencesFailure() {
+                //Do nothing
+            }
+        });
     }
 
     @Override

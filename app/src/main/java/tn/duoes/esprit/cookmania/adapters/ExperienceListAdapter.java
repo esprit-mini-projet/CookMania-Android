@@ -51,6 +51,10 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
         return mExperiences.size();
     }
 
+    public void setExperiences(List<Experience> experiences) {
+        mExperiences = experiences;
+    }
+
     static class ExperienceViewHolder extends RecyclerView.ViewHolder{
 
         ImageView mImageView;
@@ -74,15 +78,16 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
 
         void bind(Experience experience){
             //set experience photo
-            if(experience.getImageUrl().isEmpty()){
-                GlideApp.with(mContext).load(mContext.getDrawable(R.drawable.image_placeholder)).centerCrop().into(mImageView);
-            }else{
-                GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + experience.getImageUrl())
-                        .centerCrop().into(mImageView);
-            }
+            GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + experience.getImageUrl())
+                    .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).centerCrop())
+                    .centerCrop()
+                    .into(mImageView);
             //set user photo
             GlideApp.with(mContext).load(experience.getUser().getImageUrl())
-                    .apply(RequestOptions.circleCropTransform()).into(mUserImageView);
+                    .placeholder(R.drawable.image_placeholder)
+                    .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).apply(RequestOptions.circleCropTransform()))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(mUserImageView);
             //set the remaining fields
             mRatingBar.setRating(experience.getRating());
             mUserNameText.setText(experience.getUser().getUserName());
