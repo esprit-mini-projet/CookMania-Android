@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -79,7 +81,8 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
                         .centerCrop().into(mImageView);
             }
             //set user photo
-            GlideApp.with(mContext).load(experience.getUser().getImageUrl()).centerCrop().into(mUserImageView);
+            GlideApp.with(mContext).load(experience.getUser().getImageUrl())
+                    .apply(RequestOptions.circleCropTransform()).into(mUserImageView);
             //set the remaining fields
             mRatingBar.setRating(experience.getRating());
             mUserNameText.setText(experience.getUser().getUserName());
