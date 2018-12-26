@@ -68,6 +68,7 @@
     <string name="rated_on">Rated on</string>
     <string name="stop_the_alarm">Stop the alarm</string>
     <string name="time_is_up">Time is up!</string>
+    <string name="experiences">Experiences</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>

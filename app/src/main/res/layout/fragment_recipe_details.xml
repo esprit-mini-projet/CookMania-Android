@@ -497,12 +497,42 @@
             </android.support.v7.widget.CardView>
 
             <!-- Experiences -->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/details_recipe_experiences_recycler"
+            <android.support.v7.widget.CardView
+                android:id="@+id/fragment_recipe_details_experience_list_cardview"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:padding="8dp"
+                app:cardCornerRadius="5dp"
+                android:elevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/experiences"
+                        android:textColor="@color/colorDark"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/details_recipe_experiences_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 
