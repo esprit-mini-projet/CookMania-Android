@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,8 +151,8 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_search, container, false);
-        setHasOptionsMenu(true);
         labelsFlexBox = fragment.findViewById(R.id.label_flexlayout);
+        setHasOptionsMenu(true);
 
         RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
             @Override
@@ -216,34 +217,59 @@ public class SearchFragment extends Fragment {
                 caloriesIsSelected = true;
             }
         });
+
+        MaterialSearchView searchView = getActivity().findViewById(R.id.searchview);
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, "onQueryTextChange: "+newText);
+                return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
         return fragment;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_search, menu);
-        MenuItem searchMenuItem = menu.findItem( R.id.recipe_search ); // get my MenuItem with placeholder submenu
-        searchMenuItem.expandActionView();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
-            collapse();
+            close();
+        }
+    }
+
+    private void close(){
+        if(!isCollapsed){
+            finalHeight = collapsablelayout.getHeight();
+            Log.d(TAG, "close: "+finalHeight);
+            ViewGroup.LayoutParams params = collapsablelayout.getLayoutParams();
+            params.height = 0;
+            collapsablelayout.setLayoutParams(params);
+            collapsablelayout.setVisibility(View.GONE);
+            collapseArrowIV.animate().rotation(90).setDuration(300);
+            isCollapsed = true;
         }
     }
 
     private void collapse() {
         if(!isCollapsed){
-            finalHeight = collapsablelayout.getHeight();
-
+            Log.d(TAG, "collapse: "+finalHeight);
             collapseArrowIV.animate().rotation(90).setDuration(300);
 
             ValueAnimator mAnimator = slideAnimator(finalHeight, 0);
@@ -273,6 +299,7 @@ public class SearchFragment extends Fragment {
             });
             mAnimator.start();
             isCollapsed = true;
+            finalHeight = collapsablelayout.getHeight();
         }
     }
 

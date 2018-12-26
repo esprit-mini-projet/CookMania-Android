@@ -76,4 +76,7 @@ dependencies {
 
     //SegmentedControl
     implementation 'info.hoang8f:android-segmented:1.0.6'
+
+    //MaterialSearch
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 }

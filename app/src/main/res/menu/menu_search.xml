@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/recipe_search"
+        android:id="@+id/action_search"
         android:icon="@drawable/ic_tab_search"
+        android:orderInCategory="100"
         android:title="Search"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>
 </menu>

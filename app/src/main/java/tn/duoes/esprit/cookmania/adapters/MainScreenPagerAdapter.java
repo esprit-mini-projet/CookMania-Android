@@ -3,7 +3,9 @@ package tn.duoes.esprit.cookmania.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
@@ -11,6 +13,8 @@ import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 
 public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
+    private static final String TAG = MainScreenPagerAdapter.class.getSimpleName();
+
     private int mTabsCount;
 
     public MainScreenPagerAdapter(FragmentManager fm, int tabsCount) {

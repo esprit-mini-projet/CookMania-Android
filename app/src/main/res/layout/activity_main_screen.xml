@@ -6,6 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".controllers.activities.MainScreenActivity">
 
+    <RelativeLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"/>
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/searchview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.miguelcatalan.materialsearchview.MaterialSearchView>
+    </RelativeLayout>
+
     <android.support.design.widget.TabLayout
         android:id="@+id/mainscreen_tablayout"
         android:layout_width="match_parent"
@@ -13,7 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_container"
         app:tabBackground="@color/colorPrimary"
         app:tabIndicatorColor="@color/colorAccent"
         app:tabTextColor="@android:color/white">
