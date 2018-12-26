@@ -351,7 +351,7 @@
                                     android:id="@+id/search_servings_min"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="TextView"
+                                    android:text="0"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -366,7 +366,7 @@
                                     android:id="@+id/search_sevings_max"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="TextView"
+                                    android:text="10"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -374,7 +374,10 @@
                             <io.apptik.widget.MultiSlider
                                 android:id="@+id/search_servings_slider"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                app:rangeColor="@color/colorPrimary"
+                                app:thumbColor="@color/colorPrimary"
+                                app:scaleMax="10"/>
                         </LinearLayout>
 
                     </LinearLayout>

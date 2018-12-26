@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +32,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.apptik.widget.MultiSlider;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.services.RecipeService;
@@ -97,6 +99,8 @@ public class SearchFragment extends Fragment {
     private int finalHeight;
     private boolean isCollapsed = false;
     private List<String> labels = new ArrayList<>();
+    private MultiSlider servingsSlider;
+    private TextView minServingTV, maxServingTV;
 
     View.OnClickListener labelClicked = new View.OnClickListener() {
         @Override
@@ -152,7 +156,40 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_search, container, false);
         labelsFlexBox = fragment.findViewById(R.id.label_flexlayout);
+        servingsSlider = fragment.findViewById(R.id.search_servings_slider);
+        minServingTV = fragment.findViewById(R.id.search_servings_min);
+        maxServingTV = fragment.findViewById(R.id.search_sevings_max);
         setHasOptionsMenu(true);
+
+        servingsSlider.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
+                switch (thumbIndex){
+                    case 0:
+                        minServingTV.setText(String.valueOf(value));
+                        break;
+                    case 1:
+                        maxServingTV.setText(String.valueOf(value));
+                        break;
+                }
+            }
+        });
+
+        servingsSlider.setOnTrackingChangeListener(new MultiSlider.OnTrackingChangeListener() {
+            @Override
+            public void onStartTrackingTouch(MultiSlider multiSlider, MultiSlider.Thumb thumb, int value) {
+                
+            }
+
+            @Override
+            public void onStopTrackingTouch(MultiSlider multiSlider, MultiSlider.Thumb thumb, int value) {
+                if(thumb == multiSlider.getThumb(0)){
+                    Log.d(TAG, "onStopTrackingTouch: min");
+                }else{
+                    Log.d(TAG, "onStopTrackingTouch: max");
+                }
+            }
+        });
 
         RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
             @Override
@@ -163,7 +200,6 @@ public class SearchFragment extends Fragment {
                         insertLabelButton(label);
                     }
                 }
-                Log.d(TAG, "onResponse: "+categories);
             }
 
             @Override
