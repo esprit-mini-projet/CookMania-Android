@@ -2,11 +2,8 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,27 +14,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.fxn.pix.Pix;
 import com.google.gson.Gson;
-import com.vansuita.pickimage.bean.PickResult;
-import com.vansuita.pickimage.bundle.PickSetup;
-import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.AddStepActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
-import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
@@ -101,7 +89,7 @@ public class AddRecipeFragment extends Fragment {
     private List<String> labels = new ArrayList<>();
     TextView labelTV;
 
-    View.OnClickListener labelCliecked = new View.OnClickListener() {
+    View.OnClickListener labelClicked = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Button button = (Button)v;
@@ -220,15 +208,15 @@ public class AddRecipeFragment extends Fragment {
             }
         });
 
-        (healthyButton = fragment.findViewById(R.id.Healthy)).setOnClickListener(labelCliecked);
-        (cheapButton = fragment.findViewById(R.id.Cheap)).setOnClickListener(labelCliecked);
-        (easyButton = fragment.findViewById(R.id.Easy)).setOnClickListener(labelCliecked);
-        (fastButton = fragment.findViewById(R.id.Fast)).setOnClickListener(labelCliecked);
-        (vegButton = fragment.findViewById(R.id.Vegetarian)).setOnClickListener(labelCliecked);
-        (kidsButton = fragment.findViewById(R.id.For_Kids)).setOnClickListener(labelCliecked);
-        (breakfastButton = fragment.findViewById(R.id.Breakfast)).setOnClickListener(labelCliecked);
-        (dinnerButton = fragment.findViewById(R.id.Dinner)).setOnClickListener(labelCliecked);
-        (dateButton = fragment.findViewById(R.id.Date_Night)).setOnClickListener(labelCliecked);
+        (healthyButton = fragment.findViewById(R.id.Healthy)).setOnClickListener(labelClicked);
+        (cheapButton = fragment.findViewById(R.id.Cheap)).setOnClickListener(labelClicked);
+        (easyButton = fragment.findViewById(R.id.Easy)).setOnClickListener(labelClicked);
+        (fastButton = fragment.findViewById(R.id.Fast)).setOnClickListener(labelClicked);
+        (vegButton = fragment.findViewById(R.id.Vegetarian)).setOnClickListener(labelClicked);
+        (kidsButton = fragment.findViewById(R.id.For_Kids)).setOnClickListener(labelClicked);
+        (breakfastButton = fragment.findViewById(R.id.Breakfast)).setOnClickListener(labelClicked);
+        (dinnerButton = fragment.findViewById(R.id.Dinner)).setOnClickListener(labelClicked);
+        (dateButton = fragment.findViewById(R.id.Date_Night)).setOnClickListener(labelClicked);
 
         return fragment;
     }

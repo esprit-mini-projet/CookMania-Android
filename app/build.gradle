@@ -70,4 +70,7 @@ dependencies {
     
     //PixImagePicker
     implementation  'com.fxn769:pix:1.2.5'
+
+    //Flexbox
+    implementation 'com.google.android:flexbox:1.0.0'
 }

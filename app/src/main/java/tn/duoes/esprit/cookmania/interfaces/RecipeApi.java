@@ -12,6 +12,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
 
 public interface RecipeApi {
@@ -42,4 +43,6 @@ public interface RecipeApi {
     @GET("{id}")
     Call<Recipe> getRecipeById(@Path("id") String id);
 
+    @GET("labels")
+    Call<List<LabelCategory>> getLabels();
 }

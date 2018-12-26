@@ -19,6 +19,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Multipart;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
+import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
 
@@ -33,6 +34,11 @@ public final class RecipeService {
 
     public interface RecipeServiceInsertCallBack{
         void onResponse(int recipeId);
+        void onFailure();
+    }
+
+    public interface LabelGetCallBack{
+        void onResponse(List<LabelCategory> categories);
         void onFailure();
     }
 
@@ -183,6 +189,23 @@ public final class RecipeService {
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
+    public void getLabels(final LabelGetCallBack callBack){
+        Call<List<LabelCategory>> call = mRecipeApi.getLabels();
+        call.enqueue(new Callback<List<LabelCategory>>() {
+            @Override
+            public void onResponse(Call<List<LabelCategory>> call, Response<List<LabelCategory>> response) {
+                callBack.onResponse(response.body());
+                return;
+            }
+
+            @Override
+            public void onFailure(Call<List<LabelCategory>> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
                 callBack.onFailure();
             }
