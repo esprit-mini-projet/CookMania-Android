@@ -18,17 +18,14 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
@@ -36,11 +33,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.UUID;
 
-import tn.duoes.esprit.cookmania.controllers.activities.MainActivity;
-import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
-import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -149,6 +145,11 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
+        //String token = FirebaseInstanceId.getInstance().getId();
+        String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_uuid), UUID.randomUUID().toString());
+        user.setUuid(uuid);
+        user.setToken("");
         UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
             @Override
             public void onCompletion(User user) {

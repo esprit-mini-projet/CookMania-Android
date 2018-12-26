@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,6 +37,8 @@ import tn.duoes.esprit.cookmania.adapters.ExperienceListAdapter;
 import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
+import tn.duoes.esprit.cookmania.adapters.SimilarListAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Experience;
 import tn.duoes.esprit.cookmania.models.Recipe;
@@ -56,8 +59,7 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.AddExperienceCallBack,
         ExperienceService.DeleteExperienceCallBack,
         ExperienceService.GetExperienceCallBack,
-        ExperienceService.GetExperiencesCallBack
-{
+        ExperienceService.GetExperiencesCallBack, RecipeService.RecipeServiceSimilarCallBack, SimilarListAdapter.SimilarViewHolder.SimilarRecipeItemCallBack {
 
     private static final String TAG = "RecipeDetailsFragment";
     private static final String ARGS_RECIPE_ID = "recipeId";
@@ -79,6 +81,7 @@ public class RecipeDetailsFragment extends Fragment
     private RatingViewPager mRatingViewPager;
     private TabLayout mRatingTabLayout;
     private RecyclerView mExperienceList;
+    private RecyclerView mSimilarList;
 
     private Recipe mRecipe;
     private int mRating;
@@ -124,6 +127,14 @@ public class RecipeDetailsFragment extends Fragment
         mExperienceList.setAdapter(adapter);
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(mExperienceList);
+    }
+
+    private void setupSimilarList(List<Recipe> recipes) {
+        SimilarListAdapter adapter = new SimilarListAdapter(recipes, getActivity(), this);
+        mSimilarList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mSimilarList.setAdapter(adapter);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mSimilarList);
     }
 
     private void setupViewPager(Experience experience) {
@@ -183,6 +194,7 @@ public class RecipeDetailsFragment extends Fragment
         mRatingViewPager = view.findViewById(R.id.details_recipe_rating_viewpager);
         mRatingTabLayout = view.findViewById(R.id.details_recipe_rating_tab_layout);
         mExperienceList = view.findViewById(R.id.details_recipe_experiences_recycler);
+        mSimilarList = view.findViewById(R.id.details_recipe_similar_recipes_recycler);
     }
 
     private void updateUI(){
@@ -199,6 +211,7 @@ public class RecipeDetailsFragment extends Fragment
         ((RecipeDetailsIngredientsAdapter)mIngredientList.getAdapter()).setIngredients(mRecipe.getIngredients());
         mIngredientList.getAdapter().notifyDataSetChanged();
         getExperienceList();
+        getSimilarList();
         if(!mUserId.equals(mRecipe.getUserId())){
             getCurrentExperience();
         }else{
@@ -210,12 +223,16 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), this);
     }
 
+    private void getSimilarList() {
+        RecipeService.getInstance().getSimilarRecipes(mRecipe, this);
+    }
+
     private void getRecipe(String id) {
         RecipeService.getInstance().getRecipeById(id, new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
                 mRecipe = recipes.get(0);
-                Log.d(TAG, "onResponse: " + mRecipe);
+                Log.d(TAG, "onGetSimilarResponse: " + mRecipe);
                 updateUI();
             }
 
@@ -244,10 +261,10 @@ public class RecipeDetailsFragment extends Fragment
         int recipeId = Integer.parseInt(getArguments().getString(ARGS_RECIPE_ID));
         if(!FavoriteLab.getInstance(getActivity()).recipeExists(userId, recipeId)){
             item.setTitle(R.string.favorite);
-            item.setIcon(R.drawable.icon_heart_full);
+            item.setIcon(R.drawable.icon_heart_outline);
         }else{
             item.setTitle(R.string.remove_favorite);
-            item.setIcon(R.drawable.icon_heart_outline);
+            item.setIcon(R.drawable.icon_heart_full);
         }
         Log.d(TAG, "onCreateOptionsMenu: " + FavoriteLab.getInstance(getActivity()).getList(userId));
     }
@@ -413,13 +430,29 @@ public class RecipeDetailsFragment extends Fragment
 
     @Override
     public void onGetExperiencesSuccess(List<Experience> experiences) {
-        Log.i(TAG, "onGetExperiencesSuccess: ");
         setupExperienceList(experiences);
     }
 
     @Override
     public void onGetExperiencesFailure() {
-        mExperienceList.setVisibility(View.GONE);
+        getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
         Log.i(TAG, "onGetExperiencesFailure: ");
+    }
+
+    @Override
+    public void onGetSimilarResponse(List<Recipe> recipes) {
+        if(recipes.size() == 0){
+            getView().findViewById(R.id.fragment_recipe_details_similar_recipes_cardview).setVisibility(View.GONE);
+            return;
+        }
+        setupSimilarList(recipes);
+    }
+
+    @Override
+    public void onSimilarRecipeClicked(Recipe recipe) {
+        Intent i = new Intent(getActivity(), RecipeDetailsActivity.class);
+        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
+        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, getActivity().getClass().getCanonicalName());
+        startActivity(i);
     }
 }

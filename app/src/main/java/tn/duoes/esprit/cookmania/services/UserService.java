@@ -46,11 +46,11 @@ public class UserService {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()){
-                    Log.d(TAG, "onResponse: Error " + response.errorBody());
+                    Log.d(TAG, "onGetSimilarResponse: Error " + response.errorBody());
                     callBack.onCompletion(null);
                     return;
                 }
-                Log.d(TAG, "onResponse: body: " + response.body());
+                Log.d(TAG, "onGetSimilarResponse: body: " + response.body());
                 callBack.onCompletion(response.body());
             }
 
@@ -68,16 +68,16 @@ public class UserService {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if(!response.isSuccessful()){
-                    Log.d(TAG, "onResponse: Error " + response.errorBody());
+                    Log.d(TAG, "onGetSimilarResponse: Error " + response.errorBody());
                     callBack.onCompletion(null);
                     return;
                 }
-                Log.d(TAG, "onResponse: body: " + response.body());
+                Log.d(TAG, "onGetSimilarResponse: body: " + response.body());
                 Boolean exists = null;
                 try{
                     exists = response.body().get("result").getAsBoolean();
                 } catch (NullPointerException e){
-                    Log.e(TAG, "onResponse: ", e);
+                    Log.e(TAG, "onGetSimilarResponse: ", e);
                 }
                 callBack.onCompletion(exists);
             }
@@ -90,28 +90,36 @@ public class UserService {
         });
     }
 
-    public void createFromEmail(User user, final CreateFromEmailCallBack callBack){
+    public void createFromEmail(final User user, final CreateFromEmailCallBack callBack){
         Call<JsonObject> call = mUserApi.createFromEmail(user);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if(!response.isSuccessful()){
                     try {
-                        Log.d(TAG, "onResponse: Error " + response.errorBody().string());
+                        Log.d(TAG, "onGetSimilarResponse: Error " + response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     callBack.onCompletion(null);
                     return;
                 }
-                Log.d(TAG, "onResponse: body: " + response.body());
+                Log.d(TAG, "onGetSimilarResponse: body: " + response.body());
                 String id = null;
                 try{
                     id = response.body().get("id").getAsString();
                 } catch (NullPointerException e){
-                    Log.e(TAG, "onResponse: ", e);
+                    Log.e(TAG, "onGetSimilarResponse: ", e);
                 }
                 callBack.onCompletion(id);
+
+                //register device
+                signInWithEmail(user, new SignInWithEmailCallBack() {
+                    @Override
+                    public void onCompletion(User user, int statusCode) {
+                        //do nothing
+                    }
+                });
             }
 
             @Override
@@ -129,14 +137,14 @@ public class UserService {
             public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()){
                     try {
-                        Log.d(TAG, "onResponse: Error " + response.errorBody().string());
+                        Log.d(TAG, "onGetSimilarResponse: Error " + response.errorBody().string());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     callBack.onCompletion(null, response.code());
                     return;
                 }
-                Log.d(TAG, "onResponse: body: " + response.body());
+                Log.d(TAG, "onGetSimilarResponse: body: " + response.body());
                 callBack.onCompletion(response.body(), 200);
             }
 

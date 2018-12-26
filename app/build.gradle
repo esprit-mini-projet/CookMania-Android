@@ -76,4 +76,7 @@ dependencies {
 
     //Blur library
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
+
+    //FireBase Messaging
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }

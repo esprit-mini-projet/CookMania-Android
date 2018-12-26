@@ -16,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.UUID;
+
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.models.User;
@@ -87,6 +89,11 @@ public class RegistrationFragment extends Fragment {
                 user.setUserName(username);
                 user.setPassword(password);
                 user.setImageUrl(Constants.DEFAULT_PROFILE_PICTURE_URL);
+                //String token = FirebaseInstanceId.getInstance().getId();
+                String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                        .getString(getString(R.string.prefs_uuid), UUID.randomUUID().toString());
+                user.setUuid(uuid);
+                user.setToken("");
 
                 showProgressBar();
                 UserService.getInstance().createFromEmail(user, new UserService.CreateFromEmailCallBack() {

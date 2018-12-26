@@ -63,7 +63,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
                 return true;
             }
             try {
-                startActivity(new Intent(this, Class.forName(getIntent().getStringExtra(EXTRA_PARENT_ACTIVITY_CLASS))));
+                Class parentClass = Class.forName(getIntent().getStringExtra(EXTRA_PARENT_ACTIVITY_CLASS));
+                if(parentClass == RecipeDetailsActivity.class){
+                    finish();
+                }else{
+                    startActivity(new Intent(this, parentClass));
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

@@ -16,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import java.util.UUID;
+
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.models.User;
@@ -66,6 +68,11 @@ public class PasswordLoginFragment extends Fragment {
                 User user = new User();
                 user.setEmail(getArguments().getString(ARG_EMAIL));
                 user.setPassword(password);
+                //String token = FirebaseInstanceId.getInstance().getId();
+                String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                        .getString(getString(R.string.prefs_uuid), UUID.randomUUID().toString());
+                user.setUuid(uuid);
+                user.setToken("");
                 UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {
                     @Override
                     public void onCompletion(User user, int statusCode) {

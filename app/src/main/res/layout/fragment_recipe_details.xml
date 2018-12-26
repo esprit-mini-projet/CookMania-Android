@@ -534,6 +534,42 @@
 
             </android.support.v7.widget.CardView>
 
+            <!-- Similar recipes -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/fragment_recipe_details_similar_recipes_cardview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="5dp"
+                android:elevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/similar"
+                        android:textColor="@color/colorDark"
+                        android:textStyle="bold"
+                        android:textSize="20sp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"/>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/details_recipe_similar_recipes_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="155dp"/>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

@@ -11,13 +11,11 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Multipart;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -34,6 +32,10 @@ public final class RecipeService {
     public interface RecipeServiceInsertCallBack{
         void onResponse(int recipeId);
         void onFailure();
+    }
+
+    public interface RecipeServiceSimilarCallBack{
+        void onGetSimilarResponse(List<Recipe> recipes);
     }
 
     private static RecipeService instance;
@@ -185,6 +187,28 @@ public final class RecipeService {
             public void onFailure(Call<Integer> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
                 callBack.onFailure();
+            }
+        });
+    }
+
+    public void getSimilarRecipes(final Recipe recipe, final RecipeServiceSimilarCallBack callBack){
+        Gson gson = new Gson().newBuilder().create();
+        String labels = gson.toJson(recipe.getLabels());
+        Call<List<Recipe>> call = mRecipeApi.getSimilarRecipes(recipe.getId(), labels);
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                if(response.isSuccessful()){
+                    callBack.onGetSimilarResponse(response.body());
+                    return;
+                }
+                callBack.onGetSimilarResponse(new ArrayList<Recipe>());
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onGetSimilarResponse(new ArrayList<Recipe>());
             }
         });
     }
