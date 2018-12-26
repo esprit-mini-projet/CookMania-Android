@@ -73,4 +73,7 @@ dependencies {
 
     //Flexbox
     implementation 'com.google.android:flexbox:1.0.0'
+
+    //SegmentedControl
+    implementation 'info.hoang8f:android-segmented:1.0.6'
 }

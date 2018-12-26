@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- FILTER LAYOUT -->
         <android.support.v7.widget.CardView
             android:id="@+id/labels_card_view"
             android:layout_width="match_parent"
@@ -58,8 +59,8 @@
 
                         <ImageView
                             android:id="@+id/collapse_arrow_iv"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:alpha="0.8"
                             android:src="@drawable/ic_icon_down_arrow" />
 
@@ -280,35 +281,47 @@
                                     android:textColor="@android:color/black"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/search_calories_min"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:text="-" />
-
-                                <TextView
-                                    android:id="@+id/search_calories_max"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
                             </LinearLayout>
-
-                            <io.apptik.widget.MultiSlider
-                                android:id="@+id/search_calories_slider"
+                            <info.hoang8f.android.segmented.SegmentedGroup
+                                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/segmented2"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                segmentedgroup:sc_border_width="2dp"
+                                segmentedgroup:sc_corner_radius="10dp"
+                                segmentedgroup:sc_tint_color="@color/colorPrimary">
+
+                                <RadioButton
+                                    android:id="@+id/all"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="All"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton"
+                                    android:checked="true"/>
+                                <RadioButton
+                                    android:id="@+id/low"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Low"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton" />
+                                <RadioButton
+                                    android:id="@+id/normal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Normal"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton" />
+                                <RadioButton
+                                    android:id="@+id/rich"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Rich"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton" />
+                            </info.hoang8f.android.segmented.SegmentedGroup>
                         </LinearLayout>
 
                         <LinearLayout
@@ -364,59 +377,6 @@
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="5dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginRight="10dp"
-                                    android:text="Duration:"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/search_duration_min"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:text="-" />
-
-                                <TextView
-                                    android:id="@+id/search_duration_max"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-
-                            <io.apptik.widget.MultiSlider
-                                android:id="@+id/search_durantion_slider"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-
                     </LinearLayout>
 
                 </LinearLayout> -->
@@ -426,15 +386,65 @@
 
         </android.support.v7.widget.CardView>
 
-        <RelativeLayout
+        <!-- RESULT LAYOUT -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12 results found"/>
+
+                <info.hoang8f.android.segmented.SegmentedGroup
+                    xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/sortSegmented"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    segmentedgroup:sc_border_width="2dp"
+                    segmentedgroup:sc_corner_radius="10dp"
+                    segmentedgroup:sc_tint_color="@color/colorPrimary"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:gravity="right">
+
+                    <RadioButton
+                        android:id="@+id/sortRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="Rating"
+                        style="@style/RadioButton"
+                        android:checked="true"
+                        android:drawableRight="@drawable/ic_icon_arrow_up">
+                    </RadioButton>
+                    <RadioButton
+                        android:id="@+id/sortCalories"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calories"
+                        style="@style/RadioButton"
+                        android:drawableTint="@color/colorPrimary"
+                        android:drawableRight="@drawable/ic_icon_arrow_down"/>
+                </info.hoang8f.android.segmented.SegmentedGroup>
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

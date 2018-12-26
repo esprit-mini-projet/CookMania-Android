@@ -12,12 +12,16 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
@@ -87,6 +91,8 @@ public class SearchFragment extends Fragment {
     private View collapsablelayout;
     private FlexboxLayout labelsFlexBox;
     private ImageView collapseArrowIV;
+    private RadioButton ratingSortButton, caloriesSortButton;
+    private boolean ratingUp = true, caloriesUp = false, ratingIsSelected = true, caloriesIsSelected = false;
     private int finalHeight;
     private boolean isCollapsed = false;
     private List<String> labels = new ArrayList<>();
@@ -114,9 +120,9 @@ public class SearchFragment extends Fragment {
         button.setOnClickListener(labelClicked);
 
         button.setBackground(getResources().getDrawable(R.drawable.shape_unselected_label));
-        button.setPadding(MesurementConvertionUtils.dpToPx(20, getContext()), 0, MesurementConvertionUtils.dpToPx(20, getContext()), 0);
+        button.setPadding(MesurementConvertionUtils.dpToPx(15, getContext()), 0, MesurementConvertionUtils.dpToPx(15, getContext()), 0);
         button.setText(label);
-        button.setTextSize(16);
+        button.setTextSize(14);
         button.setTypeface(button.getTypeface(), Typeface.BOLD);
         button.setTextColor(getResources().getColor(R.color.colorPrimary));
 
@@ -144,7 +150,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_search, container, false);
-
+        setHasOptionsMenu(true);
         labelsFlexBox = fragment.findViewById(R.id.label_flexlayout);
 
         RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
@@ -180,7 +186,50 @@ public class SearchFragment extends Fragment {
             }
         });
         finalHeight = collapsablelayout.getHeight();
+
+        (ratingSortButton = fragment.findViewById(R.id.sortRating)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                caloriesIsSelected = false;
+                Log.d(TAG, "onClick: "+ratingIsSelected);
+                if(ratingIsSelected){
+                    ratingUp = !ratingUp;
+                    ratingSortButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, ratingUp?R.drawable.ic_icon_arrow_up:R.drawable.ic_icon_arrow_down, 0);
+                }
+                ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.white));
+                caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
+                ratingIsSelected = true;
+            }
+        });
+
+        (caloriesSortButton = fragment.findViewById(R.id.sortCalories)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ratingIsSelected = false;
+                Log.d(TAG, "onClick: "+caloriesIsSelected);
+                if(caloriesIsSelected){
+                    caloriesUp = !caloriesUp;
+                    caloriesSortButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, caloriesUp?R.drawable.ic_icon_arrow_up:R.drawable.ic_icon_arrow_down, 0);
+                }
+                caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.white));
+                ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
+                caloriesIsSelected = true;
+            }
+        });
         return fragment;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem searchMenuItem = menu.findItem( R.id.recipe_search ); // get my MenuItem with placeholder submenu
+        searchMenuItem.expandActionView();
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
