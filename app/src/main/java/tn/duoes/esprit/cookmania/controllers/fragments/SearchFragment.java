@@ -38,6 +38,8 @@ import com.google.android.flexbox.JustifyContent;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
@@ -114,7 +116,7 @@ public class SearchFragment extends Fragment {
     private boolean isCollapsed = false;
     private MultiSlider servingsSlider;
     private SegmentedGroup caloriesSegmented;
-    private TextView minServingTV, maxServingTV;
+    private TextView minServingTV, maxServingTV, resultsCountTV;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -143,11 +145,23 @@ public class SearchFragment extends Fragment {
         }
     };
 
+    private List<Recipe> sortRecipes(List<Recipe> recipes){
+        Collections.sort(recipes, new Comparator<Recipe>() {
+            @Override
+            public int compare(Recipe o1, Recipe o2) {
+                return ratingIsSelected?(ratingUp?Float.compare(o2.getRating(), o1.getRating()):Float.compare(o1.getRating(), o2.getRating())) :
+                        (caloriesUp?Integer.compare(o2.getCalories(), o1.getCalories()): Integer.compare(o1.getCalories(), o2.getCalories()));
+            }
+        });
+        return recipes;
+    }
+
     RecipeService.RecipeServiceGetCallBack recipeServiceGetCallBack = new RecipeService.RecipeServiceGetCallBack() {
         @Override
         public void onResponse(List<Recipe> recipes) {
-            mAdapter.recipes = recipes;
+            mAdapter.recipes = sortRecipes(recipes);
             mAdapter.notifyDataSetChanged();
+            resultsCountTV.setText(recipes.size()+" recipes found.");
         }
 
         @Override
@@ -205,6 +219,7 @@ public class SearchFragment extends Fragment {
         MaterialSearchView searchView = getActivity().findViewById(R.id.searchview);
         mRecyclerView = fragment.findViewById(R.id.search_result);
         caloriesSegmented = fragment.findViewById(R.id.calories_segmented);
+        resultsCountTV = fragment.findViewById(R.id.search_results_count_tv);
 
         //Settings
         finalHeight = collapsablelayout.getHeight();
@@ -304,6 +319,8 @@ public class SearchFragment extends Fragment {
                 ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.white));
                 caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
                 ratingIsSelected = true;
+                mAdapter.recipes = sortRecipes(mAdapter.recipes);
+                mAdapter.notifyDataSetChanged();
             }
         });
 
@@ -319,6 +336,8 @@ public class SearchFragment extends Fragment {
                 caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.white));
                 ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
                 caloriesIsSelected = true;
+                mAdapter.recipes = sortRecipes(mAdapter.recipes);
+                mAdapter.notifyDataSetChanged();
             }
         });
 

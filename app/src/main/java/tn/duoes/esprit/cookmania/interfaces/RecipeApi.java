@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.interfaces;
 
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -14,6 +15,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.SearchResult;
 
 public interface RecipeApi {
 
@@ -45,4 +47,7 @@ public interface RecipeApi {
 
     @GET("labels")
     Call<List<LabelCategory>> getLabels();
+
+    @POST("search")
+    Call<List<SearchResult>> search(@Body HashMap map);
 }
