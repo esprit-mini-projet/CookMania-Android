@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.HorizontalCategoryRecipeRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.CategoryRecipesActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
@@ -77,7 +79,7 @@ public class CategoryRecipesFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
+    private HorizontalCategoryRecipeRecyclerViewAdapter mAdapter;
     private List<Recipe> mRecipes;
     private String mCategoryName;
 
@@ -106,8 +108,32 @@ public class CategoryRecipesFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new HorizontalCategoryRecipeRecyclerViewAdapter(mRecipes);
+        mAdapter = new HorizontalCategoryRecipeRecyclerViewAdapter(mRecipes, getActivity());
         mRecyclerView.setAdapter(mAdapter);
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    if (mAdapter.recipeDialog.getDialog() != null){
+                        MainScreenActivity.viewPager.setPagingEnabled(true);
+                        HomeFragment.scrollView.setScrollingEnabled(true);
+                        mAdapter.recipeDialog.dismiss();
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
+            }
+        });
 
         return fragment;
     }

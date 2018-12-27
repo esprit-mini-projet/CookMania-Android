@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
@@ -28,6 +29,7 @@ import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SuggestedFragment;
+import tn.duoes.esprit.cookmania.views.RatingViewPager;
 
 public class MainScreenActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
@@ -42,6 +44,7 @@ public class MainScreenActivity extends AppCompatActivity
 
     private MaterialSearchView searchView;
     private int tabPosition = 0;
+    public static RatingViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class MainScreenActivity extends AppCompatActivity
         searchView = findViewById(R.id.searchview);
 
         TabLayout tabLayout = findViewById(R.id.mainscreen_tablayout);
-        final ViewPager viewPager = findViewById(R.id.mainscreen_viewpager);
+        viewPager = findViewById(R.id.mainscreen_viewpager);
 
         viewPager.setAdapter(new MainScreenPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

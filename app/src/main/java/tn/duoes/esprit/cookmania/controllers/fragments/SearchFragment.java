@@ -171,12 +171,62 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_search, container, false);
+        setHasOptionsMenu(true);
+
+        //Loading views
         labelsFlexBox = fragment.findViewById(R.id.label_flexlayout);
         servingsSlider = fragment.findViewById(R.id.search_servings_slider);
         minServingTV = fragment.findViewById(R.id.search_servings_min);
         maxServingTV = fragment.findViewById(R.id.search_sevings_max);
-        setHasOptionsMenu(true);
+        collapsablelayout = fragment.findViewById(R.id.search_filter_collapsable);
+        collapseArrowIV = fragment.findViewById(R.id.collapse_arrow_iv);
+        ratingSortButton = fragment.findViewById(R.id.sortRating);
+        caloriesSortButton = fragment.findViewById(R.id.sortCalories);
+        MaterialSearchView searchView = getActivity().findViewById(R.id.searchview);
+        mRecyclerView = fragment.findViewById(R.id.search_result);
 
+        //Settings
+        finalHeight = collapsablelayout.getHeight();
+        caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
+        //Setting recycler view
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mAdapter = new SearchResultRecyclerViewAdapter((MainScreenActivity)getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+
+        //Loading data
+        //Labels
+        RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
+            @Override
+            public void onResponse(List<LabelCategory> categories) {
+                for (LabelCategory category : categories){
+                    insertCategoryTextView(category.getCategory());
+                    for (String label : category.getLabels()){
+                        insertLabelButton(label);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+        //Recipes
+        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+            @Override
+            public void onResponse(List<Recipe> recipes) {
+                mAdapter.recipes = recipes;
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+        //Listeners
         servingsSlider.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
@@ -207,24 +257,6 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
-            @Override
-            public void onResponse(List<LabelCategory> categories) {
-                for (LabelCategory category : categories){
-                    insertCategoryTextView(category.getCategory());
-                    for (String label : category.getLabels()){
-                        insertLabelButton(label);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
-        collapsablelayout = fragment.findViewById(R.id.search_filter_collapsable);
-        collapseArrowIV = fragment.findViewById(R.id.collapse_arrow_iv);
         fragment.findViewById(R.id.search_filters_card_drop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -238,9 +270,8 @@ public class SearchFragment extends Fragment {
                 }
             }
         });
-        finalHeight = collapsablelayout.getHeight();
 
-        (ratingSortButton = fragment.findViewById(R.id.sortRating)).setOnClickListener(new View.OnClickListener() {
+        ratingSortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 caloriesIsSelected = false;
@@ -255,7 +286,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        (caloriesSortButton = fragment.findViewById(R.id.sortCalories)).setOnClickListener(new View.OnClickListener() {
+        caloriesSortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ratingIsSelected = false;
@@ -270,7 +301,6 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        MaterialSearchView searchView = getActivity().findViewById(R.id.searchview);
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -296,30 +326,12 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
-            @Override
-            public void onResponse(List<Recipe> recipes) {
-                mAdapter.recipes = recipes;
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
-
-        mRecyclerView = fragment.findViewById(R.id.search_result);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        mAdapter = new SearchResultRecyclerViewAdapter((MainScreenActivity)getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-
         mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
                 if(motionEvent.getAction() == MotionEvent.ACTION_UP){
                     if (mAdapter.recipeDialog.getDialog() != null){
+                        MainScreenActivity.viewPager.setPagingEnabled(true);
                         mAdapter.recipeDialog.dismiss();
                     }
                 }

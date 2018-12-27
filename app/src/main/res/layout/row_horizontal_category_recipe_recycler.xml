@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="170dp"
-    android:layout_height="230dp"
+    android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:elevation="5dp"
     app:cardCornerRadius="10dp"
@@ -20,13 +20,22 @@
             android:layout_height="170dp"
             android:scaleType="centerCrop" />
 
+        <android.support.v7.widget.AppCompatRatingBar
+            android:id="@+id/cat_res_recipe_rb"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:rating="4" />
+
         <TextView
             android:id="@+id/cat_res_row_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:minLines="2"
             android:paddingLeft="10dp"
-            android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:paddingBottom="5dp"
             android:text="This is a very long recipe name test"

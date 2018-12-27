@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.adapters;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +18,11 @@ import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.controllers.dialogs.RecipeDialog;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<SearchResultRecyclerViewAdapter.ViewHolder> {
     private static final String TAG = SearchResultRecyclerViewAdapter.class.getSimpleName();
@@ -67,9 +70,20 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
+                    i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId()+"");
+                    i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                    v.getContext().startActivity(i);
+                }
+            });
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    MainScreenActivity.viewPager.setPagingEnabled(false);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(RecipeDialog.RECIPE_KEY, recipe);
                     bundle.putString(RecipeDialog.USER_IMAGE_KEY, Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL());
