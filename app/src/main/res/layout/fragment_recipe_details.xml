@@ -290,20 +290,19 @@
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp">
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/ingredients"
                             android:textColor="@color/colorDark"
-                            android:textStyle="bold"
                             android:textSize="20sp"
-                            app:layout_constraintTop_toTopOf="parent"
+                            android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"/>
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.3" />
 
                         <!-- Shop Cart -->
                         <android.support.constraint.ConstraintLayout
@@ -312,8 +311,7 @@
                             android:layout_height="wrap_content"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:layout_marginEnd="8dp">
+                            app:layout_constraintEnd_toEndOf="parent">
 
                             <android.support.constraint.ConstraintLayout
                                 android:id="@+id/details_shop_cart_sub_container"
@@ -322,35 +320,37 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent">
 
-                                <ImageView
+                                <ImageButton
                                     android:id="@+id/details_recipe_shop_cart_image"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"
+                                    android:layout_width="58dp"
+                                    android:layout_height="58dp"
                                     android:src="@drawable/icon_shop_cart_outline_primary"
-                                    app:layout_constraintEnd_toEndOf="parent"/>
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    android:scaleType="fitCenter"
+                                    android:padding="12dp"
+                                    style="?android:buttonBarPositiveButtonStyle"/>
+
+
+                                <TextView
+                                    android:id="@+id/details_recipe_shop_items_text"
+                                    android:layout_width="26dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="19"
+                                    android:textSize="10sp"
+                                    android:textAlignment="center"
+                                    android:textColor="@android:color/white"
+                                    android:background="@drawable/shape_rectangle_rounded_shop_items"
+                                    app:layout_constraintEnd_toEndOf="@id/details_recipe_shop_cart_image"
+                                    app:layout_constraintStart_toStartOf="@id/details_recipe_shop_cart_image"
+                                    app:layout_constraintTop_toTopOf="@id/details_recipe_shop_cart_image"
+                                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_shop_cart_image"
+                                    app:layout_constraintVertical_bias="0.25"
+                                    app:layout_constraintHorizontal_bias="0.3"/>
 
                             </android.support.constraint.ConstraintLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/shop"
-                                app:layout_constraintTop_toBottomOf="@id/details_shop_cart_sub_container"/>
-
                         </android.support.constraint.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/details_recipe_shop_items_text"
-                            android:layout_width="26dp"
-                            android:layout_height="wrap_content"
-                            android:text="19"
-                            android:textSize="10sp"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/white"
-                            android:background="@drawable/shape_rectangle_rounded_shop_items"
-                            app:layout_constraintEnd_toEndOf="@id/details_shop_cart_container"
-                            app:layout_constraintTop_toTopOf="@id/details_shop_cart_container"
-                            android:layout_marginEnd="14dp"/>
 
                         <!--Servings-->
                         <!--
@@ -402,7 +402,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:padding="8dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
                         android:background="@drawable/border_bottom_shape">
 
                         <ImageButton
@@ -410,7 +411,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/icon_add_circle_outline_accent"
-                            android:background="@android:color/transparent"/>
+                            android:scaleType="fitCenter"
+                            android:adjustViewBounds="true"
+                            android:padding="2dp"
+                            android:background="?selectableItemBackground"/>
 
                         <TextView
                             android:id="@+id/details_recipe_ingredients_add_all_text"

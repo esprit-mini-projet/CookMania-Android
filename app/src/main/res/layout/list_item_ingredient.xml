@@ -3,7 +3,8 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:padding="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:background="@drawable/border_bottom_shape">
 
     <ImageButton
@@ -11,7 +12,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_add_circle_full_accent"
-        android:background="@android:color/transparent"/>
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:padding="2dp"
+        android:background="?selectableItemBackground"/>
 
     <TextView
         android:id="@+id/list_item_ingredient_quantity_text"
