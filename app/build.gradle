@@ -83,4 +83,7 @@ dependencies {
 
     //MaterialSearch
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
+
+    //Blurry
+    implementation 'jp.wasabeef:blurry:3.0.0'
 }
