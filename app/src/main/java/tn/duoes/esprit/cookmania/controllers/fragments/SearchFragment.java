@@ -48,6 +48,7 @@ import tn.duoes.esprit.cookmania.adapters.SearchResultRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.SearchWrapper;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.MesurementConvertionUtils;
 
@@ -121,10 +122,7 @@ public class SearchFragment extends Fragment {
     private List<Recipe> mRecipes;
 
     //Search params
-    private List<String> labels = new ArrayList<>();
-    private String searchText;
-    private int servingsMin, servingsMax;
-    private String calories;
+    private SearchWrapper searchWrapper = new SearchWrapper();
 
     View.OnClickListener labelClicked = new View.OnClickListener() {
         @Override
@@ -132,15 +130,29 @@ public class SearchFragment extends Fragment {
             Button button = (Button)v;
             boolean isSelected = Boolean.valueOf((String)button.getTag());
             if(!isSelected){
-                labels.add(button.getText().toString());
+                searchWrapper.getLabels().add(button.getText().toString());
                 button.setBackground(getContext().getDrawable(R.drawable.shape_selected_label));
                 button.setTextColor(getContext().getResources().getColorStateList(R.color.colorAccent));
             }else{
-                labels.remove(button.getText().toString());
+                searchWrapper.getLabels().remove(button.getText().toString());
                 button.setBackground(getContext().getDrawable(R.drawable.shape_unselected_label));
                 button.setTextColor(getContext().getResources().getColorStateList(R.color.colorPrimary));
             }
             button.setTag(String.valueOf(!isSelected));
+            RecipeService.getInstance().search(searchWrapper, recipeServiceGetCallBack);
+        }
+    };
+
+    RecipeService.RecipeServiceGetCallBack recipeServiceGetCallBack = new RecipeService.RecipeServiceGetCallBack() {
+        @Override
+        public void onResponse(List<Recipe> recipes) {
+            mAdapter.recipes = recipes;
+            mAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onFailure() {
+
         }
     };
 
@@ -196,7 +208,8 @@ public class SearchFragment extends Fragment {
 
         //Settings
         finalHeight = collapsablelayout.getHeight();
-        caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
+        caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(caloriesIsSelected?R.color.white:R.color.colorPrimary));
+        ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(ratingIsSelected?R.color.white:R.color.colorPrimary));
         //Setting recycler view
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -222,25 +235,15 @@ public class SearchFragment extends Fragment {
             }
         });
         //Recipes
-        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
-            @Override
-            public void onResponse(List<Recipe> recipes) {
-                mAdapter.recipes = recipes;
-                mAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
+        RecipeService.getInstance().search(searchWrapper, recipeServiceGetCallBack);
 
         //Listeners
         caloriesSegmented.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton button = fragment.findViewById(checkedId);
-                calories = button.getText().toString();
+                searchWrapper.setCalories(button.getText().toString());
+                RecipeService.getInstance().search(searchWrapper, recipeServiceGetCallBack);
             }
         });
 
@@ -267,10 +270,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(MultiSlider multiSlider, MultiSlider.Thumb thumb, int value) {
                 if(thumb == multiSlider.getThumb(0)){
-                    servingsMin = value;
+                    searchWrapper.setServingsMin(value);
                 }else{
-                    servingsMax = value;
+                    searchWrapper.setServingsMax(value);
                 }
+                RecipeService.getInstance().search(searchWrapper, recipeServiceGetCallBack);
             }
         });
 
@@ -326,7 +330,8 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchText = newText;
+                searchWrapper.setSearchText(newText);
+                RecipeService.getInstance().search(searchWrapper, recipeServiceGetCallBack);
                 return false;
             }
         });

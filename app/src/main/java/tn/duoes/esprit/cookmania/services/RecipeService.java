@@ -21,6 +21,7 @@ import retrofit2.http.Multipart;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.SearchWrapper;
 import tn.duoes.esprit.cookmania.utils.Constants;
 
 public final class RecipeService {
@@ -210,5 +211,10 @@ public final class RecipeService {
                 callBack.onFailure();
             }
         });
+    }
+
+    public void search(SearchWrapper searchWrapper, RecipeServiceGetCallBack callBack){
+        Log.d(TAG, "searchService: "+searchWrapper);
+        getTopRatedRecipes(callBack);
     }
 }
