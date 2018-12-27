@@ -9,6 +9,9 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -25,8 +28,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
@@ -34,7 +39,10 @@ import java.util.List;
 
 import io.apptik.widget.MultiSlider;
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.adapters.HorizontalCategoryRecipeRecyclerViewAdapter;
+import tn.duoes.esprit.cookmania.adapters.SearchResultRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
+import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.MesurementConvertionUtils;
 
@@ -101,6 +109,11 @@ public class SearchFragment extends Fragment {
     private List<String> labels = new ArrayList<>();
     private MultiSlider servingsSlider;
     private TextView minServingTV, maxServingTV;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private SearchResultRecyclerViewAdapter mAdapter;
+    private List<Recipe> mRecipes;
 
     View.OnClickListener labelClicked = new View.OnClickListener() {
         @Override
@@ -279,6 +292,26 @@ public class SearchFragment extends Fragment {
                 //Do some magic
             }
         });
+
+        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+            @Override
+            public void onResponse(List<Recipe> recipes) {
+                mAdapter.recipes = recipes;
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+        mRecyclerView = fragment.findViewById(R.id.search_result);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        mAdapter = new SearchResultRecyclerViewAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+
         return fragment;
     }
 
