@@ -12,7 +12,7 @@ public class SearchWrapper {
     public SearchWrapper(){
         labels = new ArrayList<>();
         searchText = "";
-        servingsMin = 0;
+        servingsMin = 1;
         servingsMax = 10;
         calories = "All";
     }

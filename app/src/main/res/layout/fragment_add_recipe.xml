@@ -156,6 +156,27 @@
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
+                        android:id="@+id/recipe_calories_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/recipe_duration_layout">
+
+                        <EditText
+                            android:id="@+id/add_recipe_calories_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:hint="Calories"
+                            android:inputType="number" />
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--<android.support.design.widget.TextInputLayout
                         android:id="@+id/recipe_servings_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -173,28 +194,52 @@
                             android:ems="10"
                             android:hint="Servings"
                             android:inputType="number" />
-                    </android.support.design.widget.TextInputLayout>
+                    </android.support.design.widget.TextInputLayout>-->
 
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/recipe_calories_layout"
+                    <LinearLayout
+                        android:id="@+id/recipe_servings_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/recipe_servings_layout">
+                        android:orientation="vertical">
 
-                        <EditText
-                            android:id="@+id/add_recipe_calories_et"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="5dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:text="Servings:"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/add_servings_max"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <io.apptik.widget.MultiSlider
+                            android:id="@+id/add_servings_slider"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="Calories"
-                            android:inputType="number" />
-                    </android.support.design.widget.TextInputLayout>
+                            app:rangeColor="@color/colorPrimary"
+                            app:thumbColor="@color/colorPrimary"
+                            app:scaleMax="10"
+                            app:scaleMin="1"
+                            app:thumbNumber="1"/>
+                    </LinearLayout>
+
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -229,7 +274,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginBottom="10dp"
@@ -406,122 +451,22 @@
 
                         </LinearLayout>
 
-                    </LinearLayout>
+                    </LinearLayout>-->
 
-                    <!--<com.nex3z.flowlayout.FlowLayout
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/add_label_flexlayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginBottom="5dp"
-                        app:flChildSpacing="30dp"
-                        app:flChildSpacingForLastRow="align"
-                        app:flRowSpacing="10dp">
+                        app:flexWrap="wrap"
+                        app:alignItems="flex_start"
+                        app:alignContent="flex_start"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="15dp">
 
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="Healthy"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
+                    </com.google.android.flexbox.FlexboxLayout>
 
-                        <Button
-                            android:id="@+id/button13"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="Cheap"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/button14"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="Easy"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="Fast"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/button16"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="Vegetarian"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/button15"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="For kids"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/button18"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="dinner"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/button17"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="@drawable/shape_unselected_label"
-                            android:paddingLeft="20dp"
-                            android:paddingRight="20dp"
-                            android:text="Date night"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold" />
-
-                    </com.nex3z.flowlayout.FlowLayout>-->
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>

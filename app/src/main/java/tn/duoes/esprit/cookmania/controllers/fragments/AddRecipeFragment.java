@@ -2,6 +2,7 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -17,15 +18,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.fxn.pix.Pix;
+import com.google.android.flexbox.FlexboxLayout;
 import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.apptik.widget.MultiSlider;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.AddStepActivity;
+import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.services.RecipeService;
+import tn.duoes.esprit.cookmania.utils.MesurementConvertionUtils;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 /**
@@ -110,9 +116,11 @@ public class AddRecipeFragment extends Fragment {
 
     private EditText nameEditText;
     private EditText descriptionEditText;
+    private MultiSlider servingsSlider;
+    private TextView servingsMaxTV;
     private EditText durationEditText;
-    private EditText servingsEditText;
     private EditText caloriesEditText;
+    private FlexboxLayout labelsFlexBox;
 
     private Button healthyButton;
     private Button cheapButton;
@@ -134,6 +142,23 @@ public class AddRecipeFragment extends Fragment {
         }
     }
 
+    private void insertLabelButton(String label){
+        Button button = new Button(getContext());
+        button.setOnClickListener(labelClicked);
+
+        button.setBackground(getResources().getDrawable(R.drawable.shape_unselected_label));
+        button.setPadding(MesurementConvertionUtils.dpToPx(15, getContext()), 0, MesurementConvertionUtils.dpToPx(15, getContext()), 0);
+        button.setText(label);
+        button.setTextSize(14);
+        button.setTypeface(button.getTypeface(), Typeface.BOLD);
+        button.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+        labelsFlexBox.addView(button);
+        FlexboxLayout.LayoutParams flp = (FlexboxLayout.LayoutParams) button.getLayoutParams();
+        flp.setMargins(0, 0, MesurementConvertionUtils.dpToPx(15, getContext()), MesurementConvertionUtils.dpToPx(15, getContext()));
+        flp.setFlexGrow(1);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -142,6 +167,33 @@ public class AddRecipeFragment extends Fragment {
         imageView = fragment.findViewById(R.id.add_recipe_image_view);
         labelTV = fragment.findViewById(R.id.add_recipe_label_tv);
         addImageBTError = fragment.findViewById(R.id.add_recipe_add_image_error);
+        servingsSlider = fragment.findViewById(R.id.add_servings_slider);
+        servingsMaxTV = fragment.findViewById(R.id.add_servings_max);
+        labelsFlexBox = fragment.findViewById(R.id.add_label_flexlayout);
+
+        RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
+            @Override
+            public void onResponse(List<LabelCategory> categories) {
+                for(LabelCategory category : categories){
+                    for (String label : category.getLabels()){
+                        insertLabelButton(label);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+        servingsSlider.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
+                servingsMaxTV.setText(String.valueOf(value));
+            }
+        });
+
         fragment.findViewById(R.id.add_recipe_add_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,12 +229,6 @@ public class AddRecipeFragment extends Fragment {
                     return;
                 }
 
-                if((servingsEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_servings_layout)).getEditText())).getText().toString().isEmpty()){
-                    servingsEditText.setError("Recipe servings is required!");
-                    servingsEditText.requestFocus();
-                    return;
-                }
-
                 if((caloriesEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_calories_layout)).getEditText())).getText().toString().isEmpty()){
                     caloriesEditText.setError("Recipe calories is required!");
                     caloriesEditText.requestFocus();
@@ -199,7 +245,7 @@ public class AddRecipeFragment extends Fragment {
                         nameEditText.getText().toString(),
                         descriptionEditText.getText().toString(),
                         Integer.valueOf(caloriesEditText.getText().toString()),
-                        Integer.valueOf(servingsEditText.getText().toString()),
+                        servingsSlider.getMax(),
                         Integer.valueOf(durationEditText.getText().toString()),
                         getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("user_id", ""),
                         image,
@@ -208,7 +254,7 @@ public class AddRecipeFragment extends Fragment {
             }
         });
 
-        (healthyButton = fragment.findViewById(R.id.Healthy)).setOnClickListener(labelClicked);
+        /*(healthyButton = fragment.findViewById(R.id.Healthy)).setOnClickListener(labelClicked);
         (cheapButton = fragment.findViewById(R.id.Cheap)).setOnClickListener(labelClicked);
         (easyButton = fragment.findViewById(R.id.Easy)).setOnClickListener(labelClicked);
         (fastButton = fragment.findViewById(R.id.Fast)).setOnClickListener(labelClicked);
@@ -216,7 +262,7 @@ public class AddRecipeFragment extends Fragment {
         (kidsButton = fragment.findViewById(R.id.For_Kids)).setOnClickListener(labelClicked);
         (breakfastButton = fragment.findViewById(R.id.Breakfast)).setOnClickListener(labelClicked);
         (dinnerButton = fragment.findViewById(R.id.Dinner)).setOnClickListener(labelClicked);
-        (dateButton = fragment.findViewById(R.id.Date_Night)).setOnClickListener(labelClicked);
+        (dateButton = fragment.findViewById(R.id.Date_Night)).setOnClickListener(labelClicked);*/
 
         return fragment;
     }
