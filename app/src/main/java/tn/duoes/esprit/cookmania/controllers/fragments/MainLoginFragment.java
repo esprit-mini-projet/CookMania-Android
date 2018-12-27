@@ -165,12 +165,12 @@ public class MainLoginFragment extends Fragment {
                         .putString(PREF_IMAGE_URL, user.getImageUrl())
                         .putString(PREF_USERNAME, user.getUserName())
                         .apply();
-                goToProfile();
+                goToHome();
             }
         });
     }
 
-    private void goToProfile() {
+    private void goToHome() {
         Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -189,7 +189,7 @@ public class MainLoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if(isLoggedIn()){
-            goToProfile();
+            goToHome();
             return;
         }
 

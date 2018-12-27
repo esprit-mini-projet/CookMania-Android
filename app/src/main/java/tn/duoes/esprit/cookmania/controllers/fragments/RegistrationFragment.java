@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import java.util.UUID;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -108,7 +108,7 @@ public class RegistrationFragment extends Fragment {
                         user.setId(id);
                         saveUserData(user);
                         hideSoftKeyboard();
-                        goToProfile();
+                        goToHome();
                     }
                 });
             }
@@ -117,8 +117,8 @@ public class RegistrationFragment extends Fragment {
         return v;
     }
 
-    private void goToProfile() {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+    private void goToHome() {
+        Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

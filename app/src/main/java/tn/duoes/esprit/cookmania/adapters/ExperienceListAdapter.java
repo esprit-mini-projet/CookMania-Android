@@ -1,9 +1,11 @@
 package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +45,7 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
 
     @Override
     public void onBindViewHolder(@NonNull ExperienceViewHolder experienceViewHolder, int i) {
-        experienceViewHolder.bind(mExperiences.get(i));
+        experienceViewHolder.bind(mExperiences.get(i), i);
     }
 
     @Override
@@ -76,7 +78,7 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
             mContext = context;
         }
 
-        void bind(Experience experience){
+        void bind(Experience experience, int i){
             //set experience photo
             GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + experience.getImageUrl())
                     .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).centerCrop())
@@ -94,6 +96,23 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
             mCommentText.setText(experience.getComment());
             DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             mDateText.setText(dateFormat.format(experience.getDate()));
+            //getting the pixel value of 8dp
+            Resources r = mContext.getResources();
+            int px = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8,
+                    r.getDisplayMetrics()
+            );
+            //add 8dp start margin to first item or remove it
+            if(i == 0){
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                params.setMarginStart(px);
+                itemView.setLayoutParams(params);
+            }else{
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                params.setMarginStart(0);
+                itemView.setLayoutParams(params);
+            }
         }
     }
 }

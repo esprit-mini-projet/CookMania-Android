@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -90,6 +91,7 @@ public class RecipeDetailsFragment extends Fragment
     private String mUserId;
     private List<Fragment> mRatingFragments;
     private RecipeDetailsStepAdapter.StepItemCallBack mStepItemCallBack;
+    private ProgressDialog mProgressDialog;
 
     public static RecipeDetailsFragment newInstance(String recipeId, RecipeDetailsStepAdapter.StepItemCallBack callBack) {
 
@@ -106,6 +108,8 @@ public class RecipeDetailsFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         getViewReferences(view);
+        mProgressDialog = ProgressDialog.show(getActivity(), "", "Loading...");
+        mProgressDialog.show();
         mUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
         mRecipe = new Recipe();
@@ -217,6 +221,7 @@ public class RecipeDetailsFragment extends Fragment
         }else{
             getView().findViewById(R.id.fragment_recipe_details_rating_cardview).setVisibility(View.GONE);
         }
+        mProgressDialog.dismiss();
     }
 
     private void getExperienceList() {
@@ -256,8 +261,8 @@ public class RecipeDetailsFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_recipe_details, menu);
         MenuItem item = menu.getItem(0);
-        String userId = getActivity().getSharedPreferences(getResources().getString(R.string.prefs_name), MODE_PRIVATE)
-                .getString(getResources().getString(R.string.prefs_user_id), null);
+        String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
         int recipeId = Integer.parseInt(getArguments().getString(ARGS_RECIPE_ID));
         if(!FavoriteLab.getInstance(getActivity()).recipeExists(userId, recipeId)){
             item.setTitle(R.string.favorite);
@@ -272,17 +277,17 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_favorite){
-            String userId = getActivity().getSharedPreferences(getResources().getString(R.string.prefs_name), MODE_PRIVATE)
-                    .getString(getResources().getString(R.string.prefs_user_id), null);
+            String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                    .getString(getString(R.string.prefs_user_id), null);
             int recipeId = Integer.parseInt(getArguments().getString(ARGS_RECIPE_ID));
 
-            if(item.getTitle() == getResources().getString(R.string.favorite)){
+            if(item.getTitle() == getString(R.string.favorite)){
                 item.setTitle(R.string.remove_favorite);
-                item.setIcon(R.drawable.icon_heart_outline);
+                item.setIcon(R.drawable.icon_heart_full);
                 FavoriteLab.getInstance(getActivity()).insert(recipeId, userId);
             }else{
                 item.setTitle(R.string.favorite);
-                item.setIcon(R.drawable.icon_heart_full);
+                item.setIcon(R.drawable.icon_heart_outline);
                 FavoriteLab.getInstance(getActivity()).delete(recipeId, userId);
             }
             return true;
