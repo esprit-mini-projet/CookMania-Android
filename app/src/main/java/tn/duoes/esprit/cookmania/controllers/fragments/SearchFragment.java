@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexDirection;
@@ -39,6 +40,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.hoang8f.android.segmented.SegmentedGroup;
 import io.apptik.widget.MultiSlider;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.HorizontalCategoryRecipeRecyclerViewAdapter;
@@ -109,14 +111,20 @@ public class SearchFragment extends Fragment {
     private boolean ratingUp = true, caloriesUp = false, ratingIsSelected = true, caloriesIsSelected = false;
     private int finalHeight;
     private boolean isCollapsed = false;
-    private List<String> labels = new ArrayList<>();
     private MultiSlider servingsSlider;
+    private SegmentedGroup caloriesSegmented;
     private TextView minServingTV, maxServingTV;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private SearchResultRecyclerViewAdapter mAdapter;
     private List<Recipe> mRecipes;
+
+    //Search params
+    private List<String> labels = new ArrayList<>();
+    private String searchText;
+    private int servingsMin, servingsMax;
+    private String calories;
 
     View.OnClickListener labelClicked = new View.OnClickListener() {
         @Override
@@ -184,6 +192,7 @@ public class SearchFragment extends Fragment {
         caloriesSortButton = fragment.findViewById(R.id.sortCalories);
         MaterialSearchView searchView = getActivity().findViewById(R.id.searchview);
         mRecyclerView = fragment.findViewById(R.id.search_result);
+        caloriesSegmented = fragment.findViewById(R.id.calories_segmented);
 
         //Settings
         finalHeight = collapsablelayout.getHeight();
@@ -227,6 +236,14 @@ public class SearchFragment extends Fragment {
         });
 
         //Listeners
+        caloriesSegmented.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton button = fragment.findViewById(checkedId);
+                calories = button.getText().toString();
+            }
+        });
+
         servingsSlider.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
@@ -250,9 +267,9 @@ public class SearchFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(MultiSlider multiSlider, MultiSlider.Thumb thumb, int value) {
                 if(thumb == multiSlider.getThumb(0)){
-                    Log.d(TAG, "onStopTrackingTouch: min");
+                    servingsMin = value;
                 }else{
-                    Log.d(TAG, "onStopTrackingTouch: max");
+                    servingsMax = value;
                 }
             }
         });
@@ -309,20 +326,8 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d(TAG, "onQueryTextChange: "+newText);
+                searchText = newText;
                 return false;
-            }
-        });
-
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-                //Do some magic
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                //Do some magic
             }
         });
 

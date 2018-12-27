@@ -284,7 +284,7 @@
                             </LinearLayout>
                             <info.hoang8f.android.segmented.SegmentedGroup
                                 xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
-                                android:id="@+id/segmented2"
+                                android:id="@+id/calories_segmented"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
