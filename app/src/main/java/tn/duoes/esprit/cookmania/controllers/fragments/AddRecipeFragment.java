@@ -143,20 +143,22 @@ public class AddRecipeFragment extends Fragment {
     }
 
     private void insertLabelButton(String label){
-        Button button = new Button(getContext());
-        button.setOnClickListener(labelClicked);
+        if(getContext() != null){
+            Button button = new Button(getContext());
+            button.setOnClickListener(labelClicked);
 
-        button.setBackground(getResources().getDrawable(R.drawable.shape_unselected_label));
-        button.setPadding(MesurementConvertionUtils.dpToPx(15, getContext()), 0, MesurementConvertionUtils.dpToPx(15, getContext()), 0);
-        button.setText(label);
-        button.setTextSize(14);
-        button.setTypeface(button.getTypeface(), Typeface.BOLD);
-        button.setTextColor(getResources().getColor(R.color.colorPrimary));
+            button.setBackground(getResources().getDrawable(R.drawable.shape_unselected_label));
+            button.setPadding(MesurementConvertionUtils.dpToPx(15, getContext()), 0, MesurementConvertionUtils.dpToPx(15, getContext()), 0);
+            button.setText(label);
+            button.setTextSize(14);
+            button.setTypeface(button.getTypeface(), Typeface.BOLD);
+            button.setTextColor(getResources().getColor(R.color.colorPrimary));
 
-        labelsFlexBox.addView(button);
-        FlexboxLayout.LayoutParams flp = (FlexboxLayout.LayoutParams) button.getLayoutParams();
-        flp.setMargins(0, 0, MesurementConvertionUtils.dpToPx(15, getContext()), MesurementConvertionUtils.dpToPx(15, getContext()));
-        flp.setFlexGrow(1);
+            labelsFlexBox.addView(button);
+            FlexboxLayout.LayoutParams flp = (FlexboxLayout.LayoutParams) button.getLayoutParams();
+            flp.setMargins(0, 0, MesurementConvertionUtils.dpToPx(15, getContext()), MesurementConvertionUtils.dpToPx(15, getContext()));
+            flp.setFlexGrow(1);
+        }
     }
 
     @Override

@@ -68,6 +68,7 @@ public class HomeFragment extends Fragment{
     private Fragment topRatedFragment;
     private Fragment healthyFragment;
     private Fragment cheapFragment;
+    private Fragment feedFragment;
     public static CustomScrollView scrollView;
 
 
@@ -81,6 +82,7 @@ public class HomeFragment extends Fragment{
         }
 
         suggestedFragment = SuggestedFragment.newInstance(null, null);
+        feedFragment = FeedFragment.newInstance(null, null);
     }
 
     private Fragment buildCategoryFragment(String name, List<Recipe> recipes){
@@ -101,6 +103,7 @@ public class HomeFragment extends Fragment{
 
         //Fragment suggestedFragment = SuggestedFragment.newInstance(null, null);
         getFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();
+        getFragmentManager().beginTransaction().replace(R.id.home_feed_container, feedFragment).commit();
 
 
         if(topRatedFragment == null || healthyFragment == null || cheapFragment == null){

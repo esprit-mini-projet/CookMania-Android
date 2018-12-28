@@ -24,7 +24,7 @@
             android:id="@+id/home_toprated_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_marginTop="20dp">
 
         </FrameLayout>
 
@@ -32,7 +32,7 @@
             android:id="@+id/home_healthy_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="10dp">
 
         </FrameLayout>
 
@@ -40,8 +40,14 @@
             android:id="@+id/home_cheap_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp">
+            android:layout_marginTop="10dp">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/home_feed_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         </FrameLayout>
 

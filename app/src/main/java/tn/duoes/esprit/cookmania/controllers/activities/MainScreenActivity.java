@@ -24,6 +24,7 @@ import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.MainScreenPagerAdapter;
 import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.CategoryRecipesFragment;
+import tn.duoes.esprit.cookmania.controllers.fragments.FeedFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
@@ -38,7 +39,8 @@ public class MainScreenActivity extends AppCompatActivity
         AddRecipeFragment.OnFragmentInteractionListener,
         ShoppingListFragment.OnFragmentInteractionListener,
         SuggestedFragment.OnFragmentInteractionListener,
-        CategoryRecipesFragment.OnFragmentInteractionListener {
+        CategoryRecipesFragment.OnFragmentInteractionListener,
+        FeedFragment.OnFragmentInteractionListener {
 
     private static final String TAG = MainScreenActivity.class.getSimpleName();
 

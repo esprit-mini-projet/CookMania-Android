@@ -11,27 +11,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="5dp">
 
         <TextView
             android:id="@+id/category_name_tv"
-            android:layout_width="303dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:text="TextView"
             android:textColor="@color/colorAccent"
             android:textSize="18sp"
             android:textStyle="bold" />
-
-        <Button
+        <TextView
             android:id="@+id/category_more_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:text="more"
-            android:textColor="@android:color/holo_blue_dark" />
+            android:text="MORE"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_blue_dark"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

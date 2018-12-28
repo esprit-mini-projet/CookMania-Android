@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.Objects;
 
 import jp.wasabeef.blurry.Blurry;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -51,15 +53,9 @@ public class RecipeDialog extends AppCompatDialogFragment {
 
         ImageView recipeIv = view.findViewById(R.id.dialog_recipe_iv);
         ImageView recipeIvBackground = view.findViewById(R.id.dialog_bg);
-        //Glide.with(view).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(recipeIv);
-
-        Glide.with(this).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                recipeIv.setImageDrawable(resource);
-                Blurry.with(view.getContext()).from(((BitmapDrawable)resource).getBitmap()).into(recipeIvBackground);
-            }
-        });
+        Glide.with(view).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(recipeIv);
+        Glide.with(view.getContext()).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).apply(RequestOptions.bitmapTransform(new BlurTransformation(25,3)))
+                .into(recipeIvBackground);
 
 
         Glide.with(view).load(userImageUrl).into((ImageView)view.findViewById(R.id.dialog_user_iv));

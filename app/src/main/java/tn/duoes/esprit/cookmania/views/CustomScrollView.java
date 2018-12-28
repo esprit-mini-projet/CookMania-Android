@@ -1,11 +1,12 @@
 package tn.duoes.esprit.cookmania.views;
 
 import android.content.Context;
+import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
-public class CustomScrollView extends ScrollView {
+public class CustomScrollView extends NestedScrollView {
     // true if we can scroll (not locked)
     // false if we cannot scroll (locked)
     private boolean mScrollable = true;
