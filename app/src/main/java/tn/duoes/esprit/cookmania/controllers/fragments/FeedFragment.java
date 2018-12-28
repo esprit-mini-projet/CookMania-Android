@@ -20,6 +20,7 @@ import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.FeedAdapter;
 import tn.duoes.esprit.cookmania.adapters.SearchResultRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
+import tn.duoes.esprit.cookmania.models.FeedResult;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 
@@ -90,11 +91,11 @@ public class FeedFragment extends Fragment {
         feedAdapter = new FeedAdapter();
         feedRecipesRv.setAdapter(feedAdapter);
 
-        RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+        RecipeService.getInstance().getFeed("f_1491707600961513", new RecipeService.FeedGetCallBack() {
             @Override
-            public void onResponse(List<Recipe> recipes) {
-                Log.d(TAG, "onResponse: "+recipes);
-                feedAdapter.recipes = recipes;
+            public void onResponse(List<FeedResult> feedResults) {
+                Log.d(TAG, "onResponse: "+feedResults);
+                feedAdapter.feedResults = feedResults;
                 feedAdapter.notifyDataSetChanged();
             }
 

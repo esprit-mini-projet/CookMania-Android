@@ -20,6 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
+import tn.duoes.esprit.cookmania.models.FeedResult;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
@@ -36,10 +38,13 @@ import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private static final String TAG = FeedAdapter.class.getSimpleName();
 
-    public List<Recipe> recipes;
+    public List<FeedResult> feedResults;
+    private SimpleDateFormat simpleDateFormat;
 
     public FeedAdapter(){
-        this.recipes = new ArrayList<>();
+        Log.d(TAG, "FeedAdapter: ");
+        this.feedResults = new ArrayList<>();
+        simpleDateFormat = new SimpleDateFormat("dd MMM, yyyy");
     }
 
     @NonNull
@@ -51,48 +56,33 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        Recipe recipe = recipes.get(position);
+        FeedResult feedResult = feedResults.get(position);
 
-        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.userIv);
 
-        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.recipeFgIv);
-        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).apply(RequestOptions.bitmapTransform(new BlurTransformation(25,3)))
+        Glide.with(viewHolder.itemView).load(feedResult.getUser().getImageUrl()).into(viewHolder.userIv);
+
+        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+feedResult.getRecipe().getImageURL()).into(viewHolder.recipeFgIv);
+        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+feedResult.getRecipe().getImageURL()).apply(RequestOptions.bitmapTransform(new BlurTransformation(25,3)))
                 .into(viewHolder.recipeBgIv);
 
-        viewHolder.userNameTv.setText("Seif Abdennadher");
-        viewHolder.userDateTv.setText("25 Dec, 2018");
-        viewHolder.recipeViewsTv.setText(String.valueOf(recipe.getViews()));
-        viewHolder.recipeNameTv.setText(recipe.getName());
-        viewHolder.timeTv.setText(getTime(recipe.getDate()));
-        viewHolder.recipeRating.setRating(recipe.getRating());
-        viewHolder.recipe = recipe;
+        viewHolder.userNameTv.setText(feedResult.getUser().getUserName());
+        viewHolder.userDateTv.setText(simpleDateFormat.format(feedResult.getUser().getDate()));
+        viewHolder.recipeViewsTv.setText(String.valueOf(feedResult.getRecipe().getViews()));
+        viewHolder.recipeNameTv.setText(feedResult.getRecipe().getName());
+        viewHolder.timeTv.setText(getTime(feedResult.getRecipe().getDate()));
+        viewHolder.recipeRating.setRating(feedResult.getRecipe().getRating());
+        viewHolder.recipe = feedResult.getRecipe();
         viewHolder.favoriteBt.setTag(false);
     }
 
     private String getTime(Date startDate){
         Date endDate = new Date();
-        //milliseconds
-        long different = endDate.getTime() - startDate.getTime();
 
-        System.out.println("startDate : " + startDate);
-        System.out.println("endDate : "+ endDate);
-        System.out.println("different : " + different);
-
-        long secondsInMilli = 1000;
-        long minutesInMilli = secondsInMilli * 60;
-        long hoursInMilli = minutesInMilli * 60;
-        long daysInMilli = hoursInMilli * 24;
-
-        long elapsedDays = different / daysInMilli;
-        different = different % daysInMilli;
-
-        long elapsedHours = different / hoursInMilli;
-        different = different % hoursInMilli;
-
-        long elapsedMinutes = different / minutesInMilli;
-        different = different % minutesInMilli;
-
-        long elapsedSeconds = different / secondsInMilli;
+        long diff = endDate.getTime() - startDate.getTime();
+        long elapsedSeconds = diff / 1000;
+        long elapsedMinutes = elapsedSeconds / 60;
+        long elapsedHours = elapsedMinutes / 60;
+        long elapsedDays = elapsedHours / 24;
 
         if(elapsedDays==0){
             if(elapsedHours == 0){
@@ -108,7 +98,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return recipes.size();
+        return feedResults.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

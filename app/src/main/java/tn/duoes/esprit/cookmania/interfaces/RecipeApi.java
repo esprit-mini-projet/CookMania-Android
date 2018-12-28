@@ -13,6 +13,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import tn.duoes.esprit.cookmania.models.FeedResult;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.SearchResult;
@@ -50,4 +51,7 @@ public interface RecipeApi {
 
     @POST("search")
     Call<List<SearchResult>> search(@Body HashMap map);
+
+    @GET("feed/{user_id}")
+    Call<List<FeedResult>> getFeed(@Path("user_id") String userId);
 }
