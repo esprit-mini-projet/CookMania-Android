@@ -21,6 +21,8 @@ import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.controllers.dialogs.RecipeDialog;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.User;
+import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
@@ -48,10 +50,15 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Recipe recipe = recipes.get(position);
-
+        UserService.getInstance().getUserById(recipe.getUserId(), new UserService.CreateFromSocialMediaCallBack() {
+            @Override
+            public void onCompletion(User user) {
+                viewHolder.user = user;
+                Glide.with(viewHolder.itemView).load(user.getImageUrl()).into(viewHolder.userImageView);
+            }
+        });
         viewHolder.recipe = recipe;
         Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.recipeImageView);
-        Glide.with(viewHolder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL()).into(viewHolder.userImageView);
         viewHolder.ratingBar.setRating(recipe.getRating());
         viewHolder.recipeName.setText(recipe.getName());
     }
@@ -66,6 +73,7 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
         RatingBar ratingBar;
         TextView recipeName;
         Recipe recipe;
+        User user;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,8 +94,8 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
                     MainScreenActivity.viewPager.setPagingEnabled(false);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(RecipeDialog.RECIPE_KEY, recipe);
-                    bundle.putString(RecipeDialog.USER_IMAGE_KEY, Constants.UPLOAD_FOLDER_URL+"/"+recipe.getImageURL());
-                    bundle.putString(RecipeDialog.USER_NAME_KEY, "Seif Abdennadher");
+                    bundle.putString(RecipeDialog.USER_IMAGE_KEY, user.getImageUrl());
+                    bundle.putString(RecipeDialog.USER_NAME_KEY, user.getUserName());
                     recipeDialog.setArguments(bundle);
                     recipeDialog.show(activity.getSupportFragmentManager(), "TEST");
                     return false;

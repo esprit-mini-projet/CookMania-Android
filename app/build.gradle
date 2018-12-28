@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -84,9 +85,10 @@ dependencies {
     //MaterialSearch
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
-    //Blurry
-    implementation 'jp.wasabeef:blurry:3.0.0'
-
     //Glide Transformation
     implementation "jp.wasabeef:glide-transformations:4.0.0"
+
+    //Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }

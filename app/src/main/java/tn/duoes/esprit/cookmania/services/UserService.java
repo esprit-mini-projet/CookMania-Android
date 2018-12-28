@@ -148,6 +148,17 @@ public class UserService {
         });
     }
 
+    public void getUserById(String id, final CreateFromSocialMediaCallBack callBack){
+        User user = new User();
+        user.setEmail("kastali@gmail.om");
+        user.setPassword("12345");
+        signInWithEmail(user, new SignInWithEmailCallBack() {
+            @Override
+            public void onCompletion(User user, int statusCode) {
+                callBack.onCompletion(user);
+            }
+        });
+    }
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);
