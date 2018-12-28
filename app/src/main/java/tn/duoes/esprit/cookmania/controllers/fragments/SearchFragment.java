@@ -22,9 +22,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.android.flexbox.AlignItems;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -145,9 +151,7 @@ public class SearchFragment extends Fragment {
     RecipeService.RecipeServiceGetCallBack recipeServiceGetCallBack = new RecipeService.RecipeServiceGetCallBack() {
         @Override
         public void onResponse(List<Recipe> recipes) {
-            mAdapter.recipes = sortRecipes(recipes);
-            mAdapter.notifyDataSetChanged();
-            resultsCountTV.setText(recipes.size()+" recipes found.");
+            updateResults(recipes);
         }
 
         @Override
@@ -155,6 +159,15 @@ public class SearchFragment extends Fragment {
 
         }
     };
+
+    private void updateResults(List<Recipe> recipes){
+        mRecyclerView.setAdapter(null);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.recipes = recipes;
+        mAdapter.notifyDataSetChanged();
+        mRecyclerView.invalidate();
+        resultsCountTV.setText(recipes.size()+" recipes found.");
+    }
 
     private void insertLabelButton(String label){
         Button button = new Button(getContext());
@@ -305,8 +318,7 @@ public class SearchFragment extends Fragment {
                 ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.white));
                 caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
                 ratingIsSelected = true;
-                mAdapter.recipes = sortRecipes(mAdapter.recipes);
-                mAdapter.notifyDataSetChanged();
+                updateResults(sortRecipes(mAdapter.recipes));
             }
         });
 
@@ -322,8 +334,7 @@ public class SearchFragment extends Fragment {
                 caloriesSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.white));
                 ratingSortButton.getCompoundDrawables()[2].setTint(getResources().getColor(R.color.colorPrimary));
                 caloriesIsSelected = true;
-                mAdapter.recipes = sortRecipes(mAdapter.recipes);
-                mAdapter.notifyDataSetChanged();
+                updateResults(sortRecipes(mAdapter.recipes));
             }
         });
 
