@@ -64,8 +64,8 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
 
                                     sendNotification(EXPERIENCE_CHANNEL_ID,
                                         EXPERIENCE_CHANNEL_NAME,
-                                        remoteMessage.getNotification().getTitle(),
-                                        remoteMessage.getNotification().getBody(),
+                                        data.get("title"),
+                                        data.get("body"),
                                         resource,
                                         intent);
                                 }
@@ -74,12 +74,6 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                 });
             break;
         }
-    }
-
-    @Override
-    public void onNewToken(String s) {
-        super.onNewToken(s);
-        Log.d(TAG, "onNewToken: "+s);
     }
 
     private void sendNotification(String channelId, String channelName, String title, String messageBody, Bitmap largeIcon, Intent actionIntent) {
