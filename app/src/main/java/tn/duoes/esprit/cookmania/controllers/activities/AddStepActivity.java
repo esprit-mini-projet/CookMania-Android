@@ -155,7 +155,7 @@ public class AddStepActivity extends AppCompatActivity {
                         Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipeId+"");
-                        intent.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
                         progressDialog.dismiss();
                         Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
                         startActivity(intent);

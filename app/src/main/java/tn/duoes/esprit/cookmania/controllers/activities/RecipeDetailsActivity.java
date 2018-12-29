@@ -20,7 +20,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
     private static final String TAG = "RecipeDetailsActivity";
     public static final String EXTRA_RECIPE_ID = "recipeId";
-    public static final String EXTRA_PARENT_ACTIVITY_CLASS = "class";
+    public static final String EXTRA_SHOULD_FINISH = "should_finish";
 
     private boolean timerIsShown = false;
     private BlurLayout mBlurLayout;
@@ -62,16 +62,9 @@ public class RecipeDetailsActivity extends AppCompatActivity
                 removeTimerFragment();
                 return true;
             }
-            try {
-                Class parentClass = Class.forName(getIntent().getStringExtra(EXTRA_PARENT_ACTIVITY_CLASS));
-                if(parentClass == RecipeDetailsActivity.class){
-                    finish();
-                }else{
-                    startActivity(new Intent(this, parentClass));
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+            if(shouldFinish) finish();
+            else startActivity(new Intent(this, MainScreenActivity.class));
             return true;
         }else{
             return super.onOptionsItemSelected(item);
@@ -104,7 +97,9 @@ public class RecipeDetailsActivity extends AppCompatActivity
             removeTimerFragment();
             return;
         }
-        super.onBackPressed();
+        boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+        if(shouldFinish) finish();
+        else startActivity(new Intent(this, MainScreenActivity.class));
     }
 
     @Override

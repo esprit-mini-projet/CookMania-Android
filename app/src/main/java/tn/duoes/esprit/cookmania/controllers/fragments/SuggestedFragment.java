@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Suggestion;
 import tn.duoes.esprit.cookmania.services.SuggestionService;
@@ -96,7 +95,7 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(0).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                        i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
                         v.getContext().startActivity(i);
                     }
                 });
@@ -107,7 +106,7 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(1).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                        i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
                         v.getContext().startActivity(i);
                     }
                 });
@@ -118,7 +117,7 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(2).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                        i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
                         v.getContext().startActivity(i);
                     }
                 });
@@ -129,7 +128,7 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(3).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                        i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
                         v.getContext().startActivity(i);
                     }
                 });

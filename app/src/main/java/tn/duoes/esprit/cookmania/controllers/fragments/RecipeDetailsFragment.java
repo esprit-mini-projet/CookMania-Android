@@ -357,6 +357,7 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
             @Override
             public void onGetExperiencesSuccess(List<Experience> experiences) {
+                getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.VISIBLE);
                 ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
                 adapter.setExperiences(experiences);
                 adapter.notifyDataSetChanged();
@@ -364,7 +365,7 @@ public class RecipeDetailsFragment extends Fragment
 
             @Override
             public void onGetExperiencesFailure() {
-                //Do nothing
+                //
             }
         });
     }
@@ -397,6 +398,10 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
             @Override
             public void onGetExperiencesSuccess(List<Experience> experiences) {
+                if(experiences.size() == 0){
+                    getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
+                    return;
+                }
                 ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
                 adapter.setExperiences(experiences);
                 adapter.notifyDataSetChanged();
@@ -404,7 +409,7 @@ public class RecipeDetailsFragment extends Fragment
 
             @Override
             public void onGetExperiencesFailure() {
-                //Do nothing
+                getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
             }
         });
     }
@@ -435,6 +440,10 @@ public class RecipeDetailsFragment extends Fragment
 
     @Override
     public void onGetExperiencesSuccess(List<Experience> experiences) {
+        if(experiences.size() == 0){
+            getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
+            return;
+        }
         setupExperienceList(experiences);
     }
 
@@ -457,7 +466,7 @@ public class RecipeDetailsFragment extends Fragment
     public void onSimilarRecipeClicked(Recipe recipe) {
         Intent i = new Intent(getActivity(), RecipeDetailsActivity.class);
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
-        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, getActivity().getClass().getCanonicalName());
+        i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
     }
 }
