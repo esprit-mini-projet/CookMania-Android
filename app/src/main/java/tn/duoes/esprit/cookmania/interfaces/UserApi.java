@@ -22,4 +22,10 @@ public interface UserApi {
 
     @POST("signin")
     Call<User> signInWithEmail(@Body User user);
+
+    @GET("{id}")
+    Call<User> getUserById(@Path("id") String id);
+
+    @GET("cover/{id}")
+    Call<String> getUserCoverPhoto(@Path("id") String id);
 }

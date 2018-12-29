@@ -35,7 +35,7 @@ public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
                 fragment = ShoppingListFragment.newInstance(null, null);
                 break;
             case 4:
-                fragment = ProfileFragment.newInstance(null, null);
+                fragment = ProfileFragment.newInstance();
                 break;
         }
         return fragment;

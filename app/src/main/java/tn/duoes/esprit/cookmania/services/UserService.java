@@ -156,6 +156,58 @@ public class UserService {
         });
     }
 
+    public void getUserById(String id, final GetUserByIdCallBack callBack){
+        Call<User> call = mUserApi.getUserById(id);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "getUserById: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(null);
+                    return;
+                }
+                Log.d(TAG, "getUserById: body: " + response.body());
+                callBack.onCompletion(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onCompletion(null);
+            }
+        });
+    }
+
+    public void getUserCoverPhoto(String id, final GetUserCoverPhotoCallBack callBack){
+        Call<String> call = mUserApi.getUserCoverPhoto(id);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "getUserCoverPhoto: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(null);
+                    return;
+                }
+                Log.d(TAG, "getUserCoverPhoto: body: " + response.body());
+                callBack.onCompletion(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(TAG, "onGetUserCoverPhotoFailure: ", t);
+                callBack.onCompletion(null);
+            }
+        });
+    }
+
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);
@@ -168,5 +220,11 @@ public class UserService {
     }
     public interface SignInWithEmailCallBack{
         void onCompletion(User user, int statusCode);
+    }
+    public interface GetUserByIdCallBack{
+        void onCompletion(User user);
+    }
+    public interface GetUserCoverPhotoCallBack{
+        void onCompletion(String imageUrl);
     }
 }

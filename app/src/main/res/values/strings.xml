@@ -71,6 +71,11 @@
     <string name="experiences">Experiences</string>
     <string name="similar">Similar</string>
     <string name="prefs_uuid">uuid</string>
+    <string name="my_recipes">My recipes</string>
+    <string name="recipes">Recipes</string>
+    <string name="favorites">Favorites</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>

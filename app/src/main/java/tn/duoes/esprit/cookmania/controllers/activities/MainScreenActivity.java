@@ -1,24 +1,22 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.MainScreenPagerAdapter;
 import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.CategoryRecipesFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
-import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SuggestedFragment;
 
 public class MainScreenActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener,
         AddRecipeFragment.OnFragmentInteractionListener,
         ShoppingListFragment.OnFragmentInteractionListener,
