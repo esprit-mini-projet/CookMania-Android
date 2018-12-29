@@ -2,10 +2,14 @@ package tn.duoes.esprit.cookmania.interfaces;
 
 import com.google.gson.JsonObject;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import tn.duoes.esprit.cookmania.models.User;
 
@@ -28,4 +32,9 @@ public interface UserApi {
 
     @GET("cover/{id}")
     Call<String> getUserCoverPhoto(@Path("id") String id);
+
+    @Multipart
+    @POST("update_photo")
+    Call<String> updatePhoto(@Part MultipartBody.Part image,
+                               @Part("user_id") RequestBody userId);
 }

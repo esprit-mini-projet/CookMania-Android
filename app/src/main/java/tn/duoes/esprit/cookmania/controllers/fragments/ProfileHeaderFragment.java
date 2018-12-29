@@ -1,7 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,9 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.fxn.pix.Pix;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import tn.duoes.esprit.cookmania.R;
@@ -27,6 +32,7 @@ import tn.duoes.esprit.cookmania.utils.GlideApp;
 public class ProfileHeaderFragment extends Fragment {
 
     public static final String ARG_USER_ID = "user_id";
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private ImageView mUserImage;
     private ImageView mCameraImage;
@@ -83,22 +89,32 @@ public class ProfileHeaderFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_header, container, false);
         getViewReferences(view);
+        //hide or show camera
         String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
         String userId = getArguments().getString(ARG_USER_ID);
-        //hide or show camera
-        if(connectedUserId.equals(userId)){
+        mUser = new User();
+        mUser.setId(userId);
+        String loginMethod = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_signin_method), "");
+        boolean isEmailMethod = loginMethod.equals(getString(R.string.method_email));
+        if(connectedUserId.equals(userId) && isEmailMethod){
             mCameraImage.setVisibility(View.VISIBLE);
             mCameraImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //
+                    Pix.start(ProfileHeaderFragment.this, REQUEST_IMAGE_CAPTURE, 1);
                 }
             });
         }
-        UserService.getInstance().getUserById(userId, mUserCallback);
+        UserService.getInstance().getUserById(mUser.getId(), mUserCallback);
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     private void updateUI() {
@@ -127,6 +143,35 @@ public class ProfileHeaderFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
+            updateUserPhoto(data);
+        }
+    }
+
+    private void updateUserPhoto(Intent data) {
+        ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+        String imagePath = returnValue.get(0);
+        GlideApp.with(this).load(imagePath)
+                .apply(RequestOptions.circleCropTransform())
+                .into(mUserImage);
+        UserService.getInstance().updateUserPhoto(new File(imagePath), mUser.getId(), new UserService.updateUserPhotoCallBack() {
+            @Override
+            public void onCompletion(String imageUrl) {
+                if(imageUrl == null){
+                    //TODO: show error message
+                    return;
+                }
+                getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                        .edit()
+                        .putString(getString(R.string.pref_image_url), Constants.UPLOAD_FOLDER_URL + "/" + imageUrl)
+                        .apply();
+            }
+        });
     }
 
 }

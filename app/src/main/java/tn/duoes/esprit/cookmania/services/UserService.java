@@ -5,8 +5,12 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.io.File;
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -208,6 +212,30 @@ public class UserService {
         });
     }
 
+    public void updateUserPhoto(File photo, String userId, final updateUserPhotoCallBack callBack){
+        RequestBody requestImage = RequestBody.create(MediaType.parse("image"), photo);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", photo.getName(), requestImage);
+        Call<String> call = mUserApi.updatePhoto(body,
+                RequestBody.create(MediaType.parse("text/plain"), userId));
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+                    callBack.onCompletion(response.body());
+                    return;
+                }
+                callBack.onCompletion(null);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onCompletion(null);
+            }
+        });
+    }
+
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);
@@ -225,6 +253,9 @@ public class UserService {
         void onCompletion(User user);
     }
     public interface GetUserCoverPhotoCallBack{
+        void onCompletion(String imageUrl);
+    }
+    public interface updateUserPhotoCallBack{
         void onCompletion(String imageUrl);
     }
 }
