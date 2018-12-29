@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,7 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.adapters.ProfilePagerAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.SettingsActivity;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
@@ -48,6 +54,14 @@ public class ProfileFragment extends Fragment {
                 }, 1000);
             }
         });
+        String userId = getArguments().getString(ARG_USER_ID);
+        TabLayout tabLayout = view.findViewById(R.id.fragment_profile_tab_layout);
+        ViewPager viewPager = view.findViewById(R.id.fragment_profile_view_pager);
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(ProfileRecipeListFragment.newInstance(userId));
+        ProfilePagerAdapter adapter = new ProfilePagerAdapter(getChildFragmentManager(), fragments);
+        viewPager.setAdapter(adapter);
+        //tabLayout.setupWithViewPager(viewPager, true);
        return view;
     }
 

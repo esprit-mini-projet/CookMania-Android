@@ -46,4 +46,7 @@ public interface RecipeApi {
     @POST("similar")
     Call<List<Recipe>> getSimilarRecipes(@Field("recipe_id") int recipeId, @Field("labels") String labels);
 
+    @GET("user/{id}")
+    Call<List<Recipe>> getRecipesByUser(@Path("id") String userId);
+
 }

@@ -212,4 +212,24 @@ public final class RecipeService {
             }
         });
     }
+
+    public void getRecipesByUser(final String userId, final RecipeServiceGetCallBack callBack){
+        Call<List<Recipe>> call = mRecipeApi.getRecipesByUser(userId);
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                if(response.isSuccessful()){
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onResponse(new ArrayList<Recipe>());
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
 }
