@@ -1,9 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 
 import com.facebook.login.LoginManager;
@@ -39,6 +39,16 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Nullable
