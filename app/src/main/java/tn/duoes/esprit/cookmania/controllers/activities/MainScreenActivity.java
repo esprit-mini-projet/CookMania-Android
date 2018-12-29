@@ -31,7 +31,7 @@ public class MainScreenActivity extends AppCompatActivity
         TabLayout tabLayout = findViewById(R.id.mainscreen_tablayout);
         final ViewPager viewPager = findViewById(R.id.mainscreen_viewpager);
 
-        viewPager.setAdapter(new MainScreenPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount()));
+        viewPager.setAdapter(new MainScreenPagerAdapter(this, getSupportFragmentManager(), tabLayout.getTabCount()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {

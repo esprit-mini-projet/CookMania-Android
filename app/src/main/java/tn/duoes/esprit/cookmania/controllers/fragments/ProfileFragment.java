@@ -19,11 +19,14 @@ import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class ProfileFragment extends Fragment {
 
+    public static final String ARG_USER_ID = "user_id";
+
     private ProfileHeaderFragment mProfileHeaderFragment;
 
-    public static ProfileFragment newInstance() {
+    public static ProfileFragment newInstance(String userId) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -33,6 +36,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
        View view = inflater.inflate(R.layout.fragment_profile, container, false);
         final SwipeRefreshLayout swipeRefreshLayout =  view.findViewById(R.id.fragment_profile_swipe_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -50,8 +54,10 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE).getString(getString(R.string.prefs_user_id), null);
+        String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
+        String userId = getArguments().getString(ARG_USER_ID);
+        setHasOptionsMenu(userId.equals(connectedUserId));
         mProfileHeaderFragment = ProfileHeaderFragment.newInstance(userId);
         getChildFragmentManager().beginTransaction()
                 .add(R.id.fragment_profile_header_container, mProfileHeaderFragment)
@@ -69,7 +75,7 @@ public class ProfileFragment extends Fragment {
         switch (item.getItemId()){
             case R.id.menu_settings:
                 startActivity(NavigationUtils.getNavigationFormattedIntent(getContext(), SettingsActivity.class));
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
