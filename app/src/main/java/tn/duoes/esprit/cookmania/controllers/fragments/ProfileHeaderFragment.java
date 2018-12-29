@@ -107,7 +107,7 @@ public class ProfileHeaderFragment extends Fragment {
                 }
             });
         }
-        UserService.getInstance().getUserById(mUser.getId(), mUserCallback);
+        update();
 
         return view;
     }
@@ -172,6 +172,10 @@ public class ProfileHeaderFragment extends Fragment {
                         .apply();
             }
         });
+    }
+
+    public void update(){
+        UserService.getInstance().getUserById(mUser.getId(), mUserCallback);
     }
 
 }
