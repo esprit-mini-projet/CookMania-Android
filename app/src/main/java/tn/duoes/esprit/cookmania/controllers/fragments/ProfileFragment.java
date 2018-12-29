@@ -28,6 +28,7 @@ public class ProfileFragment extends Fragment {
     public static final String ARG_USER_ID = "user_id";
 
     private ProfileHeaderFragment mProfileHeaderFragment;
+    private ProfileRecipeListFragment mRecipeListFragment;
 
     public static ProfileFragment newInstance(String userId) {
         ProfileFragment fragment = new ProfileFragment();
@@ -47,6 +48,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onRefresh() {
                 mProfileHeaderFragment.update();
+                mRecipeListFragment.update();
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
                         swipeRefreshLayout.setRefreshing(false);
@@ -58,7 +60,8 @@ public class ProfileFragment extends Fragment {
         TabLayout tabLayout = view.findViewById(R.id.fragment_profile_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.fragment_profile_view_pager);
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(ProfileRecipeListFragment.newInstance(userId));
+        mRecipeListFragment = ProfileRecipeListFragment.newInstance(userId);
+        fragments.add(mRecipeListFragment);
         ProfilePagerAdapter adapter = new ProfilePagerAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
         //tabLayout.setupWithViewPager(viewPager, true);

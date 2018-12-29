@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
@@ -25,6 +26,8 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
     private static final String TAG = "ProfileRecipeListFrag";
     public static final String ARG_USER_ID = "user_id";
     private RecyclerView mRecyclerView;
+    private List<Recipe> mRecipes = new ArrayList<>();
+    private ProfileRecipeListAdapter mAdapter;
 
     public static ProfileRecipeListFragment newInstance(String userId) {
 
@@ -41,8 +44,9 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
         View view = inflater.inflate(R.layout.fragment_profile_user_recipes, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_profile_user_recipe_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        String userId = getArguments().getString(ARG_USER_ID);
-        RecipeService.getInstance().getRecipesByUser(userId, this);
+        mAdapter = new ProfileRecipeListAdapter(mRecipes, getActivity(), this);
+        mRecyclerView.setAdapter(mAdapter);
+        update();
         Log.i(TAG, "onCreateView: ");
         return view;
     }
@@ -55,8 +59,9 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
             mRecyclerView.setVisibility(View.GONE);
             return;
         }
-        ProfileRecipeListAdapter adapter = new ProfileRecipeListAdapter(recipes, getActivity(), this);
-        mRecyclerView.setAdapter(adapter);
+        mRecipes.clear();
+        mRecipes.addAll(recipes);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -72,5 +77,10 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, "" + recipeId);
         i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
+    }
+
+    public void update(){
+        String userId = getArguments().getString(ARG_USER_ID);
+        RecipeService.getInstance().getRecipesByUser(userId, this);
     }
 }

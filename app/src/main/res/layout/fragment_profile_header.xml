@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:layout_height="230dp">
+    tools:layout_height="200dp">
 
     <ImageView
         android:id="@+id/fragment_profile_header_cover_image"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="140dp"
         tools:src="@drawable/im_2"
         tools:scaleType="centerCrop"/>
 
