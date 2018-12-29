@@ -1,8 +1,10 @@
 package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +44,7 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
 
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder recipeViewHolder, int i) {
-        recipeViewHolder.bind(mRecipes.get(i));
+        recipeViewHolder.bind(mRecipes.get(i), i);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
             mCallBack = callBack;
         }
 
-        void bind(final Recipe recipe){
+        void bind(final Recipe recipe, int i){
             GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + recipe.getImageURL())
                     .centerCrop()
                     .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).centerCrop())
@@ -94,6 +96,23 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
                     mCallBack.onRecipeItemClicked(recipe.getId());
                 }
             });
+            //getting the pixel value of 8dp
+            Resources r = mContext.getResources();
+            int px = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8,
+                    r.getDisplayMetrics()
+            );
+            //add 8dp top margin to first item or remove it
+            if(i == 0){
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                params.topMargin = px;
+                itemView.setLayoutParams(params);
+            }else{
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                params.topMargin = 0;
+                itemView.setLayoutParams(params);
+            }
         }
 
         public interface RecipeItemCallBack{
