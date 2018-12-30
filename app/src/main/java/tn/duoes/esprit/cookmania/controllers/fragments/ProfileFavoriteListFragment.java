@@ -53,22 +53,17 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
     @Override
     public void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: ");
         update();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart: ");
     }
 
     @Override
     public void onResponse(List<Recipe> recipes) {
-        Log.i(TAG, "onResponse: size: " + recipes.size());
         if(recipes.size() == 0){
-            getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
-            mRecyclerView.setVisibility(View.GONE);
             return;
         }
         mRecipes.clear();
@@ -78,7 +73,6 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
 
     @Override
     public void onFailure() {
-        Log.i(TAG, "onFailure: ");
         getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
     }
@@ -95,6 +89,12 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
         String userId = mContext.getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), "");
         List<Integer> favorites = FavoriteLab.getInstance(mContext).getList(userId);
+        if(favorites.size() == 0){
+            getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+            mRecipes.clear();
+            return;
+        }
         mRecipes.clear();
         getRecipes(favorites);
     }
@@ -122,14 +122,12 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mContext = context.getApplicationContext();
-        Log.i(TAG, "onAttach: " + this);
+        mContext = context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mContext = null;
-        Log.i(TAG, "onDetach: ");
     }
 }

@@ -159,7 +159,7 @@ public class ProfileHeaderFragment extends Fragment {
         GlideApp.with(this).load(imagePath)
                 .apply(RequestOptions.circleCropTransform())
                 .into(mUserImage);
-        UserService.getInstance().updateUserPhoto(new File(imagePath), mUser.getId(), new UserService.updateUserPhotoCallBack() {
+        UserService.getInstance().updateUserPhoto(new File(imagePath), mUser.getId(), new UserService.UpdateUserPhotoCallBack() {
             @Override
             public void onCompletion(String imageUrl) {
                 if(imageUrl == null){

@@ -2,10 +2,13 @@ package tn.duoes.esprit.cookmania.interfaces;
 
 import com.google.gson.JsonObject;
 
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -37,4 +40,19 @@ public interface UserApi {
     @POST("update_photo")
     Call<String> updatePhoto(@Part MultipartBody.Part image,
                                @Part("user_id") RequestBody userId);
+
+    @GET("following_list/{id}")
+    Call<List<User>> getFollowing(@Path("id") String id);
+
+    @GET("follower_list/{id}")
+    Call<List<User>> getFollowers(@Path("id") String id);
+
+    @GET("is_following/{id1}/{id2}")
+    Call<Boolean> isFollowing(@Path("id1") String followerId, @Path("id2") String followedId);
+
+    @POST("follow/{id1}/{id2}")
+    Call<Void> follow(@Path("id1") String followerId, @Path("id2") String followedId);
+
+    @DELETE("unfollow/{id1}/{id2}")
+    Call<Void> unfollow(@Path("id1") String followerId, @Path("id2") String followedId);
 }

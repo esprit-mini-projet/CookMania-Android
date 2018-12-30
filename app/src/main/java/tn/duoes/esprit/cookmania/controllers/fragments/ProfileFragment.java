@@ -20,9 +20,10 @@ import java.util.List;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ProfilePagerAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.SettingsActivity;
+import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements UserService.IsFollowingCallBack {
 
     private static final String TAG = "ProfileFragment";
     public static final String ARG_USER_ID = "user_id";
@@ -30,6 +31,12 @@ public class ProfileFragment extends Fragment {
     private ProfileHeaderFragment mProfileHeaderFragment;
     private ProfileRecipeListFragment mRecipeListFragment;
     private ProfileFavoriteListFragment mFavoriteListFragment;
+    private ProfileUserListFragment mFollowingListFragment;
+    private ProfileUserListFragment mFollowerListFragment;
+
+    private boolean mIsFollowing;
+    private String mConnectedUserId;
+    private String mUserId;
 
     public static ProfileFragment newInstance(String userId) {
         ProfileFragment fragment = new ProfileFragment();
@@ -76,22 +83,29 @@ public class ProfileFragment extends Fragment {
             mFavoriteListFragment = ProfileFavoriteListFragment.newInstance();
             fragments.add(mFavoriteListFragment);
         }
+        mFollowingListFragment = ProfileUserListFragment.newInstance(userId, false);
+        mFollowerListFragment = ProfileUserListFragment.newInstance(userId, true);
+        fragments.add(mFollowingListFragment);
+        fragments.add(mFollowerListFragment);
         ProfilePagerAdapter adapter = new ProfilePagerAdapter(getChildFragmentManager(), fragments);
         viewPager.setAdapter(adapter);
-        //tabLayout.setupWithViewPager(viewPager, true);
+        tabLayout.setupWithViewPager(viewPager, true);
        return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "onCreate: " + this);
         super.onCreate(savedInstanceState);
-        Log.i(TAG, "onCreate: ");
-        String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+        mConnectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
-        String userId = getArguments().getString(ARG_USER_ID);
-        setHasOptionsMenu(userId.equals(connectedUserId));
-        mProfileHeaderFragment = ProfileHeaderFragment.newInstance(userId);
+        mUserId = getArguments().getString(ARG_USER_ID);
+        if(mUserId.equals(mConnectedUserId)){
+            setHasOptionsMenu(true);
+        }else{
+            setHasOptionsMenu(false);
+            UserService.getInstance().isFollowing(mConnectedUserId, mUserId, this);
+        }
+        mProfileHeaderFragment = ProfileHeaderFragment.newInstance(mUserId);
         getChildFragmentManager().beginTransaction()
                 .add(R.id.fragment_profile_header_container, mProfileHeaderFragment)
                 .commit();
@@ -99,29 +113,58 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
+        if(mUserId.equals(mConnectedUserId)){
+            inflater.inflate(R.menu.menu_profile, menu);
+        }else{
+            inflater.inflate(R.menu.menu_other_profile, menu);
+            menu.getItem(0).setTitle(mIsFollowing ? R.string.unfollow : R.string.follow);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_settings:
                 startActivity(NavigationUtils.getNavigationFormattedIntent(getContext(), SettingsActivity.class));
+                return true;
+            case R.id.menu_follow:
+                if(mIsFollowing){
+                    mIsFollowing = false;
+                    item.setTitle(R.string.follow);
+                    UserService.getInstance().unfollow(mConnectedUserId, mUserId, new UserService.FollowCallBack() {
+                        @Override
+                        public void onCompletion(Boolean result) {
+                            if(!result){
+                                item.setTitle(R.string.follow);
+                                mIsFollowing = true;
+                            }
+                            //TODO: show alert
+                        }
+                    });
+                }else{
+                    mIsFollowing = true;
+                    item.setTitle(R.string.unfollow);
+                    UserService.getInstance().follow(mConnectedUserId, mUserId, new UserService.FollowCallBack() {
+                        @Override
+                        public void onCompletion(Boolean result) {
+                            if(!result){
+                                item.setTitle(R.string.unfollow);
+                                mIsFollowing = false;
+                            }
+                            //TODO: show alert
+                        }
+                    });
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.i(TAG, "onDetach: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy: ");
+    public void onCompletion(Boolean isFollowing) {
+        if(isFollowing == null) return;
+        mIsFollowing = isFollowing;
+        setHasOptionsMenu(true);
     }
 }

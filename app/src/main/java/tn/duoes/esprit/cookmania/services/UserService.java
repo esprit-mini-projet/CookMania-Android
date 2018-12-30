@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -212,7 +213,7 @@ public class UserService {
         });
     }
 
-    public void updateUserPhoto(File photo, String userId, final updateUserPhotoCallBack callBack){
+    public void updateUserPhoto(File photo, String userId, final UpdateUserPhotoCallBack callBack){
         RequestBody requestImage = RequestBody.create(MediaType.parse("image"), photo);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", photo.getName(), requestImage);
         Call<String> call = mUserApi.updatePhoto(body,
@@ -236,6 +237,136 @@ public class UserService {
         });
     }
 
+    public void getFollowing(String id, final GetUsersCallBack callBack){
+        Call<List<User>> call = mUserApi.getFollowing(id);
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "getFollowing: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onResponse(null);
+                    return;
+                }
+                Log.d(TAG, "getFollowing: body: " + response.body());
+                callBack.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Log.e(TAG, "onGetFollowingFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
+    public void getFollowers(String id, final GetUsersCallBack callBack){
+        Call<List<User>> call = mUserApi.getFollowers(id);
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "getFollowers: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onResponse(null);
+                    return;
+                }
+                Log.d(TAG, "getFollowers: body: " + response.body());
+                callBack.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Log.e(TAG, "onGetFollowersFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
+    public void isFollowing(String followerId, String followedId, final IsFollowingCallBack callBack){
+        Call<Boolean> call = mUserApi.isFollowing(followerId, followedId);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "isFollowing: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(null);
+                    return;
+                }
+                Log.d(TAG, "isFollowing: body: " + response.body());
+                callBack.onCompletion(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.e(TAG, "onIsFollowingFailure: ", t);
+                callBack.onCompletion(null);
+            }
+        });
+    }
+
+    public void follow(String followerId, String followedId, final FollowCallBack callBack){
+        Call<Void> call = mUserApi.follow(followerId, followedId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "isFollowing: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(false);
+                    return;
+                }
+                Log.d(TAG, "isFollowing: body: " + response.body());
+                callBack.onCompletion(true);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "onIsFollowingFailure: ", t);
+                callBack.onCompletion(false);
+            }
+        });
+    }
+
+    public void unfollow(String followerId, String followedId, final FollowCallBack callBack){
+        Call<Void> call = mUserApi.unfollow(followerId, followedId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        Log.d(TAG, "isFollowing: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(false);
+                    return;
+                }
+                Log.d(TAG, "isFollowing: body: " + response.body());
+                callBack.onCompletion(true);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "onIsFollowingFailure: ", t);
+                callBack.onCompletion(false);
+            }
+        });
+    }
+
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);
@@ -255,7 +386,17 @@ public class UserService {
     public interface GetUserCoverPhotoCallBack{
         void onCompletion(String imageUrl);
     }
-    public interface updateUserPhotoCallBack{
+    public interface UpdateUserPhotoCallBack {
         void onCompletion(String imageUrl);
+    }
+    public interface GetUsersCallBack{
+        void onResponse(List<User> users);
+        void onFailure();
+    }
+    public interface IsFollowingCallBack{
+        void onCompletion(Boolean isFollowing);
+    }
+    public interface FollowCallBack{
+        void onCompletion(Boolean result);
     }
 }

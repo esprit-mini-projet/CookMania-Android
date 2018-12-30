@@ -78,6 +78,8 @@
     <string name="following">Following</string>
     <string name="no_recipes">You have no recipes.</string>
     <string name="no_favorite_recipes">You have no favorite recipes.</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>
