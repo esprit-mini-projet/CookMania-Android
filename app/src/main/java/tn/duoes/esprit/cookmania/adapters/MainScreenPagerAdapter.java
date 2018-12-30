@@ -51,4 +51,5 @@ public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return mTabsCount;
     }
+
 }

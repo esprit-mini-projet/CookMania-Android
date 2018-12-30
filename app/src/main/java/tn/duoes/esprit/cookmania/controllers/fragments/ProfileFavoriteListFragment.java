@@ -19,21 +19,21 @@ import java.util.List;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ProfileRecipeListAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
+import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 
-public class ProfileRecipeListFragment extends Fragment implements RecipeService.RecipeServiceGetCallBack, ProfileRecipeListAdapter.RecipeViewHolder.RecipeItemCallBack {
+public class ProfileFavoriteListFragment extends Fragment implements RecipeService.RecipeServiceGetCallBack, ProfileRecipeListAdapter.RecipeViewHolder.RecipeItemCallBack {
 
-    private static final String TAG = "ProfileRecipeListFrag";
-    public static final String ARG_USER_ID = "user_id";
+    private static final String TAG = "ProfileFavoriteListFr";
     private RecyclerView mRecyclerView;
     private List<Recipe> mRecipes = new ArrayList<>();
     private ProfileRecipeListAdapter mAdapter;
+    private Context mContext;
 
-    public static ProfileRecipeListFragment newInstance(String userId) {
+    public static ProfileFavoriteListFragment newInstance() {
         Bundle args = new Bundle();
-        args.putString(ARG_USER_ID, userId);
-        ProfileRecipeListFragment fragment = new ProfileRecipeListFragment();
+        ProfileFavoriteListFragment fragment = new ProfileFavoriteListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,12 +43,24 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_user_recipes, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_profile_user_recipe_list);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new ProfileRecipeListAdapter(mRecipes, getActivity(), this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mAdapter = new ProfileRecipeListAdapter(mRecipes, mContext, this);
         mRecyclerView.setAdapter(mAdapter);
-        update();
         Log.i(TAG, "onCreateView: ");
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+        update();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: ");
     }
 
     @Override
@@ -73,26 +85,51 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
 
     @Override
     public void onRecipeItemClicked(int recipeId) {
-        Intent i = new Intent(getActivity(), RecipeDetailsActivity.class);
+        Intent i = new Intent(mContext, RecipeDetailsActivity.class);
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, "" + recipeId);
         i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
     }
 
     public void update(){
-        String userId = getArguments().getString(ARG_USER_ID);
-        RecipeService.getInstance().getRecipesByUser(userId, this);
+        String userId = mContext.getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), "");
+        List<Integer> favorites = FavoriteLab.getInstance(mContext).getList(userId);
+        mRecipes.clear();
+        getRecipes(favorites);
+    }
+
+    private void getRecipes(final List<Integer> favorites) {
+        if(favorites.isEmpty()){
+            mAdapter.notifyDataSetChanged();
+            return;
+        }
+        final int recipeId = favorites.remove(0);
+        RecipeService.getInstance().getRecipeById(recipeId + "", new RecipeService.RecipeServiceGetCallBack() {
+            @Override
+            public void onResponse(List<Recipe> recipes) {
+                mRecipes.addAll(recipes);
+                getRecipes(favorites);
+            }
+
+            @Override
+            public void onFailure() {
+                getRecipes(favorites);
+            }
+        });
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.i(TAG, "onAttach: ");
+        mContext = context.getApplicationContext();
+        Log.i(TAG, "onAttach: " + this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mContext = null;
         Log.i(TAG, "onDetach: ");
     }
 }
