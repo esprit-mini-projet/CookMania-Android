@@ -38,6 +38,10 @@ public final class RecipeService {
         void onGetSimilarResponse(List<Recipe> recipes);
     }
 
+    public interface DeleteRecipeCallBack {
+        void onResponse(boolean isSuccessful);
+    }
+
     private static RecipeService instance;
 
     private RecipeApi mRecipeApi;
@@ -229,6 +233,22 @@ public final class RecipeService {
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
                 callBack.onFailure();
+            }
+        });
+    }
+
+    public void delete(int recipeId, final DeleteRecipeCallBack callBack) {
+        Call<Void> call = mRecipeApi.delete(recipeId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callBack.onResponse(response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onResponse(false);
             }
         });
     }

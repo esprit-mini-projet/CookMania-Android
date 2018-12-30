@@ -28,6 +28,7 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
     private List<Recipe> mRecipes;
     private Context mContext;
     private RecipeViewHolder.RecipeItemCallBack mCallBack;
+    private int mPosition;
 
     public ProfileRecipeListAdapter(List<Recipe> recipes, Context context, RecipeViewHolder.RecipeItemCallBack callBack){
         mRecipes = recipes;
@@ -43,7 +44,7 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeViewHolder recipeViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final RecipeViewHolder recipeViewHolder, int i) {
         recipeViewHolder.bind(mRecipes.get(i), i);
     }
 
@@ -56,7 +57,15 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
         mRecipes = recipes;
     }
 
-    public static class RecipeViewHolder extends RecyclerView.ViewHolder{
+    public int getPosition() {
+        return mPosition;
+    }
+
+    public void setPosition(int position) {
+        this.mPosition = position;
+    }
+
+    public static class RecipeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mImageView;
         TextView mRecipeNameText;
@@ -79,7 +88,7 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
             mCallBack = callBack;
         }
 
-        void bind(final Recipe recipe, int i){
+        void bind(final Recipe recipe, final int i) {
             GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + recipe.getImageURL())
                     .centerCrop()
                     .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).centerCrop())
@@ -118,5 +127,6 @@ public class ProfileRecipeListAdapter extends RecyclerView.Adapter<ProfileRecipe
         public interface RecipeItemCallBack{
             void onRecipeItemClicked(int recipeId);
         }
+
     }
 }

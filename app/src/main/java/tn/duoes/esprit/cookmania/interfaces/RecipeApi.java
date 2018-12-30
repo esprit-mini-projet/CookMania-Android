@@ -5,6 +5,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -48,5 +49,9 @@ public interface RecipeApi {
 
     @GET("user/{id}")
     Call<List<Recipe>> getRecipesByUser(@Path("id") String userId);
+
+    @DELETE("{id}")
+    Call<Void> delete(@Path("id") int id);
+
 
 }
