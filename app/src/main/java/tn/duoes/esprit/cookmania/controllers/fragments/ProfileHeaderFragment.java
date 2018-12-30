@@ -113,8 +113,30 @@ public class ProfileHeaderFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
+        updateStats();
+    }
+
+    private void updateStats() {
+        UserService.getInstance().getUserById(mUser.getId(), new UserService.GetUserByIdCallBack() {
+            @Override
+            public void onCompletion(User user) {
+                mUser = user;
+                mFollowingText.setText(String.format(Locale.getDefault(), "Following: %d", mUser.getFollowing()));
+                mFollowersText.setText(String.format(Locale.getDefault(), "Followers: %d", mUser.getFollowers()));
+            }
+        });
+    }
+
+    public void updateFollowers(int n) {
+        mUser.setFollowers(mUser.getFollowers() + n);
+        mFollowersText.setText(String.format(Locale.getDefault(), "Followers: %d", mUser.getFollowers()));
+    }
+
+    public void updateFollowing(int n) {
+        mUser.setFollowing(mUser.getFollowing() + n);
+        mFollowingText.setText(String.format(Locale.getDefault(), "Following: %d", mUser.getFollowing()));
     }
 
     private void updateUI() {

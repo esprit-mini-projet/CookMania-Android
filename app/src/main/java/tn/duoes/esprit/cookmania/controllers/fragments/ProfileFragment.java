@@ -119,12 +119,14 @@ public class ProfileFragment extends Fragment implements UserService.IsFollowing
                 if(mIsFollowing){
                     mIsFollowing = false;
                     item.setTitle(R.string.follow);
+                    mProfileHeaderFragment.updateFollowers(-1);
                     UserService.getInstance().unfollow(mConnectedUserId, mUserId, new UserService.FollowCallBack() {
                         @Override
                         public void onCompletion(Boolean result) {
                             if(!result){
                                 item.setTitle(R.string.follow);
                                 mIsFollowing = true;
+                                mProfileHeaderFragment.updateFollowers(1);
                             }
                             //TODO: show alert
                         }
@@ -132,12 +134,14 @@ public class ProfileFragment extends Fragment implements UserService.IsFollowing
                 }else{
                     mIsFollowing = true;
                     item.setTitle(R.string.unfollow);
+                    mProfileHeaderFragment.updateFollowers(1);
                     UserService.getInstance().follow(mConnectedUserId, mUserId, new UserService.FollowCallBack() {
                         @Override
                         public void onCompletion(Boolean result) {
                             if(!result){
                                 item.setTitle(R.string.unfollow);
                                 mIsFollowing = false;
+                                mProfileHeaderFragment.updateFollowers(-1);
                             }
                             //TODO: show alert
                         }

@@ -231,7 +231,7 @@ public class UserService {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
+                Log.e(TAG, "onUpdateUserPhotoFailure: ", t);
                 callBack.onCompletion(null);
             }
         });
