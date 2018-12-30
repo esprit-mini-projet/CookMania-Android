@@ -30,6 +30,7 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
     private List<Recipe> mRecipes = new ArrayList<>();
     private ProfileRecipeListAdapter mAdapter;
     private Context mContext;
+    private View mEmptyText;
 
     public static ProfileFavoriteListFragment newInstance() {
         Bundle args = new Bundle();
@@ -43,6 +44,7 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_user_recipes, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_profile_user_recipe_list);
+        mEmptyText = view.findViewById(R.id.fragment_profile_user_recipe_empty_text);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mAdapter = new ProfileRecipeListAdapter(mRecipes, mContext, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -73,7 +75,7 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
 
     @Override
     public void onFailure() {
-        getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
+        mEmptyText.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
     }
 
@@ -90,7 +92,7 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
                 .getString(getString(R.string.prefs_user_id), "");
         List<Integer> favorites = FavoriteLab.getInstance(mContext).getList(userId);
         if(favorites.size() == 0){
-            getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
+            mEmptyText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
             mRecipes.clear();
             return;
@@ -102,6 +104,8 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
     private void getRecipes(final List<Integer> favorites) {
         if(favorites.isEmpty()){
             mAdapter.notifyDataSetChanged();
+            mEmptyText.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
             return;
         }
         final int recipeId = favorites.remove(0);

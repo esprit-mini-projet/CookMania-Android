@@ -53,41 +53,28 @@ public class ProfileFragment extends Fragment implements UserService.IsFollowing
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         TabLayout tabLayout = view.findViewById(R.id.fragment_profile_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.fragment_profile_view_pager);
-        /*final SwipeRefreshLayout swipeRefreshLayout =  view.findViewById(R.id.fragment_profile_swipe_layout);
-
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mProfileHeaderFragment.update();
-                mRecipeListFragment.update();
-                Log.i(TAG, "onRefresh: profile fragment: " + ProfileFragment.this);
-                Log.i(TAG, "onRefresh: fragment : " + mFavoriteListFragment);
-                if(mFavoriteListFragment != null) mFavoriteListFragment.update();
-                new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
-            }
-        });*/
 
         String userId = getArguments().getString(ARG_USER_ID);
         String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
 
         List<Fragment> fragments = new ArrayList<>();
+        List<String> tabTitles = new ArrayList<>();
         mRecipeListFragment = ProfileRecipeListFragment.newInstance(userId);
         fragments.add(mRecipeListFragment);
+        tabTitles.add(getString(R.string.recipes));
         if(userId.equals(connectedUserId)){
             mFavoriteListFragment = ProfileFavoriteListFragment.newInstance();
             fragments.add(mFavoriteListFragment);
+            tabTitles.add(getString(R.string.favorites));
         }
         mFollowingListFragment = ProfileUserListFragment.newInstance(userId, false);
         mFollowerListFragment = ProfileUserListFragment.newInstance(userId, true);
         fragments.add(mFollowingListFragment);
+        tabTitles.add(getString(R.string.following));
         fragments.add(mFollowerListFragment);
-        ProfilePagerAdapter adapter = new ProfilePagerAdapter(getChildFragmentManager(), fragments);
+        tabTitles.add(getString(R.string.followers));
+        ProfilePagerAdapter adapter = new ProfilePagerAdapter(getChildFragmentManager(), fragments, tabTitles);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager, true);
        return view;

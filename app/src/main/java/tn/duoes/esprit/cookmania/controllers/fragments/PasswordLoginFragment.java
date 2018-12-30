@@ -70,7 +70,12 @@ public class PasswordLoginFragment extends Fragment {
                 user.setPassword(password);
                 //String token = FirebaseInstanceId.getInstance().getId();
                 String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
-                        .getString(getString(R.string.prefs_uuid), UUID.randomUUID().toString());
+                        .getString(getString(R.string.prefs_uuid), null);
+                if (uuid == null) {
+                    uuid = UUID.randomUUID().toString();
+                    getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                            .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
+                }
                 user.setUuid(uuid);
                 user.setToken("");
                 UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {

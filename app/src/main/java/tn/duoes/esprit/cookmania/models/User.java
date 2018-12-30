@@ -25,6 +25,8 @@ public class User {
     private String mUuid;
     @SerializedName("token")
     private String mToken;
+    @SerializedName("follow_date")
+    private Date mFollowDate;
 
     public String getId() {
         return mId;
@@ -104,6 +106,14 @@ public class User {
 
     public void setToken(String token) {
         mToken = token;
+    }
+
+    public Date getFollowDate() {
+        return mFollowDate;
+    }
+
+    public void setFollowDate(Date followDate) {
+        mFollowDate = followDate;
     }
 
     @Override

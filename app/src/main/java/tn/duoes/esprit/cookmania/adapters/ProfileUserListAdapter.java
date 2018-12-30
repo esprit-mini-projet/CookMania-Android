@@ -82,7 +82,7 @@ public class ProfileUserListAdapter extends RecyclerView.Adapter<ProfileUserList
                     .into(mImageView);
             mUserNameText.setText(user.getUserName());
             DateFormat df = new SimpleDateFormat("dd MMM, yyyy", Locale.getDefault());
-            mDateText.setText(String.format("Member since %s", df.format(user.getDate())));
+            mDateText.setText(String.format("Started following on %s", df.format(user.getFollowDate())));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,6 +1,5 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,7 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
     private RecyclerView mRecyclerView;
     private List<Recipe> mRecipes = new ArrayList<>();
     private ProfileRecipeListAdapter mAdapter;
+    private TextView mEmptyText;
 
     public static ProfileRecipeListFragment newInstance(String userId) {
         Bundle args = new Bundle();
@@ -43,11 +44,11 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_user_recipes, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_profile_user_recipe_list);
+        mEmptyText = view.findViewById(R.id.fragment_profile_user_recipe_empty_text);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ProfileRecipeListAdapter(mRecipes, getActivity(), this);
         mRecyclerView.setAdapter(mAdapter);
         update();
-        Log.i(TAG, "onCreateView: ");
         return view;
     }
 
@@ -55,19 +56,20 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
     public void onResponse(List<Recipe> recipes) {
         Log.i(TAG, "onResponse: size: " + recipes.size());
         if(recipes.size() == 0){
-            getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
+            mEmptyText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
             return;
         }
         mRecipes.clear();
         mRecipes.addAll(recipes);
         mAdapter.notifyDataSetChanged();
+        mEmptyText.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onFailure() {
-        Log.i(TAG, "onFailure: ");
-        getView().findViewById(R.id.fragment_profile_user_recipe_empty_text).setVisibility(View.VISIBLE);
+        mEmptyText.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
     }
 
@@ -82,17 +84,5 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
     public void update(){
         String userId = getArguments().getString(ARG_USER_ID);
         RecipeService.getInstance().getRecipesByUser(userId, this);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.i(TAG, "onAttach: ");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.i(TAG, "onDetach: ");
     }
 }

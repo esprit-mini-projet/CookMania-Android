@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ProfileUserListFragment extends Fragment implements ProfileUserList
     private RecyclerView mRecyclerView;
     private List<User> mUsers = new ArrayList<>();
     private ProfileUserListAdapter mAdapter;
+    private TextView mEmptyText;
 
     public static ProfileUserListFragment newInstance(String userId, boolean isFollowers) {
         Bundle args = new Bundle();
@@ -44,6 +46,7 @@ public class ProfileUserListFragment extends Fragment implements ProfileUserList
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_user_followers, container, false);
         mRecyclerView = view.findViewById(R.id.fragment_profile_user_followers_list);
+        mEmptyText = view.findViewById(R.id.fragment_profile_user_followers_empty_text);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ProfileUserListAdapter(mUsers, getActivity(), this);
         mRecyclerView.setAdapter(mAdapter);
@@ -60,8 +63,10 @@ public class ProfileUserListFragment extends Fragment implements ProfileUserList
         String userId = getArguments().getString(ARG_USER_ID);
         boolean isFollowers = getArguments().getBoolean(ARG_IS_FOLLOWERS);
         if(isFollowers){
+            mEmptyText.setText(R.string.no_followers);
             UserService.getInstance().getFollowers(userId, this);
         }else{
+            mEmptyText.setText(R.string.no_following);
             UserService.getInstance().getFollowing(userId, this);
         }
     }
@@ -69,21 +74,21 @@ public class ProfileUserListFragment extends Fragment implements ProfileUserList
     @Override
     public void onResponse(List<User> users) {
         if(users == null || users.isEmpty()){
-            getView().findViewById(R.id.fragment_profile_user_followers_empty_text).setVisibility(View.VISIBLE);
+            mEmptyText.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
             return;
         }
         mUsers.clear();
         mUsers.addAll(users);
         mAdapter.notifyDataSetChanged();
-        getView().findViewById(R.id.fragment_profile_user_followers_empty_text).setVisibility(View.GONE);
+        mEmptyText.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onFailure() {
         Log.i(TAG, "onFailure: ");
-        getView().findViewById(R.id.fragment_profile_user_followers_empty_text).setVisibility(View.VISIBLE);
+        mEmptyText.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.GONE);
     }
 

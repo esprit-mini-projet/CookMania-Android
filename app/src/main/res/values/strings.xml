@@ -27,6 +27,7 @@
     <string name="prefs_username">username</string>
     <string name="prefs_user_id">user_id</string>
     <string name="prefs_signin_method">signin_method</string>
+    <string name="prefs_uuid">uuid</string>
     <string name="method_email">email</string>
     <string name="method_facebook">facebook</string>
     <string name="method_google">google</string>
@@ -70,7 +71,6 @@
     <string name="time_is_up">Time is up!</string>
     <string name="experiences">Experiences</string>
     <string name="similar">Similar</string>
-    <string name="prefs_uuid">uuid</string>
     <string name="my_recipes">My recipes</string>
     <string name="recipes">Recipes</string>
     <string name="favorites">Favorites</string>
@@ -80,6 +80,8 @@
     <string name="no_favorite_recipes">You have no favorite recipes.</string>
     <string name="follow">Follow</string>
     <string name="unfollow">Unfollow</string>
+    <string name="no_followers">You have no followers.</string>
+    <string name="no_following">No one is following you.</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>
