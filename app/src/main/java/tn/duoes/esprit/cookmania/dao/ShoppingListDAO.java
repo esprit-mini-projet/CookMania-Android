@@ -190,4 +190,14 @@ public final class ShoppingListDAO {
         db.delete(ShoppingListSerialization.TABLE_NAME, ShoppingListSerialization.USER_ID+" = ?", new String[]{userId});
     }
 
+    public int getShopItemsCount() {
+        List<ShoppingListItem> items = getShoppingItems();
+        if (items == null) return 0;
+        int count = 0;
+        for (ShoppingListItem item : items) {
+            count += item.getIngredients().size();
+        }
+        return count;
+    }
+
 }

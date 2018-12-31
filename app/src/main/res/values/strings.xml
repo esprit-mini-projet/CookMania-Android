@@ -84,6 +84,8 @@
     <string name="no_following">No one is following you.</string>
     <string name="confirmation_message_delete_recipe">Are you sure you want to delete this recipe ?</string>
     <string name="confirmation">Confirmation</string>
+    <string name="add_all_to_shop_list">Add all ingredients to your shopping list</string>
+    <string name="remove_all_from_shop_list">Remove all ingredients from your shopping list</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>

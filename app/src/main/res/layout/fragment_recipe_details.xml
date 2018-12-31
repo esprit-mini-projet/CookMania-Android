@@ -429,7 +429,7 @@
                             android:id="@+id/details_recipe_ingredients_add_all_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add All To Shopping List"
+                            android:text="@string/add_all_to_shop_list"
                             android:layout_marginStart="8dp"/>
 
                     </LinearLayout>
