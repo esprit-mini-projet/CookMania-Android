@@ -6,6 +6,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:elevation="5dp"
     app:cardCornerRadius="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/ripple_card_white"
     android:layout_marginBottom="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp">

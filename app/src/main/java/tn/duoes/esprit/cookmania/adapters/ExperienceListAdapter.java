@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatRatingBar;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.models.Experience;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
@@ -78,7 +80,7 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
             mContext = context;
         }
 
-        void bind(Experience experience, int i){
+        void bind(final Experience experience, int i) {
             //set experience photo
             GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + experience.getImageUrl())
                     .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).centerCrop())
@@ -90,6 +92,14 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
                     .error(GlideApp.with(mContext).load(R.drawable.default_profile_picture).apply(RequestOptions.circleCropTransform()))
                     .apply(RequestOptions.circleCropTransform())
                     .into(mUserImageView);
+            mUserImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    intent.putExtra(ProfileActivity.EXTRA_USER_ID, experience.getUser().getId());
+                    mContext.startActivity(intent);
+                }
+            });
             //set the remaining fields
             mRatingBar.setRating(experience.getRating());
             mUserNameText.setText(experience.getUser().getUserName());
