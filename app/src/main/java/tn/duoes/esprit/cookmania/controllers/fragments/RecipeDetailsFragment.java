@@ -99,6 +99,7 @@ public class RecipeDetailsFragment extends Fragment
     private View mExperienceListCard;
     private View mSimilarListCard;
     private View mRatingCard;
+    private View mDeleteAllButton;
 
     public static RecipeDetailsFragment newInstance(String recipeId, RecipeDetailsStepAdapter.StepItemCallBack callBack) {
 
@@ -197,6 +198,7 @@ public class RecipeDetailsFragment extends Fragment
         mTimeTextView = view.findViewById(R.id.details_recipe_time_text);
         mDescriptionTextView = view.findViewById(R.id.details_recipe_description_text);
         mAddAllButton = view.findViewById(R.id.details_recipe_ingredients_add_all_button);
+        mDeleteAllButton = view.findViewById(R.id.details_recipe_ingredients_delete_all_button);
         mAddAllTextView = view.findViewById(R.id.details_recipe_ingredients_add_all_text);
         mShopItemsTextView = view.findViewById(R.id.details_recipe_shop_items_text);
         mShopCartImageView = view.findViewById(R.id.details_recipe_shop_cart_image);
@@ -234,6 +236,43 @@ public class RecipeDetailsFragment extends Fragment
         }else{
             mRatingCard.setVisibility(View.GONE);
         }
+        //Setting up shopping section
+        mAddAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddAllButton.setVisibility(View.GONE);
+                mDeleteAllButton.setVisibility(View.VISIBLE);
+                ShoppingListDAO.getInstance(getActivity()).addRecipe(mRecipe, mRecipe.getIngredients());
+                for (Ingredient ingredient : mRecipe.getIngredients()) {
+                    ingredient.setInShoppingList(true);
+                }
+                mIngredientList.getAdapter().notifyDataSetChanged();
+            }
+        });
+        mDeleteAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddAllButton.setVisibility(View.VISIBLE);
+                mDeleteAllButton.setVisibility(View.GONE);
+                ShoppingListDAO.getInstance(getActivity()).removeRecipe(mRecipe);
+                for (Ingredient ingredient : mRecipe.getIngredients()) {
+                    ingredient.setInShoppingList(false);
+                }
+                mIngredientList.getAdapter().notifyDataSetChanged();
+            }
+        });
+        List<Ingredient> shopIngredients = ShoppingListDAO.getInstance(getActivity()).getRecipeIngredients(mRecipe);
+        if (shopIngredients != null) {
+            mAddAllButton.setVisibility(View.GONE);
+            mDeleteAllButton.setVisibility(View.VISIBLE);
+            for (Ingredient ingredient : mRecipe.getIngredients()) {
+                if (shopIngredients.contains(ingredient)) {
+                    ingredient.setInShoppingList(true);
+                } else {
+                    ingredient.setInShoppingList(false);
+                }
+            }
+        }
         mProgressDialog.dismiss();
     }
 
@@ -251,16 +290,6 @@ public class RecipeDetailsFragment extends Fragment
             public void onResponse(List<Recipe> recipes) {
                 if (isDetached()) return;
                 mRecipe = recipes.get(0);
-                List<Ingredient> shopIngredients = ShoppingListDAO.getInstance(getActivity()).getRecipeIngredients(mRecipe);
-                if (shopIngredients != null) {
-                    for (Ingredient ingredient : mRecipe.getIngredients()) {
-                        if (shopIngredients.contains(ingredient)) {
-                            ingredient.setInShoppingList(true);
-                        } else {
-                            ingredient.setInShoppingList(false);
-                        }
-                    }
-                }
                 updateUI();
             }
 

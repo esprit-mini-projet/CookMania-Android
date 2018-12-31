@@ -414,6 +414,17 @@
                             android:padding="2dp"
                             android:background="?selectableItemBackground"/>
 
+                        <ImageButton
+                            android:id="@+id/details_recipe_ingredients_delete_all_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_remove_circle_outline_gray"
+                            android:scaleType="fitCenter"
+                            android:adjustViewBounds="true"
+                            android:padding="2dp"
+                            android:background="?selectableItemBackground"
+                            android:visibility="gone" />
+
                         <TextView
                             android:id="@+id/details_recipe_ingredients_add_all_text"
                             android:layout_width="wrap_content"

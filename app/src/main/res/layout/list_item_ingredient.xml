@@ -21,7 +21,7 @@
         android:id="@+id/list_item_ingredient_delete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_delete_circle_full_accent"
+        android:src="@drawable/ic_remove_circle_full_gray"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:padding="2dp"
