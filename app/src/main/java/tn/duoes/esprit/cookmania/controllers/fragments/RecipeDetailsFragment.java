@@ -249,8 +249,18 @@ public class RecipeDetailsFragment extends Fragment
         RecipeService.getInstance().getRecipeById(id, new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
+                if (isDetached()) return;
                 mRecipe = recipes.get(0);
-                Log.d(TAG, "onGetSimilarResponse: " + mRecipe);
+                List<Ingredient> shopIngredients = ShoppingListDAO.getInstance(getActivity()).getRecipeIngredients(mRecipe);
+                if (shopIngredients != null) {
+                    for (Ingredient ingredient : mRecipe.getIngredients()) {
+                        if (shopIngredients.contains(ingredient)) {
+                            ingredient.setInShoppingList(true);
+                        } else {
+                            ingredient.setInShoppingList(false);
+                        }
+                    }
+                }
                 updateUI();
             }
 
