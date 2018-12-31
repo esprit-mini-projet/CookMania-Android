@@ -21,11 +21,9 @@
             <ImageView
                 android:id="@+id/details_recipe_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 tools:src="@drawable/im_1"
-                app:layout_collapseMode="parallax"
-                android:adjustViewBounds="true"
-                android:maxHeight="250dp" />
+                app:layout_collapseMode="parallax" />
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"

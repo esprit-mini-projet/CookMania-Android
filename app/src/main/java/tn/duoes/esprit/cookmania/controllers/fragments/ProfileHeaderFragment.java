@@ -122,6 +122,7 @@ public class ProfileHeaderFragment extends Fragment {
         UserService.getInstance().getUserById(mUser.getId(), new UserService.GetUserByIdCallBack() {
             @Override
             public void onCompletion(User user) {
+                if (user == null) return;
                 mUser = user;
                 mFollowingText.setText(String.format(Locale.getDefault(), "Following: %d", mUser.getFollowing()));
                 mFollowersText.setText(String.format(Locale.getDefault(), "Followers: %d", mUser.getFollowers()));

@@ -60,7 +60,9 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.AddExperienceCallBack,
         ExperienceService.DeleteExperienceCallBack,
         ExperienceService.GetExperienceCallBack,
-        ExperienceService.GetExperiencesCallBack, RecipeService.RecipeServiceSimilarCallBack, SimilarListAdapter.SimilarViewHolder.SimilarRecipeItemCallBack {
+        ExperienceService.GetExperiencesCallBack,
+        RecipeService.RecipeServiceSimilarCallBack,
+        SimilarListAdapter.SimilarViewHolder.SimilarRecipeItemCallBack {
 
     private static final String TAG = "RecipeDetailsFragment";
     private static final String ARGS_RECIPE_ID = "recipeId";
@@ -122,7 +124,7 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
     }
 
     private void setupExperienceList(List<Experience> experiences) {
@@ -202,7 +204,10 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     private void updateUI(){
-        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
+        setHasOptionsMenu(true);
+        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL())
+                .centerCrop()
+                .into(mRecipeImageView);
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
         mCaloriesTextView.setText("" + mRecipe.getCalories());
@@ -260,6 +265,9 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_recipe_details, menu);
+        if (!mUserId.equals(mRecipe.getUserId())) {
+            menu.removeItem(R.id.recipe_details_delete);
+        }
         MenuItem item = menu.getItem(0);
         String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
@@ -291,9 +299,32 @@ public class RecipeDetailsFragment extends Fragment
                 FavoriteLab.getInstance(getActivity()).delete(recipeId, userId);
             }
             return true;
-        }else{
-            return super.onOptionsItemSelected(item);
+        } else if (item.getItemId() == R.id.recipe_details_delete) {
+            showDeleteConfirmationDialog();
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteConfirmationDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.confirmation)
+                .setMessage(R.string.confirmation_message_delete_recipe)
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProgressDialog.setMessage("Please wait...");
+                        mProgressDialog.show();
+                        RecipeService.getInstance().delete(mRecipe.getId(), new RecipeService.DeleteRecipeCallBack() {
+                            @Override
+                            public void onResponse(boolean isSuccessful) {
+                                mProgressDialog.dismiss();
+                                getActivity().finish();
+                            }
+                        });
+                    }
+                })
+                .show();
     }
 
     @Override

@@ -82,6 +82,8 @@
     <string name="unfollow">Unfollow</string>
     <string name="no_followers">You have no followers.</string>
     <string name="no_following">No one is following you.</string>
+    <string name="confirmation_message_delete_recipe">Are you sure you want to delete this recipe ?</string>
+    <string name="confirmation">Confirmation</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>

@@ -48,8 +48,13 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ProfileRecipeListAdapter(mRecipes, getActivity(), this);
         mRecyclerView.setAdapter(mAdapter);
-        update();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        update();
     }
 
     @Override
