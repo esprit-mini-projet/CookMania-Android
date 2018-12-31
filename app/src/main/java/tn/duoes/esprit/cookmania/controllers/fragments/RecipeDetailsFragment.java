@@ -41,7 +41,9 @@ import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.adapters.SimilarListAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
+import tn.duoes.esprit.cookmania.dao.ShoppingListDAO;
 import tn.duoes.esprit.cookmania.models.Experience;
+import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.ExperienceService;
@@ -62,7 +64,7 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.GetExperienceCallBack,
         ExperienceService.GetExperiencesCallBack,
         RecipeService.RecipeServiceSimilarCallBack,
-        SimilarListAdapter.SimilarViewHolder.SimilarRecipeItemCallBack {
+        SimilarListAdapter.SimilarViewHolder.SimilarRecipeItemCallBack, RecipeDetailsIngredientsAdapter.IngredientItemCallBack {
 
     private static final String TAG = "RecipeDetailsFragment";
     private static final String ARGS_RECIPE_ID = "recipeId";
@@ -94,6 +96,9 @@ public class RecipeDetailsFragment extends Fragment
     private List<Fragment> mRatingFragments;
     private RecipeDetailsStepAdapter.StepItemCallBack mStepItemCallBack;
     private ProgressDialog mProgressDialog;
+    private View mExperienceListCard;
+    private View mSimilarListCard;
+    private View mRatingCard;
 
     public static RecipeDetailsFragment newInstance(String recipeId, RecipeDetailsStepAdapter.StepItemCallBack callBack) {
 
@@ -177,7 +182,7 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     private void setupIngredientList() {
-        RecipeDetailsIngredientsAdapter adapter = new RecipeDetailsIngredientsAdapter(getActivity(), mRecipe.getIngredients());
+        RecipeDetailsIngredientsAdapter adapter = new RecipeDetailsIngredientsAdapter(getActivity(), mRecipe.getIngredients(), this);
         mIngredientList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mIngredientList.setAdapter(adapter);
     }
@@ -201,6 +206,9 @@ public class RecipeDetailsFragment extends Fragment
         mRatingTabLayout = view.findViewById(R.id.details_recipe_rating_tab_layout);
         mExperienceList = view.findViewById(R.id.details_recipe_experiences_recycler);
         mSimilarList = view.findViewById(R.id.details_recipe_similar_recipes_recycler);
+        mExperienceListCard = view.findViewById(R.id.fragment_recipe_details_experience_list_cardview);
+        mSimilarListCard = view.findViewById(R.id.fragment_recipe_details_similar_recipes_cardview);
+        mRatingCard = view.findViewById(R.id.fragment_recipe_details_rating_cardview);
     }
 
     private void updateUI(){
@@ -224,7 +232,7 @@ public class RecipeDetailsFragment extends Fragment
         if(!mUserId.equals(mRecipe.getUserId())){
             getCurrentExperience();
         }else{
-            getView().findViewById(R.id.fragment_recipe_details_rating_cardview).setVisibility(View.GONE);
+            mRatingCard.setVisibility(View.GONE);
         }
         mProgressDialog.dismiss();
     }
@@ -388,7 +396,7 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
             @Override
             public void onGetExperiencesSuccess(List<Experience> experiences) {
-                getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.VISIBLE);
+                mExperienceListCard.setVisibility(View.VISIBLE);
                 ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
                 adapter.setExperiences(experiences);
                 adapter.notifyDataSetChanged();
@@ -430,7 +438,7 @@ public class RecipeDetailsFragment extends Fragment
             @Override
             public void onGetExperiencesSuccess(List<Experience> experiences) {
                 if(experiences.size() == 0){
-                    getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
+                    mExperienceListCard.setVisibility(View.GONE);
                     return;
                 }
                 ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
@@ -440,7 +448,7 @@ public class RecipeDetailsFragment extends Fragment
 
             @Override
             public void onGetExperiencesFailure() {
-                getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
+                mExperienceListCard.setVisibility(View.GONE);
             }
         });
     }
@@ -472,7 +480,7 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onGetExperiencesSuccess(List<Experience> experiences) {
         if(experiences.size() == 0){
-            getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
+            mExperienceListCard.setVisibility(View.GONE);
             return;
         }
         setupExperienceList(experiences);
@@ -480,14 +488,14 @@ public class RecipeDetailsFragment extends Fragment
 
     @Override
     public void onGetExperiencesFailure() {
-        getView().findViewById(R.id.fragment_recipe_details_experience_list_cardview).setVisibility(View.GONE);
+        mExperienceListCard.setVisibility(View.GONE);
         Log.i(TAG, "onGetExperiencesFailure: ");
     }
 
     @Override
     public void onGetSimilarResponse(List<Recipe> recipes) {
         if(recipes.size() == 0){
-            getView().findViewById(R.id.fragment_recipe_details_similar_recipes_cardview).setVisibility(View.GONE);
+            mSimilarListCard.setVisibility(View.GONE);
             return;
         }
         setupSimilarList(recipes);
@@ -499,5 +507,15 @@ public class RecipeDetailsFragment extends Fragment
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
         i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
+    }
+
+    @Override
+    public void onAddIngredientButtonClicked(Ingredient ingredient) {
+        ShoppingListDAO.getInstance(getActivity()).addIngredient(mRecipe, ingredient);
+    }
+
+    @Override
+    public void onDeleteIngredientButtonClicked(Ingredient ingredient) {
+        ShoppingListDAO.getInstance(getActivity()).removeIngredient(mRecipe, ingredient);
     }
 }

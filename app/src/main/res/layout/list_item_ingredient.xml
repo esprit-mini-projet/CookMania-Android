@@ -17,6 +17,17 @@
         android:padding="2dp"
         android:background="?selectableItemBackground"/>
 
+    <ImageButton
+        android:id="@+id/list_item_ingredient_delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_delete_circle_full_accent"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:padding="2dp"
+        android:background="?selectableItemBackground"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/list_item_ingredient_quantity_text"
         android:layout_width="wrap_content"
