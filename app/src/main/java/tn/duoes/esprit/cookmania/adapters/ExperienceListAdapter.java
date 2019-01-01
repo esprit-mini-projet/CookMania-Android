@@ -1,23 +1,34 @@
 package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.models.Experience;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
 
 public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAdapter.ExperienceViewHolder> {
+
+    private static final String TAG = "ExperienceListAdapter";
 
     private List<Experience> mExperiences;
     private Context mContext;
@@ -36,12 +47,16 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
 
     @Override
     public void onBindViewHolder(@NonNull ExperienceViewHolder experienceViewHolder, int i) {
-        //experienceViewHolder.bind(mExperiences.get(i));
+        experienceViewHolder.bind(mExperiences.get(i), i);
     }
 
     @Override
     public int getItemCount() {
-        return 4;
+        return mExperiences.size();
+    }
+
+    public void setExperiences(List<Experience> experiences) {
+        mExperiences = experiences;
     }
 
     static class ExperienceViewHolder extends RecyclerView.ViewHolder{
@@ -65,9 +80,49 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
             mContext = context;
         }
 
-        void bind(Experience experience){
-            GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + experience.getImageUrl())
-                    .centerCrop().into(mImageView);
+        void bind(final Experience experience, int i) {
+            //set experience photo
+            GlideApp.with(mContext).load(Constants.UPLOAD_FOLDER_URL + "/" + experience.getImageUrl())
+                    .error(GlideApp.with(mContext).load(R.drawable.image_placeholder).centerCrop())
+                    .centerCrop()
+                    .into(mImageView);
+            //set user photo
+            GlideApp.with(mContext).load(experience.getUser().getImageUrl())
+                    .placeholder(R.drawable.default_profile_picture)
+                    .error(GlideApp.with(mContext).load(R.drawable.default_profile_picture).apply(RequestOptions.circleCropTransform()))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(mUserImageView);
+            mUserImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    intent.putExtra(ProfileActivity.EXTRA_USER_ID, experience.getUser().getId());
+                    mContext.startActivity(intent);
+                }
+            });
+            //set the remaining fields
+            mRatingBar.setRating(experience.getRating());
+            mUserNameText.setText(experience.getUser().getUserName());
+            mCommentText.setText(experience.getComment());
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            mDateText.setText(dateFormat.format(experience.getDate()));
+            //getting the pixel value of 8dp
+            Resources r = mContext.getResources();
+            int px = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8,
+                    r.getDisplayMetrics()
+            );
+            //add 8dp start margin to first item or remove it
+            if(i == 0){
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                params.setMarginStart(px);
+                itemView.setLayoutParams(params);
+            }else{
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) itemView.getLayoutParams();
+                params.setMarginStart(0);
+                itemView.setLayoutParams(params);
+            }
         }
     }
 }

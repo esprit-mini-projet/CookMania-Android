@@ -17,10 +17,11 @@ public interface ExperienceApi {
     @POST("add")
     @Multipart
     Call<Void> addExperience(@Part("rating") RequestBody rating,
-                                  @Part("comment") RequestBody comment,
-                                  @Part("recipe_id") RequestBody recipeId,
-                                  @Part("user_id") RequestBody userId,
-                                  @Part MultipartBody.Part imageFile);
+                             @Part("comment") RequestBody comment,
+                             @Part("recipe_id") RequestBody recipeId,
+                             @Part("user_id") RequestBody userId,
+                             @Part("owner_id") RequestBody ownerId,
+                             @Part MultipartBody.Part imageFile);
 
     @GET("fetch/{recipeID}/{userID}")
     Call<List<Experience>> getExperience(@Path("recipeID") int recipeId, @Path("userID") String userId);

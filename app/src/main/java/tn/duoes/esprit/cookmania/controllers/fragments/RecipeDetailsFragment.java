@@ -1,6 +1,8 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,7 +12,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +25,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,11 +43,19 @@ import tn.duoes.esprit.cookmania.adapters.ExperienceListAdapter;
 import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
+import tn.duoes.esprit.cookmania.adapters.SimilarListAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
+import tn.duoes.esprit.cookmania.dao.ShoppingListDAO;
 import tn.duoes.esprit.cookmania.models.Experience;
+import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.ExperienceService;
 import tn.duoes.esprit.cookmania.services.RecipeService;
+import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
 import tn.duoes.esprit.cookmania.views.RatingViewPager;
@@ -53,8 +70,9 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.AddExperienceCallBack,
         ExperienceService.DeleteExperienceCallBack,
         ExperienceService.GetExperienceCallBack,
-        ExperienceService.GetExperiencesCallBack
-{
+        ExperienceService.GetExperiencesCallBack,
+        RecipeService.RecipeServiceSimilarCallBack,
+        SimilarListAdapter.SimilarViewHolder.SimilarRecipeItemCallBack, RecipeDetailsIngredientsAdapter.IngredientItemCallBack {
 
     private static final String TAG = "RecipeDetailsFragment";
     private static final String ARGS_RECIPE_ID = "recipeId";
@@ -70,12 +88,18 @@ public class RecipeDetailsFragment extends Fragment
     private ImageButton mAddAllButton;
     private TextView mAddAllTextView;
     private TextView mShopItemsTextView;
-    private ImageView mShopCartImageView;
+    private ImageView mShopCartImageButton;
     private RecyclerView mIngredientList;
     private RecyclerView mStepList;
     private RatingViewPager mRatingViewPager;
     private TabLayout mRatingTabLayout;
     private RecyclerView mExperienceList;
+    private RecyclerView mSimilarList;
+    private View mExperienceListCard;
+    private View mSimilarListCard;
+    private View mRatingCard;
+    private View mDeleteAllButton;
+    private ImageView mUserImageView;
 
     private Recipe mRecipe;
     private int mRating;
@@ -84,6 +108,7 @@ public class RecipeDetailsFragment extends Fragment
     private String mUserId;
     private List<Fragment> mRatingFragments;
     private RecipeDetailsStepAdapter.StepItemCallBack mStepItemCallBack;
+    private ProgressDialog mProgressDialog;
 
     public static RecipeDetailsFragment newInstance(String recipeId, RecipeDetailsStepAdapter.StepItemCallBack callBack) {
 
@@ -100,11 +125,14 @@ public class RecipeDetailsFragment extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         getViewReferences(view);
+        mProgressDialog = ProgressDialog.show(getActivity(), "", "Loading...");
+        mProgressDialog.show();
         mUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
         mRecipe = new Recipe();
         setupIngredientList();
         setupStepList();
+        setupExperienceList();
         getRecipe(getArguments().getString(ARGS_RECIPE_ID));
         return view;
     }
@@ -112,19 +140,28 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
     }
 
-    private void setupExperienceList(List<Experience> experiences) {
-        ExperienceListAdapter adapter = new ExperienceListAdapter(experiences, getActivity());
+    private void setupExperienceList() {
+        ExperienceListAdapter adapter = new ExperienceListAdapter(new ArrayList<Experience>(), getActivity());
         mExperienceList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mExperienceList.setAdapter(adapter);
-        Log.i(TAG, "setupExperienceList: ");
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mExperienceList);
+    }
+
+    private void setupSimilarList(List<Recipe> recipes) {
+        SimilarListAdapter adapter = new SimilarListAdapter(recipes, getActivity(), this);
+        mSimilarList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mSimilarList.setAdapter(adapter);
+        SnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(mSimilarList);
     }
 
     private void setupViewPager(Experience experience) {
         mRatingFragments = new ArrayList<>();
-        Fragment ratingBarFragment = null;
+        Fragment ratingBarFragment;
         if(experience == null){
             ratingBarFragment = RatingBarFragment.newInstance(this);
         }else{
@@ -156,7 +193,7 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     private void setupIngredientList() {
-        RecipeDetailsIngredientsAdapter adapter = new RecipeDetailsIngredientsAdapter(getActivity(), mRecipe.getIngredients());
+        RecipeDetailsIngredientsAdapter adapter = new RecipeDetailsIngredientsAdapter(getActivity(), mRecipe.getIngredients(), this);
         mIngredientList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mIngredientList.setAdapter(adapter);
     }
@@ -171,18 +208,45 @@ public class RecipeDetailsFragment extends Fragment
         mTimeTextView = view.findViewById(R.id.details_recipe_time_text);
         mDescriptionTextView = view.findViewById(R.id.details_recipe_description_text);
         mAddAllButton = view.findViewById(R.id.details_recipe_ingredients_add_all_button);
+        mDeleteAllButton = view.findViewById(R.id.details_recipe_ingredients_delete_all_button);
         mAddAllTextView = view.findViewById(R.id.details_recipe_ingredients_add_all_text);
         mShopItemsTextView = view.findViewById(R.id.details_recipe_shop_items_text);
-        mShopCartImageView = view.findViewById(R.id.details_recipe_shop_cart_image);
+        mShopCartImageButton = view.findViewById(R.id.details_recipe_shop_cart_image);
         mIngredientList = view.findViewById(R.id.details_recipe_ingredients_recycler);
         mStepList = view.findViewById(R.id.details_recipe_steps_recycler);
         mRatingViewPager = view.findViewById(R.id.details_recipe_rating_viewpager);
         mRatingTabLayout = view.findViewById(R.id.details_recipe_rating_tab_layout);
         mExperienceList = view.findViewById(R.id.details_recipe_experiences_recycler);
+        mSimilarList = view.findViewById(R.id.details_recipe_similar_recipes_recycler);
+        mExperienceListCard = view.findViewById(R.id.fragment_recipe_details_experience_list_cardview);
+        mSimilarListCard = view.findViewById(R.id.fragment_recipe_details_similar_recipes_cardview);
+        mRatingCard = view.findViewById(R.id.fragment_recipe_details_rating_cardview);
+        mUserImageView = view.findViewById(R.id.fragment_recipe_details_user_image_view);
     }
 
     private void updateUI(){
-        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL()).into(mRecipeImageView);
+        setHasOptionsMenu(true);
+        GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL())
+                .centerCrop()
+                .into(mRecipeImageView);
+        UserService.getInstance().getUserById(mRecipe.getUserId(), new UserService.GetUserByIdCallBack() {
+            @Override
+            public void onCompletion(User user) {
+                GlideApp.with(RecipeDetailsFragment.this).load(user.getImageUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .error(GlideApp.with(RecipeDetailsFragment.this)
+                                .load(R.drawable.default_profile_picture).apply(RequestOptions.circleCropTransform()))
+                        .into(mUserImageView);
+            }
+        });
+        mUserImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                intent.putExtra(ProfileActivity.EXTRA_USER_ID, mRecipe.getUserId());
+                startActivity(intent);
+            }
+        });
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
         mCaloriesTextView.setText("" + mRecipe.getCalories());
@@ -195,23 +259,81 @@ public class RecipeDetailsFragment extends Fragment
         ((RecipeDetailsIngredientsAdapter)mIngredientList.getAdapter()).setIngredients(mRecipe.getIngredients());
         mIngredientList.getAdapter().notifyDataSetChanged();
         getExperienceList();
+        getSimilarList();
         if(!mUserId.equals(mRecipe.getUserId())){
             getCurrentExperience();
         }else{
-            getView().findViewById(R.id.fragment_recipe_details_rating_cardview).setVisibility(View.GONE);
+            mRatingCard.setVisibility(View.GONE);
         }
+        //Setting up shopping section
+        int count = ShoppingListDAO.getInstance(getActivity()).getShopItemsCount();
+        mShopItemsTextView.setText(String.format(Locale.getDefault(), "%d", count));
+        mAddAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddAllButton.setVisibility(View.GONE);
+                mDeleteAllButton.setVisibility(View.VISIBLE);
+                mAddAllTextView.setText(R.string.remove_all_from_shop_list);
+                ShoppingListDAO.getInstance(getActivity()).addRecipe(mRecipe, mRecipe.getIngredients());
+                for (Ingredient ingredient : mRecipe.getIngredients()) {
+                    ingredient.setInShoppingList(true);
+                }
+                int count = ShoppingListDAO.getInstance(getActivity()).getShopItemsCount();
+                mShopItemsTextView.setText(String.format(Locale.getDefault(), "%d", count));
+                mIngredientList.getAdapter().notifyDataSetChanged();
+            }
+        });
+        mDeleteAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddAllButton.setVisibility(View.VISIBLE);
+                mDeleteAllButton.setVisibility(View.GONE);
+                mAddAllTextView.setText(R.string.add_all_to_shop_list);
+                ShoppingListDAO.getInstance(getActivity()).removeRecipe(mRecipe);
+                for (Ingredient ingredient : mRecipe.getIngredients()) {
+                    ingredient.setInShoppingList(false);
+                }
+                int count = ShoppingListDAO.getInstance(getActivity()).getShopItemsCount();
+                mShopItemsTextView.setText(String.format(Locale.getDefault(), "%d", count));
+                mIngredientList.getAdapter().notifyDataSetChanged();
+            }
+        });
+        List<Ingredient> shopIngredients = ShoppingListDAO.getInstance(getActivity()).getRecipeIngredients(mRecipe);
+        if (shopIngredients != null) {
+            mAddAllButton.setVisibility(View.GONE);
+            mDeleteAllButton.setVisibility(View.VISIBLE);
+            mAddAllTextView.setText(R.string.remove_all_from_shop_list);
+            for (Ingredient ingredient : mRecipe.getIngredients()) {
+                if (shopIngredients.contains(ingredient)) {
+                    ingredient.setInShoppingList(true);
+                } else {
+                    ingredient.setInShoppingList(false);
+                }
+            }
+        }
+        mShopCartImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ShoppingListActivity.class));
+            }
+        });
+        mProgressDialog.dismiss();
     }
 
     private void getExperienceList() {
         ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), this);
     }
 
+    private void getSimilarList() {
+        RecipeService.getInstance().getSimilarRecipes(mRecipe, this);
+    }
+
     private void getRecipe(String id) {
         RecipeService.getInstance().getRecipeById(id, new RecipeService.RecipeServiceGetCallBack() {
             @Override
             public void onResponse(List<Recipe> recipes) {
+                if (isDetached()) return;
                 mRecipe = recipes.get(0);
-                Log.d(TAG, "onResponse: " + mRecipe);
                 updateUI();
             }
 
@@ -234,16 +356,19 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_recipe_details, menu);
+        if (!mUserId.equals(mRecipe.getUserId())) {
+            menu.removeItem(R.id.recipe_details_delete);
+        }
         MenuItem item = menu.getItem(0);
-        String userId = getActivity().getSharedPreferences(getResources().getString(R.string.prefs_name), MODE_PRIVATE)
-                .getString(getResources().getString(R.string.prefs_user_id), null);
+        String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
         int recipeId = Integer.parseInt(getArguments().getString(ARGS_RECIPE_ID));
         if(!FavoriteLab.getInstance(getActivity()).recipeExists(userId, recipeId)){
             item.setTitle(R.string.favorite);
-            item.setIcon(R.drawable.icon_heart_full);
+            item.setIcon(R.drawable.icon_heart_outline);
         }else{
             item.setTitle(R.string.remove_favorite);
-            item.setIcon(R.drawable.icon_heart_outline);
+            item.setIcon(R.drawable.icon_heart_full);
         }
         Log.d(TAG, "onCreateOptionsMenu: " + FavoriteLab.getInstance(getActivity()).getList(userId));
     }
@@ -251,35 +376,51 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_favorite){
-            String userId = getActivity().getSharedPreferences(getResources().getString(R.string.prefs_name), MODE_PRIVATE)
-                    .getString(getResources().getString(R.string.prefs_user_id), null);
+            String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                    .getString(getString(R.string.prefs_user_id), null);
             int recipeId = Integer.parseInt(getArguments().getString(ARGS_RECIPE_ID));
 
-            if(item.getTitle() == getResources().getString(R.string.favorite)){
+            if(item.getTitle() == getString(R.string.favorite)){
                 item.setTitle(R.string.remove_favorite);
-                item.setIcon(R.drawable.icon_heart_outline);
+                item.setIcon(R.drawable.icon_heart_full);
                 FavoriteLab.getInstance(getActivity()).insert(recipeId, userId);
             }else{
                 item.setTitle(R.string.favorite);
-                item.setIcon(R.drawable.icon_heart_full);
+                item.setIcon(R.drawable.icon_heart_outline);
                 FavoriteLab.getInstance(getActivity()).delete(recipeId, userId);
             }
             return true;
-        }else{
-            return super.onOptionsItemSelected(item);
+        } else if (item.getItemId() == R.id.recipe_details_delete) {
+            showDeleteConfirmationDialog();
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteConfirmationDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.confirmation)
+                .setMessage(R.string.confirmation_message_delete_recipe)
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProgressDialog.setMessage("Please wait...");
+                        mProgressDialog.show();
+                        RecipeService.getInstance().delete(mRecipe.getId(), new RecipeService.DeleteRecipeCallBack() {
+                            @Override
+                            public void onResponse(boolean isSuccessful) {
+                                mProgressDialog.dismiss();
+                                getActivity().finish();
+                            }
+                        });
+                    }
+                })
+                .show();
     }
 
     @Override
-    public void onSubmitClickListener(boolean canSwipe) {
-        if (canSwipe){
-            mRatingViewPager.setPagingEnabled(true);
-            mRatingTabLayout.setVisibility(View.VISIBLE);
-            mRatingViewPager.setCurrentItem(1, true);
-        }else{
-            mRatingViewPager.setPagingEnabled(false);
-            mRatingTabLayout.setVisibility(View.INVISIBLE);
-        }
+    public void onSubmitClickListener() {
+        mRatingViewPager.setCurrentItem(1, true);
     }
 
     @Override
@@ -289,8 +430,15 @@ public class RecipeDetailsFragment extends Fragment
 
     @Override
     public void onImageChangedListener(String path) {
-        mRatingImagePath = path;
-        mRatingViewPager.setCurrentItem(2, true);
+        if(path == null){
+            mRatingTabLayout.setVisibility(View.INVISIBLE);
+            mRatingViewPager.setPagingEnabled(false);
+        }else{
+            mRatingImagePath = path;
+            mRatingViewPager.setCurrentItem(2, true);
+            mRatingTabLayout.setVisibility(View.VISIBLE);
+            mRatingViewPager.setPagingEnabled(true);
+        }
     }
 
     @Override
@@ -300,12 +448,20 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     private void addExperience() {
-        Experience experience = new Experience();
-        experience.setComment(mComment);
-        experience.setRating(mRating);
-        experience.setRecipeId(mRecipe.getId());
-        experience.setUserId(mUserId);
-        ExperienceService.getInstance().addExperience(experience, mRatingImagePath, this);
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                Experience experience = new Experience();
+                experience.setComment(mComment);
+                experience.setRating(mRating);
+                experience.setRecipeId(mRecipe.getId());
+                experience.setRecipeOwnerId(mRecipe.getUserId());
+                User user = new User();
+                user.setId(mUserId);
+                experience.setUser(user);
+                ExperienceService.getInstance().addExperience(experience, mRatingImagePath, RecipeDetailsFragment.this);
+            }
+        });
     }
 
     @Override
@@ -325,6 +481,25 @@ public class RecipeDetailsFragment extends Fragment
         mRatingViewPager.getAdapter().notifyDataSetChanged();
         mRatingTabLayout.setVisibility(View.INVISIBLE);
         mRatingViewPager.setPagingEnabled(false);
+
+        ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
+            @Override
+            public void onGetExperiencesSuccess(List<Experience> experiences) {
+                updateExperienceList(experiences);
+            }
+
+            @Override
+            public void onGetExperiencesFailure() {
+                //
+            }
+        });
+    }
+
+    private void updateExperienceList(List<Experience> experiences) {
+        mExperienceListCard.setVisibility(View.VISIBLE);
+        ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
+        adapter.setExperiences(experiences);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -351,6 +526,24 @@ public class RecipeDetailsFragment extends Fragment
         mRatingFragments.remove(0);
         mRatingFragments.add(0, RatingBarFragment.newInstance(this));
         mRatingViewPager.getAdapter().notifyDataSetChanged();
+
+        ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
+            @Override
+            public void onGetExperiencesSuccess(List<Experience> experiences) {
+                if(experiences.size() == 0){
+                    mExperienceListCard.setVisibility(View.GONE);
+                    return;
+                }
+                ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
+                adapter.setExperiences(experiences);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onGetExperiencesFailure() {
+                mExperienceListCard.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -379,13 +572,47 @@ public class RecipeDetailsFragment extends Fragment
 
     @Override
     public void onGetExperiencesSuccess(List<Experience> experiences) {
-        Log.i(TAG, "onGetExperiencesSuccess: ");
-        setupExperienceList(experiences);
+        if(experiences.size() == 0){
+            mExperienceListCard.setVisibility(View.GONE);
+            return;
+        }
+        updateExperienceList(experiences);
     }
 
     @Override
     public void onGetExperiencesFailure() {
-        mExperienceList.setVisibility(View.GONE);
+        mExperienceListCard.setVisibility(View.GONE);
         Log.i(TAG, "onGetExperiencesFailure: ");
+    }
+
+    @Override
+    public void onGetSimilarResponse(List<Recipe> recipes) {
+        if(recipes.size() == 0){
+            mSimilarListCard.setVisibility(View.GONE);
+            return;
+        }
+        setupSimilarList(recipes);
+    }
+
+    @Override
+    public void onSimilarRecipeClicked(Recipe recipe) {
+        Intent i = new Intent(getActivity(), RecipeDetailsActivity.class);
+        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
+        i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
+        startActivity(i);
+    }
+
+    @Override
+    public void onAddIngredientButtonClicked(Ingredient ingredient) {
+        ShoppingListDAO.getInstance(getActivity()).addIngredient(mRecipe, ingredient);
+        int count = ShoppingListDAO.getInstance(getActivity()).getShopItemsCount();
+        mShopItemsTextView.setText(String.format(Locale.getDefault(), "%d", count));
+    }
+
+    @Override
+    public void onDeleteIngredientButtonClicked(Ingredient ingredient) {
+        ShoppingListDAO.getInstance(getActivity()).removeIngredient(mRecipe, ingredient);
+        int count = ShoppingListDAO.getInstance(getActivity()).getShopItemsCount();
+        mShopItemsTextView.setText(String.format(Locale.getDefault(), "%d", count));
     }
 }

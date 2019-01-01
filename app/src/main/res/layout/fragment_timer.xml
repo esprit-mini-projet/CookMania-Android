@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:backgroundTint="@color/colorBackgroundTransparent">
 
     <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
         android:id="@+id/fragment_timer_timer"
@@ -15,7 +16,7 @@
         app:progressCap="round"
         app:progressStrokeWidth="8dp"
         app:progressColor="@color/colorAccent"
-        app:textSize="68sp"
+        app:textSize="55sp"
         app:direction="clockwise"
         app:drawDot="true"
         app:dotWidth="16dp"
@@ -32,10 +33,8 @@
             android:layout_height="80dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_play"
-            android:background="@drawable/ripple_rounded"
             android:visibility="invisible"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -45,9 +44,7 @@
             android:layout_height="80dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_pause"
-            android:background="@drawable/ripple_rounded"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -57,7 +54,6 @@
             android:layout_height="50dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_stop"
-            android:backgroundTint="@android:color/transparent"
             app:layout_constraintTop_toTopOf="@id/fragment_timer_play_button"
             app:layout_constraintBottom_toBottomOf="@id/fragment_timer_play_button"
             app:layout_constraintStart_toEndOf="@id/fragment_timer_play_button"

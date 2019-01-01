@@ -1,10 +1,13 @@
 package tn.duoes.esprit.cookmania.models;
 
+import java.util.Objects;
+
 public class Ingredient {
     private int id;
     private String name;
     private int quantity;
     private String unit;
+    private transient boolean isInShoppingList;
 
     private int shoppingListItemIndex;
 
@@ -62,6 +65,28 @@ public class Ingredient {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public boolean isInShoppingList() {
+        return isInShoppingList;
+    }
+
+    public void setInShoppingList(boolean inShoppingList) {
+        isInShoppingList = inShoppingList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingredient that = (Ingredient) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 
     @Override

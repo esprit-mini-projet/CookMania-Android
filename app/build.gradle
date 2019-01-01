@@ -67,13 +67,20 @@ dependencies {
 
     //Range slider
     implementation 'io.apptik.widget:multislider:1.3'
-    
+
     //PixImagePicker
-    implementation  'com.fxn769:pix:1.2.5'
+    implementation 'com.fxn769:pix:1.2.5'
 
     //Circular progress bar
     implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.2.2'
 
     //Blur library
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
+
+    //FireBase Messaging
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 }
+
+apply plugin: 'com.google.gms.google-services'
+

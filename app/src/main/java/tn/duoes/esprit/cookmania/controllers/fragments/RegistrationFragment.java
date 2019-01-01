@@ -16,8 +16,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.UUID;
+
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -58,8 +64,8 @@ public class RegistrationFragment extends Fragment {
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = mUsernameLayout.getEditText().getText().toString();
-                String password = mPasswordLayout.getEditText().getText().toString();
+                final String username = mUsernameLayout.getEditText().getText().toString();
+                final String password = mPasswordLayout.getEditText().getText().toString();
                 String confirm = mConfirmPasswordLayout.getEditText().getText().toString();
                 boolean valid = true;
                 if(username.isEmpty()){
@@ -81,28 +87,41 @@ public class RegistrationFragment extends Fragment {
                 if(!valid){
                     return;
                 }
-
-                final User user = new User();
-                user.setEmail(getArguments().getString(ARG_EMAIL));
-                user.setUserName(username);
-                user.setPassword(password);
-                user.setImageUrl(Constants.DEFAULT_PROFILE_PICTURE_URL);
-
-                showProgressBar();
-                UserService.getInstance().createFromEmail(user, new UserService.CreateFromEmailCallBack() {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
                     @Override
-                    public void onCompletion(String id) {
-                        hideProgressBar();
-                        if(id == null){
-                            showAlert();
-                            return;
-                        }
-                        Log.d(TAG, "onCompletion: user created with id " + id);
-                        user.setId(id);
-                        saveUserData(user);
-                        hideSoftKeyboard();
-                        goToProfile();
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String token = instanceIdResult.getToken();
+                        Log.d(TAG, "onSuccess: " + token);
+
+                        final User user = new User();
+                        user.setEmail(getArguments().getString(ARG_EMAIL));
+                        user.setUserName(username);
+                        user.setPassword(password);
+                        user.setImageUrl(Constants.DEFAULT_PROFILE_PICTURE_URL);
+                        String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                                .getString(getString(R.string.prefs_uuid), UUID.randomUUID().toString());
+                        user.setUuid(uuid);
+                        user.setToken("");
+
+                        showProgressBar();
+                        UserService.getInstance().createFromEmail(user, new UserService.CreateFromEmailCallBack() {
+                            @Override
+                            public void onCompletion(String id) {
+                                hideProgressBar();
+                                if (id == null) {
+                                    showAlert();
+                                    return;
+                                }
+                                Log.d(TAG, "onCompletion: user created with id " + id);
+                                user.setId(id);
+                                saveUserData(user);
+                                hideSoftKeyboard();
+                                goToHome();
+                            }
+                        });
                     }
+
+
                 });
             }
         });
@@ -110,8 +129,8 @@ public class RegistrationFragment extends Fragment {
         return v;
     }
 
-    private void goToProfile() {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+    private void goToHome() {
+        Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -122,6 +141,7 @@ public class RegistrationFragment extends Fragment {
                 .putString(getString(R.string.pref_image_url), user.getImageUrl())
                 .putString(getString(R.string.prefs_username), user.getUserName())
                 .putString(getString(R.string.prefs_signin_method), getString(R.string.method_email))
+                .putString(getString(R.string.prefs_user_email), user.getEmail())
                 .apply();
     }
 

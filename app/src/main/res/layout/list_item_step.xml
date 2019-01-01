@@ -5,20 +5,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/step_item_line_container"
         android:layout_width="50dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <FrameLayout
             android:id="@+id/step_item_top_line"
             android:layout_width="5dp"
-            android:layout_height="10dp"
-            android:background="@color/colorPrimary"/>
+            android:layout_height="8dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/list_item_step_time_layout"/>
 
 
         <LinearLayout
@@ -28,26 +30,45 @@
             android:background="@drawable/circle_shape_primary"
             android:gravity="center"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_item_top_line"
+            app:layout_constraintBottom_toTopOf="@id/step_item_bottom_line">
 
             <TextView
                 android:id="@+id/step_item_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="13"
-                android:textSize="22sp"
+                android:textSize="16sp"
                 android:textColor="@android:color/white"/>
 
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/list_item_step_dotted_ring"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/circle_dotted"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/list_item_step_time_layout"
+            app:layout_constraintBottom_toBottomOf="@id/list_item_step_time_layout"/>
+
+        <FrameLayout
             android:id="@+id/step_item_bottom_line"
             android:layout_width="5dp"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_item_step_time_layout"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -57,7 +78,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
         android:layout_marginBottom="8dp">
 
         <TextView
@@ -66,7 +89,8 @@
             android:layout_height="wrap_content"
             android:text="@string/lorem_ipsum_medium"
             android:textColor="@color/colorDark"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"/>
 
         <ImageView
             android:id="@+id/step_item_image"

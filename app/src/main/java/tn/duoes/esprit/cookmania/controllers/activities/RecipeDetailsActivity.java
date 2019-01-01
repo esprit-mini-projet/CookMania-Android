@@ -13,12 +13,14 @@ import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.controllers.fragments.RecipeDetailsFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.TimerFragment;
 
-public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsStepAdapter.StepItemCallBack
+public class RecipeDetailsActivity extends AppCompatActivity
+        implements RecipeDetailsStepAdapter.StepItemCallBack,
+        TimerFragment.TimerFragmentCallBack
 {
 
     private static final String TAG = "RecipeDetailsActivity";
     public static final String EXTRA_RECIPE_ID = "recipeId";
-    public static final String EXTRA_PARENT_ACTIVITY_CLASS = "class";
+    public static final String EXTRA_SHOULD_FINISH = "should_finish";
 
     private boolean timerIsShown = false;
     private BlurLayout mBlurLayout;
@@ -43,10 +45,10 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
         mBlurLayout.setVisibility(View.VISIBLE);
         Fragment timerFragment = getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
         if(timerFragment == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, TimerFragment.newInstance(time))
+            getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
                     .commit();
         }else{
-            getSupportFragmentManager().beginTransaction().replace(R.id.timer_fragment_container, TimerFragment.newInstance(time))
+            getSupportFragmentManager().beginTransaction().replace(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
                     .commit();
         }
         mBlurLayout.startBlur();
@@ -57,22 +59,24 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
             if(timerIsShown){
-                getSupportFragmentManager().beginTransaction()
-                        .remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container)).commit();
-                timerIsShown = false;
-                mBlurLayout.pauseBlur();
-                mBlurLayout.setVisibility(View.GONE);
+                removeTimerFragment();
                 return true;
             }
-            try {
-                startActivity(new Intent(this, Class.forName(getIntent().getStringExtra(EXTRA_PARENT_ACTIVITY_CLASS))));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+            if(shouldFinish) finish();
+            else startActivity(new Intent(this, MainScreenActivity.class));
             return true;
         }else{
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void removeTimerFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container)).commit();
+        timerIsShown = false;
+        mBlurLayout.pauseBlur();
+        mBlurLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -90,12 +94,16 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     @Override
     public void onBackPressed() {
         if(timerIsShown){
-            getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container));
-            timerIsShown = false;
-            mBlurLayout.pauseBlur();
-            mBlurLayout.setVisibility(View.GONE);
+            removeTimerFragment();
             return;
         }
-        super.onBackPressed();
+        boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+        if(shouldFinish) finish();
+        else startActivity(new Intent(this, MainScreenActivity.class));
+    }
+
+    @Override
+    public void onViewClicked() {
+        removeTimerFragment();
     }
 }

@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "323514335162",
+    "firebase_url": "https://cookmania-1541671146124.firebaseio.com",
+    "project_id": "cookmania-1541671146124",
+    "storage_bucket": "cookmania-1541671146124.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323514335162:android:b2d1772b165c03f0",
+        "android_client_info": {
+          "package_name": "tn.duoes.esprit.cookmania"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323514335162-dsq5kfakgmoh6kmfkdir4ge7i13orhns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tn.duoes.esprit.cookmania",
+            "certificate_hash": "c0a78d52610ed77293f36b8d4af2b7404b836bc1"
+          }
+        },
+        {
+          "client_id": "323514335162-h1pmb87tdhi36nfm2n4lnibu254r01fp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf9pfJRSBurQehaX0Jbe3JJ75g8NILCJA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323514335162-h1pmb87tdhi36nfm2n4lnibu254r01fp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "323514335162-ut1n697tbepfjk414bsiju9g5fo567h4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.elyes-seif.products.CookMania"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

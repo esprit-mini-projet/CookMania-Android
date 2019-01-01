@@ -21,6 +21,13 @@ public class User {
     private int mFollowers;
     @SerializedName("following")
     private int mFollowing;
+    @SerializedName("uuid")
+    private String mUuid;
+    @SerializedName("token")
+    private String mToken;
+    private String type = "and";
+    @SerializedName("follow_date")
+    private Date mFollowDate;
 
     public String getId() {
         return mId;
@@ -84,6 +91,34 @@ public class User {
 
     public void setFollowing(int following) {
         mFollowing = following;
+    }
+
+    public String getUuid() {
+        return mUuid;
+    }
+
+    public void setUuid(String uuid) {
+        mUuid = uuid;
+    }
+
+    public String getToken() {
+        return mToken;
+    }
+
+    public void setToken(String token) {
+        mToken = token;
+    }
+
+    public Date getFollowDate() {
+        return mFollowDate;
+    }
+
+    public void setFollowDate(Date followDate) {
+        mFollowDate = followDate;
+    }
+
+    public String getType() {
+        return type;
     }
 
     @Override

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:layout_height="200dp">
+
+    <ImageView
+        android:id="@+id/fragment_profile_header_cover_image"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        tools:src="@drawable/im_2"
+        tools:scaleType="centerCrop"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:elevation="0dp"
+        android:background="@drawable/gradient_shadow_color"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_profile_header_cover_image"
+        android:alpha="0.7"/>
+
+    <ImageView
+        android:id="@+id/fragment_profile_header_user_image"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:background="@drawable/white_circle_shape"
+        android:backgroundTint="@color/colorBackground"
+        android:padding="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_profile_header_cover_image"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_profile_header_cover_image"
+        android:layout_marginStart="30dp"/>
+
+    <ImageView
+        android:id="@+id/fragment_profile_header_camera_image"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/icon_camera"
+        android:scaleType="centerCrop"
+        android:background="@drawable/grey_circle_shape_white_borders"
+        android:visibility="gone"
+        tools:visibility="visible"
+        style="?selectableItemBackground"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="@id/fragment_profile_header_user_image"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_profile_header_user_image"/>
+
+    <TextView
+        android:id="@+id/fragment_profile_header_following_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        tools:text="Following: 53"
+        app:layout_constraintStart_toStartOf="@id/fragment_profile_header_followers_text"
+        app:layout_constraintBottom_toTopOf="@id/fragment_profile_header_followers_text"/>
+
+    <TextView
+        android:id="@+id/fragment_profile_header_followers_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        tools:text="Followers: 15"
+        app:layout_constraintStart_toEndOf="@id/fragment_profile_header_user_image"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_profile_header_cover_image"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="8dp"/>
+
+    <TextView
+        android:id="@+id/fragment_profile_header_user_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Elyes Mansour"
+        android:textColor="@color/colorDark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/fragment_profile_header_user_image"
+        app:layout_constraintTop_toBottomOf="@id/fragment_profile_header_cover_image"
+        android:layout_marginStart="8dp"/>
+
+    <TextView
+        android:id="@+id/fragment_profile_header_member_since_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Member since 12 Nov, 2018"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@id/fragment_profile_header_user_name_text"
+        app:layout_constraintTop_toBottomOf="@id/fragment_profile_header_user_name_text"/>
+
+
+</android.support.constraint.ConstraintLayout>

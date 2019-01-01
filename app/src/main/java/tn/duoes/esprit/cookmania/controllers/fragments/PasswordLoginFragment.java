@@ -16,8 +16,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.UUID;
+
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 
@@ -63,25 +69,42 @@ public class PasswordLoginFragment extends Fragment {
                 }
                 showProgressBar();
 
-                User user = new User();
-                user.setEmail(getArguments().getString(ARG_EMAIL));
-                user.setPassword(password);
-                UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
                     @Override
-                    public void onCompletion(User user, int statusCode) {
-                        hideProgressBar();
-                        if(statusCode == 500){
-                            showAlert();
-                            return;
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String token = instanceIdResult.getToken();
+                        Log.d(TAG, "onSuccess: " + token);
+                        String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                                .getString(getString(R.string.prefs_uuid), null);
+                        if (uuid == null) {
+                            uuid = UUID.randomUUID().toString();
+                            getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                                    .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
                         }
-                        if(statusCode == 400){
-                            mPasswordInputLayout.getEditText().setError(getString(R.string.wrong_password));
-                            return;
-                        }
-                        Log.d(TAG, "onCompletion: user verified");
-                        saveUserData(user);
-                        hideSoftKeyboard();
-                        goToProfile();
+
+                        User user = new User();
+                        user.setEmail(getArguments().getString(ARG_EMAIL));
+                        user.setPassword(password);
+                        user.setUuid(uuid);
+                        user.setToken(token);
+                        UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {
+                            @Override
+                            public void onCompletion(User user, int statusCode) {
+                                hideProgressBar();
+                                if (statusCode == 500) {
+                                    showAlert();
+                                    return;
+                                }
+                                if (statusCode == 400) {
+                                    mPasswordInputLayout.getEditText().setError(getString(R.string.wrong_password));
+                                    return;
+                                }
+                                Log.d(TAG, "onCompletion: user verified");
+                                saveUserData(user);
+                                hideSoftKeyboard();
+                                goToHome();
+                            }
+                        });
                     }
                 });
             }
@@ -90,8 +113,8 @@ public class PasswordLoginFragment extends Fragment {
         return v;
     }
 
-    private void goToProfile() {
-        Intent intent = new Intent(getActivity(), ProfileActivity.class);
+    private void goToHome() {
+        Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -102,6 +125,7 @@ public class PasswordLoginFragment extends Fragment {
                 .putString(getString(R.string.pref_image_url), user.getImageUrl())
                 .putString(getString(R.string.prefs_username), user.getUserName())
                 .putString(getString(R.string.prefs_signin_method), getString(R.string.method_email))
+                .putString(getString(R.string.prefs_user_email), user.getEmail())
                 .apply();
     }
 

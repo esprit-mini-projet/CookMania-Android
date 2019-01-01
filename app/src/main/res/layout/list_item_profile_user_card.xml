@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="5dp"
+    app:cardCornerRadius="5dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/ripple_card_white"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/list_item_profile_user_card_image_view"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/white_circle_shape"
+            android:padding="3dp"
+            android:elevation="2dp"
+            android:layout_marginStart="30dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <TextView
+            android:id="@+id/list_item_profile_user_card_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Elyes Mansour"
+            android:textColor="@color/colorDark"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/list_item_profile_user_card_since_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Following you since 12 Nov, 2018"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

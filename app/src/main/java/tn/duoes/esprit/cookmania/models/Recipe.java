@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +31,8 @@ public class Recipe implements Parcelable {
     private List<String> labels;
     private List<Step> steps;
 
-    private File image;
+    private transient File image;
+    private transient List<Ingredient> mIngredients;
 
     public Recipe() {
         steps = new ArrayList<>();
@@ -280,11 +280,12 @@ public class Recipe implements Parcelable {
     }
 
     public List<Ingredient> getIngredients(){
-        List<Ingredient> ingredients = new ArrayList<>();
+        if (mIngredients != null) return mIngredients;
+        mIngredients = new ArrayList<>();
         for(Step step : steps){
-            ingredients.addAll(step.getIngredients());
+            mIngredients.addAll(step.getIngredients());
         }
-        return ingredients;
+        return mIngredients;
     }
 
     /*
