@@ -12,6 +12,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import tn.duoes.esprit.cookmania.models.User;
@@ -55,4 +56,10 @@ public interface UserApi {
 
     @DELETE("unfollow/{id1}/{id2}")
     Call<Void> unfollow(@Path("id1") String followerId, @Path("id2") String followedId);
+
+    @PUT("update_cred/{id}/{email}/{username}/{password}")
+    Call<Void> updateCredentials(@Path("id") String id,
+                                 @Path("email") String email,
+                                 @Path("username") String username,
+                                 @Path("password") String password);
 }

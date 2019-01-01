@@ -114,6 +114,7 @@ public class PasswordLoginFragment extends Fragment {
                 .putString(getString(R.string.pref_image_url), user.getImageUrl())
                 .putString(getString(R.string.prefs_username), user.getUserName())
                 .putString(getString(R.string.prefs_signin_method), getString(R.string.method_email))
+                .putString(getString(R.string.prefs_user_email), user.getEmail())
                 .apply();
     }
 

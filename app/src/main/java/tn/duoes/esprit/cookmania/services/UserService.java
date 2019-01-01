@@ -367,6 +367,37 @@ public class UserService {
         });
     }
 
+    public void updateCredentials(User user, final UpdateCredCallBack callBack) {
+        Call<Void> call = mUserApi.updateCredentials(
+                user.getId(),
+                user.getEmail(),
+                user.getUserName(),
+                user.getPassword()
+        );
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    try {
+                        Log.d(TAG, "updateCredentials: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(false);
+                    return;
+                }
+                Log.d(TAG, "updateCredentials: body: " + response.body());
+                callBack.onCompletion(true);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "onUpdateCredentialsFailure: ", t);
+                callBack.onCompletion(false);
+            }
+        });
+    }
+
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);
@@ -398,5 +429,9 @@ public class UserService {
     }
     public interface FollowCallBack{
         void onCompletion(Boolean result);
+    }
+
+    public interface UpdateCredCallBack {
+        void onCompletion(Boolean isSuccessful);
     }
 }

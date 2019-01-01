@@ -169,6 +169,7 @@ public class MainLoginFragment extends Fragment {
                         .putString(PREF_USER_ID, user.getId())
                         .putString(PREF_IMAGE_URL, user.getImageUrl())
                         .putString(PREF_USERNAME, user.getUserName())
+                        .putString(getString(R.string.prefs_user_email), user.getEmail())
                         .apply();
                 goToHome();
             }

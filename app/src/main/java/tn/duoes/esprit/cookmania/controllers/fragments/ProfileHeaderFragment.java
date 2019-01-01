@@ -1,7 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,6 +27,8 @@ import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileHeaderFragment extends Fragment {
 
@@ -90,12 +91,12 @@ public class ProfileHeaderFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile_header, container, false);
         getViewReferences(view);
         //hide or show camera
-        String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+        String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
         String userId = getArguments().getString(ARG_USER_ID);
         mUser = new User();
         mUser.setId(userId);
-        String loginMethod = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+        String loginMethod = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_signin_method), "");
         boolean isEmailMethod = loginMethod.equals(getString(R.string.method_email));
         if(connectedUserId.equals(userId) && isEmailMethod){
@@ -115,6 +116,8 @@ public class ProfileHeaderFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        String username = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_username), "");
         updateStats();
     }
 
@@ -141,10 +144,13 @@ public class ProfileHeaderFragment extends Fragment {
     }
 
     private void updateUI() {
-        GlideApp.with(this).load(mUser.getImageUrl())
+        String imageUrl = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.pref_image_url), "");
+        GlideApp.with(this).load(imageUrl)
                 .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.default_profile_picture)
-                .error(GlideApp.with(this).load(R.drawable.default_profile_picture).apply(RequestOptions.circleCropTransform()))
+                .error(GlideApp.with(this).load(R.drawable.default_profile_picture)
+                        .apply(RequestOptions.circleCropTransform()))
                 .into(mUserImage);
         mFollowingText.setText(String.format(Locale.getDefault(), "Following: %d", mUser.getFollowing()));
         mFollowersText.setText(String.format(Locale.getDefault(), "Followers: %d", mUser.getFollowers()));
@@ -189,9 +195,9 @@ public class ProfileHeaderFragment extends Fragment {
                     //TODO: show error message
                     return;
                 }
-                getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                         .edit()
-                        .putString(getString(R.string.pref_image_url), Constants.UPLOAD_FOLDER_URL + "/" + imageUrl)
+                        .putString(getString(R.string.pref_image_url), imageUrl)
                         .apply();
             }
         });

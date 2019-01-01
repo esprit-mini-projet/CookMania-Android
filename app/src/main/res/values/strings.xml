@@ -26,6 +26,7 @@
     <string name="pref_image_url">image_url</string>
     <string name="prefs_username">username</string>
     <string name="prefs_user_id">user_id</string>
+    <string name="prefs_user_email">user_email</string>
     <string name="prefs_signin_method">signin_method</string>
     <string name="prefs_uuid">uuid</string>
     <string name="method_email">email</string>
@@ -87,6 +88,16 @@
     <string name="add_all_to_shop_list">Add all ingredients to your shopping list</string>
     <string name="remove_all_from_shop_list">Remove all ingredients from your shopping list</string>
     <string name="no_recipes_found">No recipes found.</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete account</string>
+    <string name="edit_account">Edit account</string>
+    <string name="you_signed_in_using">You signed in using</string>
+    <string name="login_email_hint">Email...</string>
+    <string name="save">Save</string>
+    <string name="error">Error</string>
+    <string name="error_message_update_creds">We couldn\'t update your account. There has been a server error.</string>
+    <string name="edit_password_hint">Password (leave empty to ignore)</string>
+    <string name="edit_password_confirm_hint">Confirm (leave empty to ignore)</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>
