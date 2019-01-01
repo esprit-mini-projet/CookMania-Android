@@ -91,4 +91,12 @@ dependencies {
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    
+    //Circular progress bar
+    implementation 'com.github.antonKozyriatskyi:CircularProgressIndicator:1.2.2'
+
+    //Blur library
+    implementation 'io.alterac.blurkit:blurkit:1.1.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
