@@ -398,6 +398,32 @@ public class UserService {
         });
     }
 
+    public void delete(String id, final DeleteCallBack callBack) {
+        Call<Void> call = mUserApi.delete(id);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    try {
+                        Log.d(TAG, "delete: Error " + response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    callBack.onCompletion(false);
+                    return;
+                }
+                Log.d(TAG, "delete: body: " + response.body());
+                callBack.onCompletion(true);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "onDeleteFailure: ", t);
+                callBack.onCompletion(false);
+            }
+        });
+    }
+
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);
@@ -430,8 +456,11 @@ public class UserService {
     public interface FollowCallBack{
         void onCompletion(Boolean result);
     }
-
     public interface UpdateCredCallBack {
         void onCompletion(Boolean isSuccessful);
+    }
+
+    public interface DeleteCallBack {
+        void onCompletion(Boolean result);
     }
 }

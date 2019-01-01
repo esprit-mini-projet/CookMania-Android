@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileHeaderFragment extends Fragment {
 
+    private static final String TAG = "ProfileHeaderFragment";
+
     public static final String ARG_USER_ID = "user_id";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -43,6 +46,7 @@ public class ProfileHeaderFragment extends Fragment {
     private TextView mUsernameText;
     private TextView mMembershipText;
 
+    private boolean mCameraOn;
     private User mUser;
     private UserService.GetUserByIdCallBack mUserCallback = new UserService.GetUserByIdCallBack() {
         @Override
@@ -104,11 +108,11 @@ public class ProfileHeaderFragment extends Fragment {
             mCameraImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mCameraOn = true;
                     Pix.start(ProfileHeaderFragment.this, REQUEST_IMAGE_CAPTURE, 1);
                 }
             });
         }
-        update();
 
         return view;
     }
@@ -116,9 +120,8 @@ public class ProfileHeaderFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        String username = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
-                .getString(getString(R.string.prefs_username), "");
-        updateStats();
+        if (mCameraOn) mCameraOn = false;
+        else update();
     }
 
     private void updateStats() {
@@ -144,9 +147,7 @@ public class ProfileHeaderFragment extends Fragment {
     }
 
     private void updateUI() {
-        String imageUrl = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
-                .getString(getString(R.string.pref_image_url), "");
-        GlideApp.with(this).load(imageUrl)
+        GlideApp.with(this).load(mUser.getImageUrl())
                 .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.default_profile_picture)
                 .error(GlideApp.with(this).load(R.drawable.default_profile_picture)
@@ -199,6 +200,7 @@ public class ProfileHeaderFragment extends Fragment {
                         .edit()
                         .putString(getString(R.string.pref_image_url), imageUrl)
                         .apply();
+                Log.i(TAG, "onCompletion: ");
             }
         });
     }

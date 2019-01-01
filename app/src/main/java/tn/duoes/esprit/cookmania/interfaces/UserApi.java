@@ -62,4 +62,7 @@ public interface UserApi {
                                  @Path("email") String email,
                                  @Path("username") String username,
                                  @Path("password") String password);
+
+    @DELETE("delete/{id}")
+    Call<Void> delete(@Path("id") String id);
 }

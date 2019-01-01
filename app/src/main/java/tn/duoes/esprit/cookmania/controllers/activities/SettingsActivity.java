@@ -1,7 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
+import tn.duoes.esprit.cookmania.services.UserService;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -50,17 +53,41 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setupDeleteButton() {
+        final String userId = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), "");
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new AlertDialog.Builder(SettingsActivity.this)
+                        .setTitle(R.string.confirmation)
+                        .setMessage(R.string.confirmation_message_delete_account)
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                UserService.getInstance().delete(userId, new UserService.DeleteCallBack() {
+                                    @Override
+                                    public void onCompletion(Boolean result) {
+                                        if (result) logout();
+                                        else {
+                                            new AlertDialog.Builder(SettingsActivity.this)
+                                                    .setTitle(R.string.error)
+                                                    .setMessage(R.string.error_message_delete_account)
+                                                    .setPositiveButton(android.R.string.ok, null)
+                                                    .show();
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .show();
             }
         });
     }
 
     private void setupEditAccount() {
         if (!mMethodString.equals(getString(R.string.method_email))) {
-            mEditButton.setVisibility(View.GONE);
+            findViewById(R.id.activity_settings_edit_container).setVisibility(View.GONE);
             findViewById(R.id.activity_settings_first_separator).setVisibility(View.GONE);
             return;
         }
@@ -76,20 +103,24 @@ public class SettingsActivity extends AppCompatActivity {
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mMethodString.equals(MainLoginFragment.METHOD_FACEBOOK)) {
-                    LoginManager.getInstance().logOut();
-                } else if (mMethodString.equals(MainLoginFragment.METHOD_GOOGLE)) {
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestEmail()
-                            .build();
-                    GoogleSignIn.getClient(SettingsActivity.this, gso).signOut();
-                }
-                getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                logout();
             }
         });
+    }
+
+    private void logout() {
+        if (mMethodString.equals(MainLoginFragment.METHOD_FACEBOOK)) {
+            LoginManager.getInstance().logOut();
+        } else if (mMethodString.equals(MainLoginFragment.METHOD_GOOGLE)) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+            GoogleSignIn.getClient(SettingsActivity.this, gso).signOut();
+        }
+        getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
+        Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void getViewReferences() {

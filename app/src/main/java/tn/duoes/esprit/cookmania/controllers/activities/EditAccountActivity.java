@@ -39,7 +39,6 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
         String username = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_username), "");
         GlideApp.with(this).load(imageUrl).apply(RequestOptions.circleCropTransform())
-                .placeholder(R.drawable.default_profile_picture)
                 .error(GlideApp.with(this).load(R.drawable.default_profile_picture)
                         .apply(RequestOptions.circleCropTransform()))
                 .into(mUserImageView);

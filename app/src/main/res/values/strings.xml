@@ -98,6 +98,8 @@
     <string name="error_message_update_creds">We couldn\'t update your account. There has been a server error.</string>
     <string name="edit_password_hint">Password (leave empty to ignore)</string>
     <string name="edit_password_confirm_hint">Confirm (leave empty to ignore)</string>
+    <string name="confirmation_message_delete_account">You will lose all your data. Are you absolutely sure you want to delete your account ?</string>
+    <string name="error_message_delete_account">We couldn\'t delete your account. Please try another time.</string>
     <string-array name="rating_opinions">
         <item>7acha ne3met rabi!</item>
         <item>Meh..</item>
