@@ -26,6 +26,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.adapters.SimilarListAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
 import tn.duoes.esprit.cookmania.dao.FavoriteLab;
@@ -49,6 +52,7 @@ import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.ExperienceService;
 import tn.duoes.esprit.cookmania.services.RecipeService;
+import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
 import tn.duoes.esprit.cookmania.views.RatingViewPager;
@@ -88,6 +92,11 @@ public class RecipeDetailsFragment extends Fragment
     private TabLayout mRatingTabLayout;
     private RecyclerView mExperienceList;
     private RecyclerView mSimilarList;
+    private View mExperienceListCard;
+    private View mSimilarListCard;
+    private View mRatingCard;
+    private View mDeleteAllButton;
+    private ImageView mUserImageView;
 
     private Recipe mRecipe;
     private int mRating;
@@ -97,10 +106,6 @@ public class RecipeDetailsFragment extends Fragment
     private List<Fragment> mRatingFragments;
     private RecipeDetailsStepAdapter.StepItemCallBack mStepItemCallBack;
     private ProgressDialog mProgressDialog;
-    private View mExperienceListCard;
-    private View mSimilarListCard;
-    private View mRatingCard;
-    private View mDeleteAllButton;
 
     public static RecipeDetailsFragment newInstance(String recipeId, RecipeDetailsStepAdapter.StepItemCallBack callBack) {
 
@@ -212,6 +217,7 @@ public class RecipeDetailsFragment extends Fragment
         mExperienceListCard = view.findViewById(R.id.fragment_recipe_details_experience_list_cardview);
         mSimilarListCard = view.findViewById(R.id.fragment_recipe_details_similar_recipes_cardview);
         mRatingCard = view.findViewById(R.id.fragment_recipe_details_rating_cardview);
+        mUserImageView = view.findViewById(R.id.fragment_recipe_details_user_image_view);
     }
 
     private void updateUI(){
@@ -219,6 +225,24 @@ public class RecipeDetailsFragment extends Fragment
         GlideApp.with(this).load(Constants.UPLOAD_FOLDER_URL + "/" + mRecipe.getImageURL())
                 .centerCrop()
                 .into(mRecipeImageView);
+        UserService.getInstance().getUserById(mRecipe.getUserId(), new UserService.GetUserByIdCallBack() {
+            @Override
+            public void onCompletion(User user) {
+                GlideApp.with(RecipeDetailsFragment.this).load(user.getImageUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .error(GlideApp.with(RecipeDetailsFragment.this)
+                                .load(R.drawable.default_profile_picture).apply(RequestOptions.circleCropTransform()))
+                        .into(mUserImageView);
+            }
+        });
+        mUserImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                intent.putExtra(ProfileActivity.EXTRA_USER_ID, mRecipe.getUserId());
+                startActivity(intent);
+            }
+        });
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
         mCaloriesTextView.setText("" + mRecipe.getCalories());

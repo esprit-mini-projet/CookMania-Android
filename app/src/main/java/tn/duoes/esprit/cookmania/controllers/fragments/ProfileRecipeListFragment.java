@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -48,6 +49,12 @@ public class ProfileRecipeListFragment extends Fragment implements RecipeService
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new ProfileRecipeListAdapter(mRecipes, getActivity(), this);
         mRecyclerView.setAdapter(mAdapter);
+        String userId = getArguments().getString(ARG_USER_ID);
+        String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
+        if (!userId.equals(connectedUserId)) {
+            mEmptyText.setText(R.string.no_recipes_found);
+        }
         return view;
     }
 
