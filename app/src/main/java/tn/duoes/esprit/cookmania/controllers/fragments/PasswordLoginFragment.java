@@ -16,6 +16,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
 import java.util.UUID;
 
 import tn.duoes.esprit.cookmania.R;
@@ -65,35 +69,42 @@ public class PasswordLoginFragment extends Fragment {
                 }
                 showProgressBar();
 
-                User user = new User();
-                user.setEmail(getArguments().getString(ARG_EMAIL));
-                user.setPassword(password);
-                //String token = FirebaseInstanceId.getInstance().getId();
-                String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
-                        .getString(getString(R.string.prefs_uuid), null);
-                if (uuid == null) {
-                    uuid = UUID.randomUUID().toString();
-                    getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
-                            .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
-                }
-                user.setUuid(uuid);
-                user.setToken("");
-                UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
                     @Override
-                    public void onCompletion(User user, int statusCode) {
-                        hideProgressBar();
-                        if(statusCode == 500){
-                            showAlert();
-                            return;
+                    public void onSuccess(InstanceIdResult instanceIdResult) {
+                        String token = instanceIdResult.getToken();
+                        Log.d(TAG, "onSuccess: " + token);
+                        String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                                .getString(getString(R.string.prefs_uuid), null);
+                        if (uuid == null) {
+                            uuid = UUID.randomUUID().toString();
+                            getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                                    .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
                         }
-                        if(statusCode == 400){
-                            mPasswordInputLayout.getEditText().setError(getString(R.string.wrong_password));
-                            return;
-                        }
-                        Log.d(TAG, "onCompletion: user verified");
-                        saveUserData(user);
-                        hideSoftKeyboard();
-                        goToHome();
+
+                        User user = new User();
+                        user.setEmail(getArguments().getString(ARG_EMAIL));
+                        user.setPassword(password);
+                        user.setUuid(uuid);
+                        user.setToken(token);
+                        UserService.getInstance().signInWithEmail(user, new UserService.SignInWithEmailCallBack() {
+                            @Override
+                            public void onCompletion(User user, int statusCode) {
+                                hideProgressBar();
+                                if (statusCode == 500) {
+                                    showAlert();
+                                    return;
+                                }
+                                if (statusCode == 400) {
+                                    mPasswordInputLayout.getEditText().setError(getString(R.string.wrong_password));
+                                    return;
+                                }
+                                Log.d(TAG, "onCompletion: user verified");
+                                saveUserData(user);
+                                hideSoftKeyboard();
+                                goToHome();
+                            }
+                        });
                     }
                 });
             }

@@ -25,6 +25,7 @@ public class User {
     private String mUuid;
     @SerializedName("token")
     private String mToken;
+    private String type = "and";
     @SerializedName("follow_date")
     private Date mFollowDate;
 
@@ -114,6 +115,10 @@ public class User {
 
     public void setFollowDate(Date followDate) {
         mFollowDate = followDate;
+    }
+
+    public String getType() {
+        return type;
     }
 
     @Override

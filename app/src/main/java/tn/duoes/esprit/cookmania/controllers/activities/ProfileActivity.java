@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 public class ProfileActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER_ID = "user_id";
+    public static final String EXTRA_SHOULD_FINISH = "should_finish";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,9 +33,18 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
-            finish();
+            boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+            if (shouldFinish) finish();
+            else startActivity(new Intent(this, MainScreenActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+        if (shouldFinish) finish();
+        else super.onBackPressed();
     }
 }

@@ -27,6 +27,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -129,6 +132,7 @@ public class RecipeDetailsFragment extends Fragment
         mRecipe = new Recipe();
         setupIngredientList();
         setupStepList();
+        setupExperienceList();
         getRecipe(getArguments().getString(ARGS_RECIPE_ID));
         return view;
     }
@@ -139,8 +143,8 @@ public class RecipeDetailsFragment extends Fragment
         setHasOptionsMenu(false);
     }
 
-    private void setupExperienceList(List<Experience> experiences) {
-        ExperienceListAdapter adapter = new ExperienceListAdapter(experiences, getActivity());
+    private void setupExperienceList() {
+        ExperienceListAdapter adapter = new ExperienceListAdapter(new ArrayList<Experience>(), getActivity());
         mExperienceList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         mExperienceList.setAdapter(adapter);
         SnapHelper snapHelper = new LinearSnapHelper();
@@ -444,14 +448,20 @@ public class RecipeDetailsFragment extends Fragment
     }
 
     private void addExperience() {
-        Experience experience = new Experience();
-        experience.setComment(mComment);
-        experience.setRating(mRating);
-        experience.setRecipeId(mRecipe.getId());
-        User user = new User();
-        user.setId(mUserId);
-        experience.setUser(user);
-        ExperienceService.getInstance().addExperience(experience, mRatingImagePath, this);
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                Experience experience = new Experience();
+                experience.setComment(mComment);
+                experience.setRating(mRating);
+                experience.setRecipeId(mRecipe.getId());
+                experience.setRecipeOwnerId(mRecipe.getUserId());
+                User user = new User();
+                user.setId(mUserId);
+                experience.setUser(user);
+                ExperienceService.getInstance().addExperience(experience, mRatingImagePath, RecipeDetailsFragment.this);
+            }
+        });
     }
 
     @Override
@@ -475,10 +485,7 @@ public class RecipeDetailsFragment extends Fragment
         ExperienceService.getInstance().getExperiencesForRecipe(mRecipe.getId(), new ExperienceService.GetExperiencesCallBack() {
             @Override
             public void onGetExperiencesSuccess(List<Experience> experiences) {
-                mExperienceListCard.setVisibility(View.VISIBLE);
-                ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
-                adapter.setExperiences(experiences);
-                adapter.notifyDataSetChanged();
+                updateExperienceList(experiences);
             }
 
             @Override
@@ -486,6 +493,13 @@ public class RecipeDetailsFragment extends Fragment
                 //
             }
         });
+    }
+
+    private void updateExperienceList(List<Experience> experiences) {
+        mExperienceListCard.setVisibility(View.VISIBLE);
+        ExperienceListAdapter adapter = (ExperienceListAdapter) mExperienceList.getAdapter();
+        adapter.setExperiences(experiences);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -562,7 +576,7 @@ public class RecipeDetailsFragment extends Fragment
             mExperienceListCard.setVisibility(View.GONE);
             return;
         }
-        setupExperienceList(experiences);
+        updateExperienceList(experiences);
     }
 
     @Override

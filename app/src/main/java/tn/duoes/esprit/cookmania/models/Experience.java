@@ -16,6 +16,8 @@ public class Experience {
     @SerializedName("user")
     private User user;
 
+    private transient String recipeOwnerId;
+
     public Experience() {
     }
 
@@ -65,5 +67,13 @@ public class Experience {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getRecipeOwnerId() {
+        return recipeOwnerId;
+    }
+
+    public void setRecipeOwnerId(String recipeOwnerId) {
+        this.recipeOwnerId = recipeOwnerId;
     }
 }

@@ -59,6 +59,7 @@ public class ExperienceService {
                 RequestBody.create(MediaType.parse("text/plain"), experience.getComment()),
                 RequestBody.create(MediaType.parse("text/plain"), experience.getRecipeId() + ""),
                 RequestBody.create(MediaType.parse("text/plain"), experience.getUser().getId()),
+                RequestBody.create(MediaType.parse("text/plain"), experience.getRecipeOwnerId()),
                 imagePart
         );
         call.enqueue(new Callback<Void>() {

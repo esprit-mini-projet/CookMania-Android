@@ -27,7 +27,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,33 +148,40 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
-        //String token = FirebaseInstanceId.getInstance().getId();
-        String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
-                .getString(getString(R.string.prefs_uuid), null);
-        if (uuid == null) {
-            uuid = UUID.randomUUID().toString();
-            getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
-                    .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
-        }
-        user.setUuid(uuid);
-        user.setToken("");
-        UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
             @Override
-            public void onCompletion(User user) {
-                hideProgressBar();
-                if(user == null){
-                    showErrorAlert();
-                    return;
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String token = instanceIdResult.getToken();
+                Log.d(TAG, "onSuccess: " + token);
+                String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                        .getString(getString(R.string.prefs_uuid), null);
+                Log.i(TAG, "onSuccess: uuid = " + uuid);
+                if (uuid == null) {
+                    uuid = UUID.randomUUID().toString();
+                    getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                            .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
                 }
-                getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                        .edit()
-                        .putString(PREF_SIGNIN_METHOD, signInMethod)
-                        .putString(PREF_USER_ID, user.getId())
-                        .putString(PREF_IMAGE_URL, user.getImageUrl())
-                        .putString(PREF_USERNAME, user.getUserName())
-                        .putString(getString(R.string.prefs_user_email), user.getEmail())
-                        .apply();
-                goToHome();
+                user.setUuid(uuid);
+                user.setToken(token);
+                UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
+                    @Override
+                    public void onCompletion(User user) {
+                        hideProgressBar();
+                        if (user == null) {
+                            showErrorAlert();
+                            return;
+                        }
+                        getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                                .edit()
+                                .putString(PREF_SIGNIN_METHOD, signInMethod)
+                                .putString(PREF_USER_ID, user.getId())
+                                .putString(PREF_IMAGE_URL, user.getImageUrl())
+                                .putString(PREF_USERNAME, user.getUserName())
+                                .putString(getString(R.string.prefs_user_email), user.getEmail())
+                                .apply();
+                        goToHome();
+                    }
+                });
             }
         });
     }
