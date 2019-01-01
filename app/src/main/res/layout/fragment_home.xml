@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<tn.duoes.esprit.cookmania.views.CustomScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.fragments.HomeFragment">
+    tools:context=".controllers.fragments.HomeFragment"
+    android:id="@+id/home_scroll">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -23,7 +24,7 @@
             android:id="@+id/home_toprated_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_marginTop="20dp">
 
         </FrameLayout>
 
@@ -31,7 +32,7 @@
             android:id="@+id/home_healthy_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="10dp">
 
         </FrameLayout>
 
@@ -39,11 +40,17 @@
             android:id="@+id/home_cheap_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp">
+            android:layout_marginTop="10dp">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/home_feed_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         </FrameLayout>
 
     </LinearLayout>
 
-</ScrollView>
+</tn.duoes.esprit.cookmania.views.CustomScrollView>

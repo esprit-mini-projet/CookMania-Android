@@ -1,44 +1,44 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.adapters.HorizontalCategoryRecipeRecyclerViewAdapter;
-import tn.duoes.esprit.cookmania.controllers.activities.CategoryRecipesActivity;
+import tn.duoes.esprit.cookmania.adapters.FeedAdapter;
+import tn.duoes.esprit.cookmania.adapters.SearchResultRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
+import tn.duoes.esprit.cookmania.models.FeedResult;
 import tn.duoes.esprit.cookmania.models.Recipe;
-import tn.duoes.esprit.cookmania.utils.NavigationUtils;
+import tn.duoes.esprit.cookmania.services.RecipeService;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CategoryRecipesFragment.OnFragmentInteractionListener} interface
+ * {@link FeedFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CategoryRecipesFragment#newInstance} factory method to
+ * Use the {@link FeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CategoryRecipesFragment extends Fragment {
+public class FeedFragment extends Fragment {
+    private static final String TAG = FeedFragment.class.getSimpleName();
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static final String CATEGORY_NAME_KEY = "categoryName";
-    public static final String RECIPES_KEY = "recipes";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -46,7 +46,7 @@ public class CategoryRecipesFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public CategoryRecipesFragment() {
+    public FeedFragment() {
         // Required empty public constructor
     }
 
@@ -56,11 +56,11 @@ public class CategoryRecipesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CategoryRecipesFragment.
+     * @return A new instance of fragment FeedFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CategoryRecipesFragment newInstance(String param1, String param2) {
-        CategoryRecipesFragment fragment = new CategoryRecipesFragment();
+    public static FeedFragment newInstance(String param1, String param2) {
+        FeedFragment fragment = new FeedFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -77,60 +77,30 @@ public class CategoryRecipesFragment extends Fragment {
         }
     }
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private HorizontalCategoryRecipeRecyclerViewAdapter mAdapter;
-    private List<Recipe> mRecipes;
-    private String mCategoryName;
+    private RecyclerView feedRecipesRv;
+    private FeedAdapter feedAdapter;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.fragment_categorie_recipes, container, false);
+        View fragment = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        Bundle bundle = getArguments();
-        mRecipes = Objects.requireNonNull(bundle).getParcelableArrayList(RECIPES_KEY);
-        mCategoryName = bundle.getString(CATEGORY_NAME_KEY);
+        feedRecipesRv = fragment.findViewById(R.id.feed_recycler_view);
+        feedRecipesRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        feedRecipesRv.setHasFixedSize(true);
+        feedAdapter = new FeedAdapter();
+        feedRecipesRv.setAdapter(feedAdapter);
 
-        TextView categoryNameTV = fragment.findViewById(R.id.category_name_tv);
-        categoryNameTV.setText(mCategoryName);
-
-        fragment.findViewById(R.id.category_more_btn).setOnClickListener(new View.OnClickListener() {
+        RecipeService.getInstance().getFeed("f_1491707600961513", new RecipeService.FeedGetCallBack() {
             @Override
-            public void onClick(View v) {
-                Intent intent = NavigationUtils.getNavigationFormattedIntent(getContext(), CategoryRecipesActivity.class);
-                intent.putExtra(CategoryRecipesActivity.CATEGORY_NAME_KEY, mCategoryName);
-                startActivity(intent);
-            }
-        });
-
-        mRecyclerView = fragment.findViewById(R.id.categorie_recycler_view);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new HorizontalCategoryRecipeRecyclerViewAdapter(mRecipes, getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_UP){
-                    if (mAdapter.recipeDialog.getDialog() != null){
-                        MainScreenActivity.viewPager.setPagingEnabled(true);
-                        HomeFragment.scrollView.setScrollingEnabled(true);
-                        mAdapter.recipeDialog.dismiss();
-                    }
-                }
-                return false;
+            public void onResponse(List<FeedResult> feedResults) {
+                Log.d(TAG, "onResponse: "+feedResults);
+                feedAdapter.feedResults = feedResults;
+                feedAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+            public void onFailure() {
 
             }
         });

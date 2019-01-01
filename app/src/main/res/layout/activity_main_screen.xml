@@ -6,54 +6,97 @@
     android:layout_height="match_parent"
     tools:context=".controllers.activities.MainScreenActivity">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/mainscreen_tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabBackground="@color/colorPrimary"
-        app:tabIndicatorColor="@color/colorAccent"
-        app:tabTextColor="@android:color/white">
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/home_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_tab_home" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/search_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_tab_search" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/add_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_tab_add" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/shopping_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_tab_shopping" />
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_tab_profile" />
-    </android.support.design.widget.TabLayout>
-
-    <android.support.v4.view.ViewPager
+    <tn.duoes.esprit.cookmania.views.RatingViewPager
         android:id="@+id/mainscreen_viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainscreen_tablayout" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_container" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- SEARCH -->
+        <RelativeLayout
+            android:id="@+id/actionBar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                android:id="@+id/searchview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></com.miguelcatalan.materialsearchview.MaterialSearchView>
+        </RelativeLayout>
+
+        <!-- TAB LAYOUT -->
+        <android.support.design.widget.TabLayout
+            android:id="@+id/mainscreen_tablayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabBackground="@color/colorPrimary"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabTextColor="@android:color/white"
+            app:layout_constraintTop_toBottomOf="@+id/actionBar_container"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="parent">
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/home_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_tab_home" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/search_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_tab_search" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/add_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_tab_add" />
+
+            <android.support.design.widget.TabItem
+                android:id="@+id/shopping_tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_tab_shopping" />
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_tab_profile" />
+        </android.support.design.widget.TabLayout>
+
+        <!-- SHADOW -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/actionBar_container"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <!-- **** Place Your Content Here **** -->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@drawable/toolbar_dropshadow" />
+
+        </FrameLayout>
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

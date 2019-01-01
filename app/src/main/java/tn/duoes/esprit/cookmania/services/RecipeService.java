@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -19,7 +20,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Multipart;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
+import tn.duoes.esprit.cookmania.models.FeedResult;
+import tn.duoes.esprit.cookmania.models.LabelCategory;
 import tn.duoes.esprit.cookmania.models.Recipe;
+import tn.duoes.esprit.cookmania.models.SearchResult;
+import tn.duoes.esprit.cookmania.models.SearchWrapper;
 import tn.duoes.esprit.cookmania.utils.Constants;
 
 public final class RecipeService {
@@ -33,6 +38,16 @@ public final class RecipeService {
 
     public interface RecipeServiceInsertCallBack{
         void onResponse(int recipeId);
+        void onFailure();
+    }
+
+    public interface LabelGetCallBack{
+        void onResponse(List<LabelCategory> categories);
+        void onFailure();
+    }
+
+    public interface FeedGetCallBack{
+        void onResponse(List<FeedResult> feedResults);
         void onFailure();
     }
 
@@ -183,6 +198,67 @@ public final class RecipeService {
 
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
+    public void getLabels(final LabelGetCallBack callBack){
+        Call<List<LabelCategory>> call = mRecipeApi.getLabels();
+        call.enqueue(new Callback<List<LabelCategory>>() {
+            @Override
+            public void onResponse(Call<List<LabelCategory>> call, Response<List<LabelCategory>> response) {
+                callBack.onResponse(response.body());
+                return;
+            }
+
+            @Override
+            public void onFailure(Call<List<LabelCategory>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+
+    public void search(SearchWrapper searchWrapper, RecipeServiceGetCallBack callBack){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("name", searchWrapper.getSearchText());
+        params.put("calories", searchWrapper.getCalories());
+        params.put("minServings", searchWrapper.getServingsMin());
+        params.put("maxServings", searchWrapper.getServingsMax());
+        params.put("labels",  searchWrapper.getLabels());
+
+        Call<List<SearchResult>> call = mRecipeApi.search(params);
+        call.enqueue(new Callback<List<SearchResult>>() {
+            @Override
+            public void onResponse(Call<List<SearchResult>> call, Response<List<SearchResult>> response) {
+                List<Recipe> recipes = new ArrayList<>();
+                for (SearchResult sr : response.body()){
+                    recipes.add(sr.getRecipe());
+                }
+                callBack.onResponse(recipes);
+            }
+
+            @Override
+            public void onFailure(Call<List<SearchResult>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getFeed(String userId, FeedGetCallBack callBack){
+        Log.d(TAG, "getFeed: ");
+        Call<List<FeedResult>> call = mRecipeApi.getFeed(userId);
+        call.enqueue(new Callback<List<FeedResult>>() {
+            @Override
+            public void onResponse(Call<List<FeedResult>> call, Response<List<FeedResult>> response) {
+                Log.d(TAG, "onResponse: "+response.body());
+                callBack.onResponse(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<FeedResult>> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
                 callBack.onFailure();
             }

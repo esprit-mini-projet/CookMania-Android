@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- FILTER LAYOUT -->
         <android.support.v7.widget.CardView
             android:id="@+id/labels_card_view"
             android:layout_width="match_parent"
@@ -57,9 +58,9 @@
                             android:textStyle="bold" />
 
                         <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
+                            android:id="@+id/collapse_arrow_iv"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:alpha="0.8"
                             android:src="@drawable/ic_icon_down_arrow" />
 
@@ -76,179 +77,181 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/Healthy"
-                                android:layout_width="148dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Healthy"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Button
-                                android:id="@+id/Cheap"
-                                android:layout_width="98dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Cheap"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Button
-                                android:id="@+id/Easy"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Easy"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/Fast"
-                                android:layout_width="10dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Fast"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Button
-                                android:id="@+id/Vegetarian"
-                                android:layout_width="153dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Vegetarian"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/Breakfast"
-                                android:layout_width="153dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Breakfast"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Button
-                                android:id="@+id/For_Kids"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="For Kids"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginBottom="20dp"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/Dinner"
-                                android:layout_width="33dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Dinner"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <Button
-                                android:id="@+id/Date_Night"
-                                android:layout_width="169dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="15dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/shape_unselected_label"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                android:tag="false"
-                                android:text="Date Night"
-                                android:textColor="@color/colorPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
                     </LinearLayout>
+
+
+                    <com.google.android.flexbox.FlexboxLayout
+                        android:id="@+id/label_flexlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:flexWrap="wrap"
+                        app:alignItems="flex_start"
+                        app:alignContent="flex_start"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="15dp">
+
+                        <!--<TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HELLO"
+                            app:layout_flexBasisPercent="100%"/>
+
+                        <Button
+                            android:id="@+id/Healthy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Healthy"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1" />
+
+                        <Button
+                            android:id="@+id/Vegetarian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Vegetarian"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1" />
+
+                        <Button
+                            android:id="@+id/Cheap"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Cheap"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1" />
+
+                        <Button
+                            android:id="@+id/Easy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Easy"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1" />
+
+                        <Button
+                            android:id="@+id/Fast"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Fast"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1" />
+
+                        <Button
+                            android:id="@+id/Breakfast"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Breakfast"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1"/>
+
+                        <Button
+                            android:id="@+id/For_Kids"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="For Kids"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1"/>
+
+                        <Button
+                            android:id="@+id/Dinner"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Dinner"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1" />
+
+                        <Button
+                            android:id="@+id/Date_Night"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_unselected_label"
+                            android:paddingLeft="20dp"
+                            android:paddingRight="20dp"
+                            android:tag="false"
+                            android:text="Date Night"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_flexGrow="1"/>-->
+
+                    </com.google.android.flexbox.FlexboxLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -278,35 +281,47 @@
                                     android:textColor="@android:color/black"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/search_calories_min"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:text="-" />
-
-                                <TextView
-                                    android:id="@+id/search_calories_max"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
                             </LinearLayout>
-
-                            <io.apptik.widget.MultiSlider
-                                android:id="@+id/search_calories_slider"
+                            <info.hoang8f.android.segmented.SegmentedGroup
+                                xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                                android:id="@+id/calories_segmented"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                segmentedgroup:sc_border_width="2dp"
+                                segmentedgroup:sc_corner_radius="10dp"
+                                segmentedgroup:sc_tint_color="@color/colorPrimary">
+
+                                <RadioButton
+                                    android:id="@+id/all"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="All"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton"
+                                    android:checked="true"/>
+                                <RadioButton
+                                    android:id="@+id/low"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Low"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton" />
+                                <RadioButton
+                                    android:id="@+id/normal"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Normal"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton" />
+                                <RadioButton
+                                    android:id="@+id/rich"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Rich"
+                                    android:layout_weight="1"
+                                    style="@style/RadioButton" />
+                            </info.hoang8f.android.segmented.SegmentedGroup>
                         </LinearLayout>
 
                         <LinearLayout
@@ -336,7 +351,7 @@
                                     android:id="@+id/search_servings_min"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="TextView"
+                                    android:text="1"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
 
@@ -348,10 +363,10 @@
                                     android:text="-" />
 
                                 <TextView
-                                    android:id="@+id/search_sevings_max"
+                                    android:id="@+id/search_servings_max"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="TextView"
+                                    android:text="10"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -359,80 +374,83 @@
                             <io.apptik.widget.MultiSlider
                                 android:id="@+id/search_servings_slider"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginBottom="5dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginRight="10dp"
-                                    android:text="Duration:"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:id="@+id/search_duration_min"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:text="-" />
-
-                                <TextView
-                                    android:id="@+id/search_duration_max"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="TextView"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
-
-                            <io.apptik.widget.MultiSlider
-                                android:id="@+id/search_durantion_slider"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                app:rangeColor="@color/colorPrimary"
+                                app:thumbColor="@color/colorPrimary"
+                                app:scaleMax="10"
+                                app:scaleMin="1"/>
                         </LinearLayout>
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </LinearLayout> -->
 
                 <!--Filters layout-->
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
-        <RelativeLayout
+        <!-- RESULT LAYOUT -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/search_results_count_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12 results found"/>
+
+                <info.hoang8f.android.segmented.SegmentedGroup
+                    xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/sortSegmented"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    segmentedgroup:sc_border_width="2dp"
+                    segmentedgroup:sc_corner_radius="10dp"
+                    segmentedgroup:sc_tint_color="@color/colorPrimary"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:gravity="right">
+
+                    <RadioButton
+                        android:id="@+id/sortRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="Rating"
+                        style="@style/RadioButton"
+                        android:checked="true"
+                        android:drawableRight="@drawable/ic_icon_arrow_up">
+                    </RadioButton>
+                    <RadioButton
+                        android:id="@+id/sortCalories"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Calories"
+                        style="@style/RadioButton"
+                        android:drawableTint="@color/colorPrimary"
+                        android:drawableRight="@drawable/ic_icon_arrow_down"/>
+                </info.hoang8f.android.segmented.SegmentedGroup>
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/search"
+                android:id="@+id/search_result"
+                android:layout_marginRight="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

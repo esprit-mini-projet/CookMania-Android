@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ShoppingListItem {
 
@@ -12,7 +13,9 @@ public class ShoppingListItem {
         this.ingredients = ingredients;
     }
 
-
+    public ShoppingListItem(Recipe recipe) {
+        this.recipe = recipe;
+    }
 
     public Recipe getRecipe() {
         return recipe;
@@ -36,5 +39,19 @@ public class ShoppingListItem {
                 "recipe=" + recipe +
                 ", ingredients=" + ingredients +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShoppingListItem that = (ShoppingListItem) o;
+        return recipe.getId() ==  that.recipe.getId();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return recipe.getId();
     }
 }
