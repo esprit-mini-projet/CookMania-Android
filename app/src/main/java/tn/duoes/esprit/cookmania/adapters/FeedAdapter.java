@@ -1,7 +1,9 @@
 package tn.duoes.esprit.cookmania.adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +25,9 @@ import java.util.List;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
+import tn.duoes.esprit.cookmania.dao.FavoriteLab;
 import tn.duoes.esprit.cookmania.models.FeedResult;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -66,7 +70,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         viewHolder.timeTv.setText(getTime(feedResult.getRecipe().getDate()));
         viewHolder.recipeRating.setRating(feedResult.getRecipe().getRating());
         viewHolder.recipe = feedResult.getRecipe();
-        viewHolder.favoriteBt.setTag(false);
+        String userId = viewHolder.itemView.getContext().getSharedPreferences(viewHolder.itemView.getContext().getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(viewHolder.itemView.getContext().getString(R.string.prefs_user_id), "");
+        if (FavoriteLab.getInstance(viewHolder.itemView.getContext()).recipeExists(userId, viewHolder.recipe.getId())) {
+            viewHolder.favoriteBt.setTag(true);
+            Drawable heartIcon = viewHolder.itemView.getContext().getDrawable(R.drawable.icon_heart_full);
+            viewHolder.favoriteBt.setImageDrawable(heartIcon);
+        } else {
+            viewHolder.favoriteBt.setTag(false);
+            Drawable heartIcon = viewHolder.itemView.getContext().getDrawable(R.drawable.icon_heart_outline);
+            viewHolder.favoriteBt.setImageDrawable(heartIcon);
+        }
     }
 
     private String getTime(Date startDate){
@@ -129,7 +143,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             userLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: user");
+                    Intent i = new Intent(v.getContext(), ProfileActivity.class);
+                    i.putExtra(ProfileActivity.EXTRA_USER_ID, recipe.getUserId());
+                    v.getContext().startActivity(i);
                 }
             });
 
@@ -145,14 +161,18 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             favoriteBt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String userId = v.getContext().getSharedPreferences(v.getContext().getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                            .getString(v.getContext().getString(R.string.prefs_user_id), "");
                     if(!(boolean)favoriteBt.getTag()){
                         favoriteBt.setImageResource(R.drawable.icon_heart_full);
                         favoriteBt.setColorFilter(itemView.getResources().getColor(R.color.colorAccent));
                         favoriteBt.setTag(true);
+                        FavoriteLab.getInstance(v.getContext()).insert(recipe.getId(), userId);
                     }else{
                         favoriteBt.setImageResource(R.drawable.icon_heart_outline);
                         favoriteBt.setColorFilter(Color.parseColor("#000000"));
                         favoriteBt.setTag(false);
+                        FavoriteLab.getInstance(v.getContext()).delete(recipe.getId(), userId);
                     }
                 }
             });
