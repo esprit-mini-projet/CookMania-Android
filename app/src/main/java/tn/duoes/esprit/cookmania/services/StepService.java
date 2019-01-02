@@ -4,8 +4,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -14,9 +12,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
 import tn.duoes.esprit.cookmania.interfaces.StepApi;
-import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.Step;
 import tn.duoes.esprit.cookmania.utils.Constants;
 
@@ -49,7 +45,7 @@ public class StepService {
         mStepApi = retrofit.create(StepApi.class);
     }
 
-    public void addStep(Step step, final StepService.StepServiceInsertCallBack callBack){
+    public void addStep(Step step, final StepServiceInsertCallBack callBack) {
         MultipartBody.Part body = null;
         if(step.getImage() != null){
             RequestBody requestImage = RequestBody.create(MediaType.parse("image/*"), step.getImage());

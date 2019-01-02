@@ -64,7 +64,9 @@
         <activity android:name=".controllers.activities.AddStepActivity" />
         <activity android:name=".controllers.activities.RecipeDetailsActivity" />
         <activity android:name=".controllers.activities.SettingsActivity" />
-        <activity android:name=".controllers.activities.CategoryRecipesActivity"></activity>
+        <activity android:name=".controllers.activities.CategoryRecipesActivity" />
+        <activity android:name=".controllers.activities.ShoppingListActivity" />
+        <activity android:name=".controllers.activities.EditAccountActivity" />
         <service android:name=".services.FireBaseNotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

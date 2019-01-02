@@ -4,11 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.helpers.database.DatabaseHelper;
 import tn.duoes.esprit.cookmania.helpers.database.ShoppingListSerialization;
 import tn.duoes.esprit.cookmania.models.Ingredient;
@@ -19,12 +19,15 @@ public final class ShoppingListDAO {
 
     private static final String TAG = ShoppingListDAO.class.getSimpleName();
     private SQLiteDatabase db;
+    private String userId;
     //private List<ShoppingListItem> mItems;
 
     private static ShoppingListDAO instance;
 
     private ShoppingListDAO(Context context){
         db = new DatabaseHelper(context).getWritableDatabase();
+        userId = context.getSharedPreferences(context.getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(context.getString(R.string.prefs_user_id), "");
         //deleteShoppingList();
         Recipe recipe = new Recipe(
                 "Spaghetti",
@@ -38,20 +41,20 @@ public final class ShoppingListDAO {
         );
         recipe.setId(1);
 
-        Ingredient ingredient = new Ingredient(9,"TEST", 200, "ml");
-        Ingredient ingredient2 = new Ingredient(10,"Water", 200, "ml");
+        Ingredient ingredient = new Ingredient(9, "TEST", 200, "ml");
+        Ingredient ingredient2 = new Ingredient(10, "Water", 200, "ml");
 
         List<Ingredient> ingredients = new ArrayList<>();
-        ingredients.add(new Ingredient(1,"Water", 200, "ml"));
-        ingredients.add(new Ingredient(2,"Water", 200, "ml"));
-        ingredients.add(new Ingredient(3,"Water", 200, "ml"));
-        ingredients.add(new Ingredient(4,"Water", 200, "ml"));
+        ingredients.add(new Ingredient(1, "Water", 200, "ml"));
+        ingredients.add(new Ingredient(2, "Water", 200, "ml"));
+        ingredients.add(new Ingredient(3, "Water", 200, "ml"));
+        ingredients.add(new Ingredient(4, "Water", 200, "ml"));
 
         List<Ingredient> ingredients1 = new ArrayList<>();
-        ingredients1.add(new Ingredient(5,"Water", 200, "ml"));
-        ingredients1.add(new Ingredient(6,"Water", 200, "ml"));
-        ingredients1.add(new Ingredient(7,"Water", 200, "ml"));
-        ingredients1.add(new Ingredient(8,"Water", 200, "ml"));
+        ingredients1.add(new Ingredient(5, "Water", 200, "ml"));
+        ingredients1.add(new Ingredient(6, "Water", 200, "ml"));
+        ingredients1.add(new Ingredient(7, "Water", 200, "ml"));
+        ingredients1.add(new Ingredient(8, "Water", 200, "ml"));
 
         Recipe recipe1 = new Recipe(
                 "Spaghetti",
@@ -70,56 +73,56 @@ public final class ShoppingListDAO {
         addRecipe(recipe1, ingredients);*/
     }
 
-    public void addIngredient(Recipe recipe, Ingredient ingredient){
+    public void addIngredient(Recipe recipe, Ingredient ingredient) {
         List<ShoppingListItem> shoppingListItems = getShoppingItems();
-        if(shoppingListItems == null){
+        if (shoppingListItems == null) {
             shoppingListItems = new ArrayList<>();
         }
         List<Ingredient> ingredients = new ArrayList<>();
         ingredients.add(ingredient);
         ShoppingListItem shoppingListItem = new ShoppingListItem(recipe, ingredients);
-        if(shoppingListItems.contains(shoppingListItem)){
+        if (shoppingListItems.contains(shoppingListItem)) {
             shoppingListItem = shoppingListItems.get(shoppingListItems.lastIndexOf(shoppingListItem));
-            if(!shoppingListItem.getIngredients().contains(ingredient)){
+            if (!shoppingListItem.getIngredients().contains(ingredient)) {
                 shoppingListItem.getIngredients().add(ingredient);
             }
-        }else{
+        } else {
             shoppingListItems.add(shoppingListItem);
         }
         persistShoppingListItems(shoppingListItems);
     }
 
-    public void addRecipe(Recipe recipe, List<Ingredient> ingredients){
+    public void addRecipe(Recipe recipe, List<Ingredient> ingredients) {
         List<ShoppingListItem> shoppingListItems = getShoppingItems();
-        if(shoppingListItems == null){
+        if (shoppingListItems == null) {
             shoppingListItems = new ArrayList<>();
         }
         ShoppingListItem shoppingListItem = new ShoppingListItem(recipe, ingredients);
-        if(shoppingListItems.contains(shoppingListItem)){
+        if (shoppingListItems.contains(shoppingListItem)) {
             shoppingListItem = shoppingListItems.get(shoppingListItems.lastIndexOf(shoppingListItem));
-            for(Ingredient ingredient : ingredients){
-                if(!shoppingListItem.getIngredients().contains(ingredient)){
+            for (Ingredient ingredient : ingredients) {
+                if (!shoppingListItem.getIngredients().contains(ingredient)) {
                     shoppingListItem.getIngredients().add(ingredient);
                 }
             }
-        }else{
+        } else {
             shoppingListItems.add(shoppingListItem);
         }
         persistShoppingListItems(shoppingListItems);
     }
 
-    public void removeIngredient(Recipe recipe, Ingredient ingredient){
+    public void removeIngredient(Recipe recipe, Ingredient ingredient) {
         List<ShoppingListItem> shoppingListItems = getShoppingItems();
         ShoppingListItem shoppingListItem = new ShoppingListItem(recipe);
-        if(shoppingListItems == null || !shoppingListItems.contains(shoppingListItem)){
+        if (shoppingListItems == null || !shoppingListItems.contains(shoppingListItem)) {
             return;
         }
         int index = shoppingListItems.lastIndexOf(shoppingListItem);
         shoppingListItem = shoppingListItems.get(index);
-        if(!shoppingListItem.getIngredients().contains(ingredient)){
+        if (!shoppingListItem.getIngredients().contains(ingredient)) {
             return;
         }
-        if(shoppingListItem.getIngredients().size() == 1){
+        if (shoppingListItem.getIngredients().size() == 1) {
             removeRecipe(recipe);
             return;
         }
@@ -129,20 +132,20 @@ public final class ShoppingListDAO {
         persistShoppingListItems(shoppingListItems);
     }
 
-    public void removeRecipe(Recipe recipe){
+    public void removeRecipe(Recipe recipe) {
         List<ShoppingListItem> shoppingListItems = getShoppingItems();
         ShoppingListItem shoppingListItem = new ShoppingListItem(recipe);
-        if(shoppingListItems == null || !shoppingListItems.contains(shoppingListItem)){
+        if (shoppingListItems == null || !shoppingListItems.contains(shoppingListItem)) {
             return;
         }
         shoppingListItems.remove(shoppingListItems.lastIndexOf(shoppingListItem));
         persistShoppingListItems(shoppingListItems);
     }
 
-    public List<Ingredient> getRecipeIngredients(Recipe recipe){
+    public List<Ingredient> getRecipeIngredients(Recipe recipe) {
         List<ShoppingListItem> shoppingListItems = getShoppingItems();
         ShoppingListItem shoppingListItem = new ShoppingListItem(recipe);
-        if(shoppingListItems == null || !shoppingListItems.contains(shoppingListItem)){
+        if (shoppingListItems == null || !shoppingListItems.contains(shoppingListItem)) {
             return null;
         }
         return shoppingListItems.get(shoppingListItems.lastIndexOf(shoppingListItem)).getIngredients();
@@ -154,8 +157,6 @@ public final class ShoppingListDAO {
         }
         return instance;
     }
-
-    private String userId = "f_1491707600961513";
 
     public List<ShoppingListItem> getShoppingItems(){
         String selectQuery = "SELECT * FROM "+ShoppingListSerialization.TABLE_NAME +" WHERE "+ShoppingListSerialization.USER_ID+" = ?";
@@ -187,6 +188,16 @@ public final class ShoppingListDAO {
 
     private void deleteShoppingList(){
         db.delete(ShoppingListSerialization.TABLE_NAME, ShoppingListSerialization.USER_ID+" = ?", new String[]{userId});
+    }
+
+    public int getShopItemsCount() {
+        List<ShoppingListItem> items = getShoppingItems();
+        if (items == null) return 0;
+        int count = 0;
+        for (ShoppingListItem item : items) {
+            count += item.getIngredients().size();
+        }
+        return count;
     }
 
 }

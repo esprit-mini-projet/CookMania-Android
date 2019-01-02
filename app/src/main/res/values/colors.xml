@@ -10,4 +10,5 @@
     <color name="colorPrimaryLightPix">#305165</color>
     <color name="colorPrimaryTransparent">#C0477998</color>
     <color name="colorBackgroundTransparent">#C0F7FAF6</color>
+    <color name="colorDarkGray">#5c605a</color>
 </resources>

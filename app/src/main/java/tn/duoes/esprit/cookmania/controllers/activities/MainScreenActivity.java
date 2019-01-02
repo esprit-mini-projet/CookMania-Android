@@ -2,27 +2,18 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.google.firebase.iid.InstanceIdResult;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
-
-import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.MainScreenPagerAdapter;
@@ -30,7 +21,6 @@ import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.CategoryRecipesFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.FeedFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
-import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SuggestedFragment;
@@ -38,7 +28,6 @@ import tn.duoes.esprit.cookmania.views.RatingViewPager;
 
 public class MainScreenActivity extends AppCompatActivity
         implements HomeFragment.OnFragmentInteractionListener,
-        ProfileFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener,
         AddRecipeFragment.OnFragmentInteractionListener,
         ShoppingListFragment.OnFragmentInteractionListener,
@@ -76,7 +65,7 @@ public class MainScreenActivity extends AppCompatActivity
         TabLayout tabLayout = findViewById(R.id.mainscreen_tablayout);
         viewPager = findViewById(R.id.mainscreen_viewpager);
 
-        viewPager.setAdapter(new MainScreenPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount()));
+        viewPager.setAdapter(new MainScreenPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount(), this));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {

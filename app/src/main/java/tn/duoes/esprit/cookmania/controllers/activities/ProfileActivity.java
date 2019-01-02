@@ -2,79 +2,49 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import android.view.MenuItem;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
-import tn.duoes.esprit.cookmania.utils.GlideApp;
+import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    public static final String EXTRA_USER_ID = "user_id";
+    public static final String EXTRA_SHOULD_FINISH = "should_finish";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        String userId = getIntent().getStringExtra(EXTRA_USER_ID);
+        Fragment profileFragment = getSupportFragmentManager().findFragmentById(R.id.activity_profile_fragment_container);
+        if (profileFragment == null) {
+            profileFragment = ProfileFragment.newInstance(userId);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.activity_profile_fragment_container, profileFragment)
+                    .commit();
+        }
+    }
 
-        ImageView photo = findViewById(R.id.profile_picture);
-        TextView name = findViewById(R.id.name_text);
-        TextView method = findViewById(R.id.method_text);
-        Button logoutButton = findViewById(R.id.logout_button);
-        Button recipeButton = findViewById(R.id.recipe_button);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+            if (shouldFinish) finish();
+            else startActivity(new Intent(this, MainScreenActivity.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        String photoUrl = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_IMAGE_URL, null);
-        String nameString = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_USERNAME, null);
-        final String methodString = getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).getString(MainLoginFragment.PREF_SIGNIN_METHOD, null);
-
-        GlideApp.with(this).load(photoUrl).centerCrop().into(photo);
-        name.setText(nameString);
-        method.setText("By " + methodString);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(methodString.equals(MainLoginFragment.METHOD_FACEBOOK)){
-                    LoginManager.getInstance().logOut();
-                }else if(methodString.equals(MainLoginFragment.METHOD_GOOGLE)){
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestEmail()
-                            .build();
-                    GoogleSignIn.getClient(ProfileActivity.this, gso).signOut();
-                }
-                getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).edit().clear().apply();
-                Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
-        });
-
-        findViewById(R.id.home_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(ProfileActivity.this, MainScreenActivity.class));
-            }
-        });
-
-        findViewById(R.id.profile_add_recipe_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //startActivity(new Intent(ProfileActivity.this, AddRecipeActivity.class));
-            }
-        });
-        recipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ProfileActivity.this, RecipeDetailsActivity.class);
-                i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, "7");
-                startActivity(i);
-            }
-        });
+    @Override
+    public void onBackPressed() {
+        boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
+        if (shouldFinish) finish();
+        else super.onBackPressed();
     }
 }

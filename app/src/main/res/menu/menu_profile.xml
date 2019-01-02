@@ -7,8 +7,4 @@
         android:icon="@drawable/ic_bar_settings"
         android:title="Settings"
         app:showAsAction="always" />
-
-    <item android:id="@+id/menu_timer"
-        android:title="start timer"
-        app:showAsAction="ifRoom"/>
 </menu>

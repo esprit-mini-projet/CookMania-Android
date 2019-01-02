@@ -2,10 +2,8 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -21,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -29,12 +26,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.fxn.pix.Pix;
-import com.fxn.utility.PermUtil;
 import com.google.gson.Gson;
-import com.vansuita.pickimage.bean.PickResult;
-import com.vansuita.pickimage.bundle.PickSetup;
-import com.vansuita.pickimage.dialog.PickImageDialog;
-import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.helpers.RecyclerItemTouchHelper;
 import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.Recipe;
@@ -164,7 +155,7 @@ public class AddStepActivity extends AppCompatActivity {
                         Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
                         //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipeId+"");
-                        intent.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
+                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
                         progressDialog.dismiss();
                         Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
                         startActivity(intent);
@@ -261,7 +252,7 @@ public class AddStepActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_add_recipe_ingredient, viewGroup, false);
-            return new IngredientsRecyclerViewAdapter.ViewHolder(v, this);
+            return new ViewHolder(v, this);
         }
 
         @Override

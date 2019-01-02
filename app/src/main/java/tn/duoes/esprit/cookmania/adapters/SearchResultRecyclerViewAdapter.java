@@ -44,13 +44,13 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_search_recipe, viewGroup, false);
-        return new SearchResultRecyclerViewAdapter.ViewHolder(v);
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Recipe recipe = recipes.get(position);
-        UserService.getInstance().getUserById(recipe.getUserId(), new UserService.CreateFromSocialMediaCallBack() {
+        UserService.getInstance().getUserById(recipe.getUserId(), new UserService.GetUserByIdCallBack() {
             @Override
             public void onCompletion(User user) {
                 viewHolder.user = user;
@@ -83,7 +83,6 @@ public class SearchResultRecyclerViewAdapter extends RecyclerView.Adapter<Search
                 public void onClick(View v) {
                     Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
                     i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId()+"");
-                    i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                     v.getContext().startActivity(i);
                 }
             });

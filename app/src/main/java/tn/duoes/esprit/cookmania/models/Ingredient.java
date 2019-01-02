@@ -7,6 +7,7 @@ public class Ingredient {
     private String name;
     private int quantity;
     private String unit;
+    private transient boolean isInShoppingList;
 
     private int shoppingListItemIndex;
 
@@ -66,15 +67,12 @@ public class Ingredient {
         this.unit = unit;
     }
 
-    @Override
-    public String toString() {
-        return "Ingredient{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", quantity=" + quantity +
-                ", unit='" + unit + '\'' +
-                ", shoppingListItemIndex=" + shoppingListItemIndex +
-                '}';
+    public boolean isInShoppingList() {
+        return isInShoppingList;
+    }
+
+    public void setInShoppingList(boolean inShoppingList) {
+        isInShoppingList = inShoppingList;
     }
 
     @Override
@@ -89,5 +87,16 @@ public class Ingredient {
     public int hashCode() {
 
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Ingredient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", quantity=" + quantity +
+                ", unit='" + unit + '\'' +
+                ", shoppingListItemIndex=" + shoppingListItemIndex +
+                '}';
     }
 }

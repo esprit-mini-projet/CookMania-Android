@@ -5,6 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,6 +64,7 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
         private TextView mDescriptionTextView;
         private ImageView mImageView;
         private LinearLayout mTimeLayout;
+        private FrameLayout mDottedRingLayout;
 
         StepHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,11 +73,12 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
             mDescriptionTextView = itemView.findViewById(R.id.step_item_description_text);
             mImageView = itemView.findViewById(R.id.step_item_image);
             mTimeLayout = itemView.findViewById(R.id.list_item_step_time_layout);
+            mDottedRingLayout = itemView.findViewById(R.id.list_item_step_dotted_ring);
         }
 
         void bind(final Step step, int i, final StepItemCallBack callBack){
             if(i == 0){
-                mTopLine.setVisibility(View.GONE);
+                mTopLine.setVisibility(View.INVISIBLE);
             }else{
                 mTopLine.setVisibility(View.VISIBLE);
             }
@@ -92,9 +97,22 @@ public class RecipeDetailsStepAdapter extends RecyclerView.Adapter<RecipeDetails
                         callBack.onTimeLayoutClicked(step.getTime());
                     }
                 });
+                mDottedRingLayout.setVisibility(View.VISIBLE);
+                RotateAnimation rotate = new RotateAnimation(
+                        0, 360,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f
+                );
+
+                rotate.setDuration(10000);
+                rotate.setRepeatCount(Animation.INFINITE);
+                rotate.setInterpolator(new LinearInterpolator());
+                mDottedRingLayout.startAnimation(rotate);
             }else{
                 mStepNumberTextView.setText("");
                 mTimeLayout.setOnClickListener(null);
+                mDottedRingLayout.setVisibility(View.INVISIBLE);
+                mDottedRingLayout.clearAnimation();
             }
         }
     }

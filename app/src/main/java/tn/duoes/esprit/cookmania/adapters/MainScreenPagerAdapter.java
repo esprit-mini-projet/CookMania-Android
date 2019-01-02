@@ -1,11 +1,11 @@
 package tn.duoes.esprit.cookmania.adapters;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
-import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
+import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.AddRecipeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
@@ -16,10 +16,12 @@ public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
     private static final String TAG = MainScreenPagerAdapter.class.getSimpleName();
 
     private int mTabsCount;
+    private Context mContext;
 
-    public MainScreenPagerAdapter(FragmentManager fm, int tabsCount) {
+    public MainScreenPagerAdapter(FragmentManager fm, int tabsCount, Context context) {
         super(fm);
         this.mTabsCount = tabsCount;
+        mContext = context;
     }
 
     @Override
@@ -39,7 +41,9 @@ public class MainScreenPagerAdapter extends FragmentStatePagerAdapter {
                 fragment = ShoppingListFragment.newInstance(null, null);
                 break;
             case 4:
-                fragment = ProfileFragment.newInstance(null, null);
+                String connectedUserId = mContext.getSharedPreferences(mContext.getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                        .getString(mContext.getString(R.string.prefs_user_id), null);
+                fragment = ProfileFragment.newInstance(connectedUserId);
                 break;
         }
         return fragment;

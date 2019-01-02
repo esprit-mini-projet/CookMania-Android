@@ -15,8 +15,20 @@ public class Experience {
     @SerializedName("image_url")
     private String imageUrl;
     private Date date;
+    @SerializedName("user")
+    private User user;
+
+    private transient String recipeOwnerId;
 
     public Experience() {
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Experience(String userId, int recipeId, int rating, String comment) {
@@ -89,5 +101,13 @@ public class Experience {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getRecipeOwnerId() {
+        return recipeOwnerId;
+    }
+
+    public void setRecipeOwnerId(String recipeOwnerId) {
+        this.recipeOwnerId = recipeOwnerId;
     }
 }

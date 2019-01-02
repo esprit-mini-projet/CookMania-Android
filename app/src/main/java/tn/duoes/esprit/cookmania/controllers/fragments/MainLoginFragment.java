@@ -18,29 +18,28 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.UUID;
 
-import tn.duoes.esprit.cookmania.controllers.activities.MainActivity;
-import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
-import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -149,27 +148,45 @@ public class MainLoginFragment extends Fragment {
     }
 
     private void loginOrCreateFromSocialMedia(final User user, final String signInMethod) {
-        UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
             @Override
-            public void onCompletion(User user) {
-                hideProgressBar();
-                if(user == null){
-                    showErrorAlert();
-                    return;
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                String token = instanceIdResult.getToken();
+                Log.d(TAG, "onSuccess: " + token);
+                String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                        .getString(getString(R.string.prefs_uuid), null);
+                Log.i(TAG, "onSuccess: uuid = " + uuid);
+                if (uuid == null) {
+                    uuid = UUID.randomUUID().toString();
+                    getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                            .edit().putString(getString(R.string.prefs_uuid), uuid).apply();
                 }
-                getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-                        .edit()
-                        .putString(PREF_SIGNIN_METHOD, signInMethod)
-                        .putString(PREF_USER_ID, user.getId())
-                        .putString(PREF_IMAGE_URL, user.getImageUrl())
-                        .putString(PREF_USERNAME, user.getUserName())
-                        .apply();
-                goToProfile();
+                user.setUuid(uuid);
+                user.setToken(token);
+                UserService.getInstance().createFromSocialMedia(user, new UserService.CreateFromSocialMediaCallBack() {
+                    @Override
+                    public void onCompletion(User user) {
+                        hideProgressBar();
+                        if (user == null) {
+                            showErrorAlert();
+                            return;
+                        }
+                        getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                                .edit()
+                                .putString(PREF_SIGNIN_METHOD, signInMethod)
+                                .putString(PREF_USER_ID, user.getId())
+                                .putString(PREF_IMAGE_URL, user.getImageUrl())
+                                .putString(PREF_USERNAME, user.getUserName())
+                                .putString(getString(R.string.prefs_user_email), user.getEmail())
+                                .apply();
+                        goToHome();
+                    }
+                });
             }
         });
     }
 
-    private void goToProfile() {
+    private void goToHome() {
         Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -188,7 +205,7 @@ public class MainLoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if(isLoggedIn()){
-            goToProfile();
+            goToHome();
             return;
         }
 

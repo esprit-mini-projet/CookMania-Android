@@ -1,14 +1,11 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NotificationCompat;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,140 +13,149 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.adapters.ProfilePagerAdapter;
 import tn.duoes.esprit.cookmania.controllers.activities.SettingsActivity;
-import tn.duoes.esprit.cookmania.dao.FavoriteLab;
-import tn.duoes.esprit.cookmania.utils.GlideApp;
+import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProfileFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class ProfileFragment extends Fragment implements UserService.IsFollowingCallBack {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TAG = "ProfileFragment";
+    public static final String ARG_USER_ID = "user_id";
 
-    private OnFragmentInteractionListener mListener;
+    private ProfileHeaderFragment mProfileHeaderFragment;
+    private ProfileRecipeListFragment mRecipeListFragment;
+    private ProfileFavoriteListFragment mFavoriteListFragment;
+    private ProfileUserListFragment mFollowingListFragment;
+    private ProfileUserListFragment mFollowerListFragment;
 
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
+    private boolean mIsFollowing;
+    private String mConnectedUserId;
+    private String mUserId;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter ap_1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
+    public static ProfileFragment newInstance(String userId) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView: ");
+
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        TabLayout tabLayout = view.findViewById(R.id.fragment_profile_tab_layout);
+        ViewPager viewPager = view.findViewById(R.id.fragment_profile_view_pager);
+
+        String userId = getArguments().getString(ARG_USER_ID);
+        String connectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
+
+        List<Fragment> fragments = new ArrayList<>();
+        List<String> tabTitles = new ArrayList<>();
+        mRecipeListFragment = ProfileRecipeListFragment.newInstance(userId);
+        fragments.add(mRecipeListFragment);
+        tabTitles.add(getString(R.string.recipes));
+        if (userId.equals(connectedUserId)) {
+            mFavoriteListFragment = ProfileFavoriteListFragment.newInstance();
+            fragments.add(mFavoriteListFragment);
+            tabTitles.add(getString(R.string.favorites));
         }
+        mFollowingListFragment = ProfileUserListFragment.newInstance(userId, false);
+        mFollowerListFragment = ProfileUserListFragment.newInstance(userId, true);
+        fragments.add(mFollowingListFragment);
+        tabTitles.add(getString(R.string.following));
+        fragments.add(mFollowerListFragment);
+        tabTitles.add(getString(R.string.followers));
+        ProfilePagerAdapter adapter = new ProfilePagerAdapter(getChildFragmentManager(), fragments, tabTitles);
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager, true);
+        return view;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View fragment = inflater.inflate(R.layout.fragment_profile, container, false);
-        setHasOptionsMenu(true);
-        ImageView photo = fragment.findViewById(R.id.profile_picture);
-        TextView name = fragment.findViewById(R.id.name_text);
-        TextView method = fragment.findViewById(R.id.method_text);
-
-        Activity activity = getActivity();
-
-        String photoUrl = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_IMAGE_URL, null);
-        String nameString = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_USERNAME, null);
-        final String methodString = activity.getSharedPreferences(MainLoginFragment.PREFS_NAME, activity.MODE_PRIVATE).getString(MainLoginFragment.PREF_SIGNIN_METHOD, null);
-
-        GlideApp.with(this).load(photoUrl).centerCrop().into(photo);
-        name.setText(nameString);
-        method.setText("By " + methodString);
-
-        return fragment;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mConnectedUserId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
+        mUserId = getArguments().getString(ARG_USER_ID);
+        if (mUserId.equals(mConnectedUserId)) {
+            setHasOptionsMenu(true);
+        } else {
+            setHasOptionsMenu(false);
+            UserService.getInstance().isFollowing(mConnectedUserId, mUserId, this);
+        }
+        mProfileHeaderFragment = ProfileHeaderFragment.newInstance(mUserId);
+        getChildFragmentManager().beginTransaction()
+                .add(R.id.fragment_profile_header_container, mProfileHeaderFragment)
+                .commit();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
+        if (mUserId.equals(mConnectedUserId)) {
+            inflater.inflate(R.menu.menu_profile, menu);
+        } else {
+            inflater.inflate(R.menu.menu_other_profile, menu);
+            menu.getItem(0).setTitle(mIsFollowing ? R.string.unfollow : R.string.follow);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()){
             case R.id.menu_settings:
                 startActivity(NavigationUtils.getNavigationFormattedIntent(getContext(), SettingsActivity.class));
-                break;
+                return true;
+            case R.id.menu_follow:
+                if (mIsFollowing) {
+                    mIsFollowing = false;
+                    item.setTitle(R.string.follow);
+                    mProfileHeaderFragment.updateFollowers(-1);
+                    UserService.getInstance().unfollow(mConnectedUserId, mUserId, new UserService.FollowCallBack() {
+                        @Override
+                        public void onCompletion(Boolean result) {
+                            if (!result) {
+                                item.setTitle(R.string.unfollow);
+                                mIsFollowing = true;
+                                mProfileHeaderFragment.updateFollowers(1);
+                            }
+                            if (mFollowerListFragment.isResumed()) mFollowerListFragment.update();
+                        }
+                    });
+                } else {
+                    mIsFollowing = true;
+                    item.setTitle(R.string.unfollow);
+                    mProfileHeaderFragment.updateFollowers(1);
+                    UserService.getInstance().follow(mConnectedUserId, mUserId, new UserService.FollowCallBack() {
+                        @Override
+                        public void onCompletion(Boolean result) {
+                            if (!result) {
+                                item.setTitle(R.string.follow);
+                                mIsFollowing = false;
+                                mProfileHeaderFragment.updateFollowers(-1);
+                            }
+                            if (mFollowerListFragment.isResumed()) mFollowerListFragment.update();
+                        }
+                    });
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public void onCompletion(Boolean isFollowing) {
+        if (isFollowing == null) return;
+        mIsFollowing = isFollowing;
+        setHasOptionsMenu(true);
     }
 }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Suggestion;
 import tn.duoes.esprit.cookmania.services.SuggestionService;
@@ -26,7 +25,7 @@ import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SuggestedFragment.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link SuggestedFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -96,7 +95,6 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(0).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                         v.getContext().startActivity(i);
                     }
                 });
@@ -107,7 +105,6 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(1).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                         v.getContext().startActivity(i);
                     }
                 });
@@ -118,7 +115,6 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(2).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                         v.getContext().startActivity(i);
                     }
                 });
@@ -129,7 +125,6 @@ public class SuggestedFragment extends Fragment {
                     public void onClick(View v) {
                         Intent i = NavigationUtils.getNavigationFormattedIntent(getContext(), RecipeDetailsActivity.class);
                         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, suggestion.getRecipes().get(3).getId()+"");
-                        i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                         v.getContext().startActivity(i);
                     }
                 });

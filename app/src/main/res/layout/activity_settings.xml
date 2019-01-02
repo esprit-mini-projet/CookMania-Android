@@ -1,23 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".controllers.activities.SettingsActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/activity_settings_edit_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/settings_edit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_account"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textAlignment="viewStart"
+            android:textColor="@color/colorDark"
+            android:background="?attr/selectableItemBackground"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            style="?android:attr/buttonBarStyle" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_arrow_right"
+            android:alpha="0.3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/activity_settings_first_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.1"
+        android:background="@color/colorDarkGray" />
 
     <Button
         android:id="@+id/settings_logout_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/logout"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorDark"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        style="?android:attr/buttonBarStyle" />
 
-</android.support.constraint.ConstraintLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.1"
+        android:background="@color/colorDarkGray" />
+
+    <Button
+        android:id="@+id/settings_delete_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_account"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorAccent"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="10dp"
+        android:paddingEnd="0dp"
+        style="?android:attr/buttonBarStyle" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.1"
+        android:background="@color/colorDarkGray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorDarkGray"
+            android:text="@string/you_signed_in_using" />
+
+        <TextView
+            android:id="@+id/activity_settings_method_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorDarkGray"
+            tools:text="your email: chebbaelyes@gmail.com" />
+
+    </LinearLayout>
+
+</LinearLayout>

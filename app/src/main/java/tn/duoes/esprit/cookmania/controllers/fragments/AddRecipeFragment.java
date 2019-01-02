@@ -37,7 +37,7 @@ import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddRecipeFragment.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link AddRecipeFragment#newInstance} factory method to
  * create an instance of this fragment.

@@ -12,13 +12,11 @@ import java.util.List;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Multipart;
 import tn.duoes.esprit.cookmania.interfaces.RecipeApi;
 import tn.duoes.esprit.cookmania.models.FeedResult;
 import tn.duoes.esprit.cookmania.models.LabelCategory;
@@ -41,6 +39,13 @@ public final class RecipeService {
         void onFailure();
     }
 
+    public interface RecipeServiceSimilarCallBack {
+        void onGetSimilarResponse(List<Recipe> recipes);
+    }
+
+    public interface DeleteRecipeCallBack {
+        void onResponse(boolean isSuccessful);
+    }
     public interface LabelGetCallBack{
         void onResponse(List<LabelCategory> categories);
         void onFailure();
@@ -75,7 +80,7 @@ public final class RecipeService {
         Call<List<Recipe>> call = mRecipeApi.getAllRecipiesByLabel(label);
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
-            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 if(response.isSuccessful()){
                     callBack.onResponse(response.body());
                     return;
@@ -95,7 +100,7 @@ public final class RecipeService {
         Call<List<Recipe>> call = mRecipeApi.getTopRatedRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
-            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 if(response.isSuccessful()){
                     callBack.onResponse(response.body());
                     return;
@@ -115,7 +120,7 @@ public final class RecipeService {
         Call<List<Recipe>> call = mRecipeApi.getHealthyRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
-            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 if(response.isSuccessful()){
                     callBack.onResponse(response.body());
                     return;
@@ -135,7 +140,7 @@ public final class RecipeService {
         Call<List<Recipe>> call = mRecipeApi.getCheapRecipes();
         call.enqueue(new Callback<List<Recipe>>() {
             @Override
-            public void onResponse(Call<List<Recipe>> call, retrofit2.Response<List<Recipe>> response) {
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
                 if(response.isSuccessful()){
                     callBack.onResponse(response.body());
                     return;
@@ -155,7 +160,7 @@ public final class RecipeService {
         Call<Recipe> call = mRecipeApi.getRecipeById(id);
         call.enqueue(new Callback<Recipe>() {
             @Override
-            public void onResponse(Call<Recipe> call, retrofit2.Response<Recipe> response) {
+            public void onResponse(Call<Recipe> call, Response<Recipe> response) {
                 if(response.isSuccessful()){
                     final Recipe recipe = response.body();
                     callBack.onResponse(new ArrayList<Recipe>(Arrays.asList(recipe)));
@@ -204,6 +209,28 @@ public final class RecipeService {
         });
     }
 
+    public void getSimilarRecipes(final Recipe recipe, final RecipeServiceSimilarCallBack callBack) {
+        Gson gson = new Gson().newBuilder().create();
+        String labels = gson.toJson(recipe.getLabels());
+        Call<List<Recipe>> call = mRecipeApi.getSimilarRecipes(recipe.getId(), labels);
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                if (response.isSuccessful()) {
+                    callBack.onGetSimilarResponse(response.body());
+                    return;
+                }
+                callBack.onGetSimilarResponse(new ArrayList<Recipe>());
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onGetSimilarResponse(new ArrayList<Recipe>());
+            }
+        });
+    }
+
     public void getLabels(final LabelGetCallBack callBack){
         Call<List<LabelCategory>> call = mRecipeApi.getLabels();
         call.enqueue(new Callback<List<LabelCategory>>() {
@@ -221,6 +248,26 @@ public final class RecipeService {
         });
     }
 
+    public void getRecipesByUser(final String userId, final RecipeServiceGetCallBack callBack) {
+        Call<List<Recipe>> call = mRecipeApi.getRecipesByUser(userId);
+        call.enqueue(new Callback<List<Recipe>>() {
+            @Override
+            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
+                if (response.isSuccessful()) {
+                    callBack.onResponse(response.body());
+                    return;
+                }
+                callBack.onResponse(new ArrayList<Recipe>());
+            }
+
+            @Override
+            public void onFailure(Call<List<Recipe>> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onFailure();
+            }
+        });
+    }
+    
     public void search(SearchWrapper searchWrapper, RecipeServiceGetCallBack callBack){
         HashMap<String, Object> params = new HashMap<>();
         params.put("name", searchWrapper.getSearchText());
@@ -247,6 +294,22 @@ public final class RecipeService {
         });
     }
 
+    public void delete(int recipeId, final DeleteRecipeCallBack callBack) {
+        Call<Void> call = mRecipeApi.delete(recipeId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                callBack.onResponse(response.isSuccessful());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, "onFailure: ", t);
+                callBack.onResponse(false);
+            }
+        });
+    }
+    
     public void getFeed(String userId, FeedGetCallBack callBack){
         Log.d(TAG, "getFeed: ");
         Call<List<FeedResult>> call = mRecipeApi.getFeed(userId);

@@ -52,7 +52,7 @@ public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Ad
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         Recipe recipe = mRecipes.get(position);
 
-        UserService.getInstance().getUserById(recipe.getUserId(), new UserService.CreateFromSocialMediaCallBack() {
+        UserService.getInstance().getUserById(recipe.getUserId(), new UserService.GetUserByIdCallBack() {
             @Override
             public void onCompletion(User user) {
                 viewHolder.user = user;
@@ -86,7 +86,6 @@ public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Ad
                 public void onClick(View v) {
                     Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
                     i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId()+"");
-                    i.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, MainScreenActivity.class.getCanonicalName());
                     v.getContext().startActivity(i);
                 }
             });

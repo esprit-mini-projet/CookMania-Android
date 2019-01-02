@@ -23,7 +23,7 @@ import tn.duoes.esprit.cookmania.models.ShoppingListItem;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ShoppingListFragment.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.

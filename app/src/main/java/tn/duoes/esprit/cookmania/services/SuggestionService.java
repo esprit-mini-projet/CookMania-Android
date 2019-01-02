@@ -42,7 +42,7 @@ public final class SuggestionService {
         mSuggestionApi = retrofit.create(SuggestionApi.class);
     }
 
-    public void getSuggestions(final SuggestionService.SuggestionServiceCallback callBack){
+    public void getSuggestions(final SuggestionServiceCallback callBack) {
         Call<Suggestion> call = mSuggestionApi.getSuggestions();
         call.enqueue(new Callback<Suggestion>() {
             @Override

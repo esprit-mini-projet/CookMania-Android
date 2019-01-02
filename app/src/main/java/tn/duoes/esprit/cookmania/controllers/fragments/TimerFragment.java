@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -15,26 +16,27 @@ import tn.duoes.esprit.cookmania.R;
 
 public class TimerFragment extends Fragment {
 
-    private static final String TAG = "TimerFragment";
     private static final String ARGS_MINUTES = "minutes";
 
     private CircularProgressIndicator mTimer;
     private ImageView mPlayImage;
     private ImageView mPauseImage;
-    private ImageView mStopImage;
     private TimerState mTimerState = TimerState.PLAY;
     private CountDownTimer mCountDownTimer;
+    private TimerFragmentCallBack mCallBack;
+    private MediaPlayer mMediaPlayer;
 
     private enum TimerState{
-        PLAY, PAUSE, STOP
+        PLAY, PAUSE, STOP, DONE
     }
 
-    public static TimerFragment newInstance(int minutes) {
+    public static TimerFragment newInstance(int minutes, TimerFragmentCallBack callBack) {
 
         Bundle args = new Bundle();
         args.putInt(ARGS_MINUTES, minutes);
         TimerFragment fragment = new TimerFragment();
         fragment.setArguments(args);
+        fragment.mCallBack = callBack;
         return fragment;
     }
 
@@ -43,18 +45,28 @@ public class TimerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_timer, container, false);
 
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mCallBack.onViewClicked();
+            }
+        });
+
         mTimer = view.findViewById(R.id.fragment_timer_timer);
         mPlayImage = view.findViewById(R.id.fragment_timer_play_button);
         mPauseImage = view.findViewById(R.id.fragment_timer_pause_button);
-        mStopImage = view.findViewById(R.id.fragment_timer_stop_button);
+        final ImageView stopImage = view.findViewById(R.id.fragment_timer_stop_button);
 
-        final int minutes = getArguments().getInt(ARGS_MINUTES);
-        mTimer.setMaxProgress(minutes * 60);
-        mTimer.setCurrentProgress(minutes * 60);
+        //final int minutes = getArguments().getInt(ARGS_MINUTES);
+        mTimer.setMaxProgress(3);
+        mTimer.setCurrentProgress(3);
         mTimer.setProgressTextAdapter(new CircularProgressIndicator.ProgressTextAdapter() {
             @NonNull
             @Override
             public String formatText(double time) {
+                if (time == 0) {
+                    return "Time up!";
+                }
                 int minutes = (int) (time / 60);
                 int seconds = (int) (time % 60);
                 StringBuilder sb = new StringBuilder();
@@ -69,23 +81,35 @@ public class TimerFragment extends Fragment {
                 return sb.toString();
             }
         });
+        mTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Just to intercept the click event
+            }
+        });
 
         mPauseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCountDownTimer.cancel();
-                mTimerState = TimerState.PAUSE;
+                if (mTimerState != TimerState.DONE) {
+                    mCountDownTimer.cancel();
+                    mTimerState = TimerState.PAUSE;
+                } else {
+                    stopAlarm();
+                }
                 mPauseImage.setVisibility(View.INVISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
             }
         });
 
-        mStopImage.setOnClickListener(new View.OnClickListener() {
+        stopImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stopAlarm();
                 mCountDownTimer.cancel();
                 mTimerState = TimerState.STOP;
-                mTimer.setCurrentProgress(minutes * 60);
+                mTimer.setCurrentProgress(mTimer.getMaxProgress());
+                mTimer.setFillBackgroundEnabled(false);
                 mPauseImage.setVisibility(View.INVISIBLE);
                 mPlayImage.setVisibility(View.VISIBLE);
             }
@@ -94,8 +118,13 @@ public class TimerFragment extends Fragment {
         mPlayImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                long duration = (long) mTimer.getProgress() * 1000;
+                if (mTimerState == TimerState.DONE) {
+                    duration = (long) (mTimer.getMaxProgress() * 1000);
+                    mTimer.setCurrentProgress(mTimer.getMaxProgress());
+                }
                 mTimerState = TimerState.PLAY;
-                startTimer((long)mTimer.getProgress() * 1000);
+                startTimer(duration);
                 mPauseImage.setVisibility(View.VISIBLE);
                 mPlayImage.setVisibility(View.INVISIBLE);
             }
@@ -118,27 +147,49 @@ public class TimerFragment extends Fragment {
 
             @Override
             public void onFinish() {
-
+                mTimerState = TimerState.DONE;
+                mTimer.setCurrentProgress(0);
+                launchAlarm();
             }
         };
         mCountDownTimer.start();
+    }
+
+    private void launchAlarm() {
+        mMediaPlayer = MediaPlayer.create(getActivity(), R.raw.alarm);
+        mMediaPlayer.setLooping(true);
+        mMediaPlayer.start();
+    }
+
+    private void stopAlarm() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mCountDownTimer.cancel();
+        stopAlarm();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mCountDownTimer.cancel();
+        stopAlarm();
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if(mTimerState == TimerState.PLAY) startTimer((long) mTimer.getProgress() * 1000);
+    }
+
+    public interface TimerFragmentCallBack {
+        void onViewClicked();
     }
 }

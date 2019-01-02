@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
-import tn.duoes.esprit.cookmania.controllers.activities.CategoryRecipesActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -33,7 +32,7 @@ public class CategoryRecipiesRecyclerViewAdapter extends RecyclerView.Adapter<Ca
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_category_recipies, viewGroup, false);
-        return new CategoryRecipiesRecyclerViewAdapter.ViewHolder(v);
+        return new ViewHolder(v);
     }
 
     @Override
@@ -77,7 +76,7 @@ public class CategoryRecipiesRecyclerViewAdapter extends RecyclerView.Adapter<Ca
                 public void onClick(View v) {
                     Intent intent = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
                     intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, id+"");
-                    intent.putExtra(RecipeDetailsActivity.EXTRA_PARENT_ACTIVITY_CLASS, CategoryRecipesActivity.class.getCanonicalName());
+                    intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
                     v.getContext().startActivity(intent);
                 }
             });
