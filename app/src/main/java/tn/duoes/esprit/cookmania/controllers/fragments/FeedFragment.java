@@ -85,7 +85,9 @@ public class FeedFragment extends Fragment {
         feedAdapter = new FeedAdapter();
         feedRecipesRv.setAdapter(feedAdapter);
 
-        RecipeService.getInstance().getFeed("f_1491707600961513", new RecipeService.FeedGetCallBack() {
+        String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), "");
+        RecipeService.getInstance().getFeed(userId, new RecipeService.FeedGetCallBack() {
             @Override
             public void onResponse(List<FeedResult> feedResults) {
                 Log.d(TAG, "onResponse: "+feedResults);
