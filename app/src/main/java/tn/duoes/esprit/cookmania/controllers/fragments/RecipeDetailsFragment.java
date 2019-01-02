@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -100,6 +101,7 @@ public class RecipeDetailsFragment extends Fragment
     private View mRatingCard;
     private View mDeleteAllButton;
     private ImageView mUserImageView;
+    private ConstraintLayout mUserImageLayout;
 
     private Recipe mRecipe;
     private int mRating;
@@ -222,6 +224,7 @@ public class RecipeDetailsFragment extends Fragment
         mSimilarListCard = view.findViewById(R.id.fragment_recipe_details_similar_recipes_cardview);
         mRatingCard = view.findViewById(R.id.fragment_recipe_details_rating_cardview);
         mUserImageView = view.findViewById(R.id.fragment_recipe_details_user_image_view);
+        mUserImageLayout = view.findViewById(R.id.fragment_recipe_details_user_image_layout);
     }
 
     private void updateUI(){
@@ -239,13 +242,11 @@ public class RecipeDetailsFragment extends Fragment
                         .into(mUserImageView);
             }
         });
-        mUserImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                intent.putExtra(ProfileActivity.EXTRA_USER_ID, mRecipe.getUserId());
-                startActivity(intent);
-            }
+        mUserImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            intent.putExtra(ProfileActivity.EXTRA_USER_ID, mRecipe.getUserId());
+            startActivity(intent);
+            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());

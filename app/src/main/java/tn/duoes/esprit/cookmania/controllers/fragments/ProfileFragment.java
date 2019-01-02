@@ -114,6 +114,7 @@ public class ProfileFragment extends Fragment implements UserService.IsFollowing
         switch (item.getItemId()){
             case R.id.menu_settings:
                 startActivity(NavigationUtils.getNavigationFormattedIntent(getContext(), SettingsActivity.class));
+                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             case R.id.menu_follow:
                 if (mIsFollowing) {

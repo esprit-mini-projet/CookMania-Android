@@ -85,6 +85,7 @@ public class ProfileFavoriteListFragment extends Fragment implements RecipeServi
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, "" + recipeId);
         i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     public void update() {

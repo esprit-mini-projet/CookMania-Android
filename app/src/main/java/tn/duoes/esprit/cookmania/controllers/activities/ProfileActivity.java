@@ -36,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
             boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
             if (shouldFinish) finish();
             else startActivity(new Intent(this, MainScreenActivity.class));
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -46,5 +47,6 @@ public class ProfileActivity extends AppCompatActivity {
         boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
         if (shouldFinish) finish();
         else super.onBackPressed();
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 }
