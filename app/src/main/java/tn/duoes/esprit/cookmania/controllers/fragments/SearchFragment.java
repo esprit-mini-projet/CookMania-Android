@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -233,6 +234,14 @@ public class SearchFragment extends Fragment {
                     insertCategoryTextView(category.getCategory());
                     for (String label : category.getLabels()){
                         insertLabelButton(label);
+
+                        fragment.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                fragment.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                close();
+                            }
+                        });
                     }
                 }
             }
@@ -370,14 +379,6 @@ public class SearchFragment extends Fragment {
         });
 
         return fragment;
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            close();
-        }
     }
 
     private void close(){
