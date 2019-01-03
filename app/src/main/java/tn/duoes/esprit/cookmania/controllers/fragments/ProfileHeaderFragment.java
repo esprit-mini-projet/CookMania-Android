@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -179,8 +180,13 @@ public class ProfileHeaderFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            showSnackBar();
             updateUserPhoto(data);
         }
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(getActivity().findViewById(android.R.id.content), R.string.image_saved, Snackbar.LENGTH_LONG).show();
     }
 
     private void updateUserPhoto(Intent data) {

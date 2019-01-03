@@ -1,15 +1,24 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.fxn.pix.Pix;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.User;
@@ -18,13 +27,19 @@ import tn.duoes.esprit.cookmania.utils.GlideApp;
 
 public class EditAccountActivity extends AppCompatActivity implements UserService.UpdateCredCallBack {
 
+    private static final String TAG = "EditAccountActivity";
+
+    public static final int REQUEST_IMAGE_CAPTURE = 1;
+
     private TextInputLayout mEmailLayout;
     private TextInputLayout mUsernameLayout;
     private TextInputLayout mPasswordLayout;
     private TextInputLayout mConfirmPasswordLayout;
 
     private User mUser;
+    private String mUserId;
     private ImageView mUserImageView;
+    private ImageView mCameraImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +59,28 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
                 .into(mUserImageView);
         mEmailLayout.getEditText().setText(email);
         mUsernameLayout.getEditText().setText(username);
+
+        //hide or show camera
+        mUserId = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_user_id), null);
+        String userId = getIntent().getStringExtra(mUserId);
+        String loginMethod = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_signin_method), "");
+        boolean isEmailMethod = loginMethod.equals(getString(R.string.method_email));
+        if (isEmailMethod) {
+            mCameraImage.setVisibility(View.VISIBLE);
+            mCameraImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Pix.start(EditAccountActivity.this, REQUEST_IMAGE_CAPTURE, 1);
+                }
+            });
+        }
     }
 
     private void getViewReferences() {
         mUserImageView = findViewById(R.id.fragment_edit_account_image_view);
+        mCameraImage = findViewById(R.id.fragment_edit_account_camera_image);
         mEmailLayout = findViewById(R.id.fragment_edit_account_email_input_layout);
         mUsernameLayout = findViewById(R.id.fragment_edit_account_username_input_layout);
         mPasswordLayout = findViewById(R.id.fragment_edit_account_password_input_layout);
@@ -142,5 +175,40 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            showSnackBar();
+            updateUserPhoto(data);
+        }
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(findViewById(android.R.id.content), R.string.image_saved, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void updateUserPhoto(Intent data) {
+        ArrayList<String> returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS);
+        String imagePath = returnValue.get(0);
+        GlideApp.with(this).load(imagePath)
+                .apply(RequestOptions.circleCropTransform())
+                .into(mUserImageView);
+        UserService.getInstance().updateUserPhoto(new File(imagePath), mUserId, new UserService.UpdateUserPhotoCallBack() {
+            @Override
+            public void onCompletion(String imageUrl) {
+                if (imageUrl == null) {
+                    //TODO: show error message
+                    return;
+                }
+                getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                        .edit()
+                        .putString(getString(R.string.pref_image_url), imageUrl)
+                        .apply();
+                Log.i(TAG, "onCompletion: ");
+            }
+        });
     }
 }

@@ -102,6 +102,7 @@
     <string name="confirmation_message_delete_account">You will lose all your data. Are you absolutely sure you want to delete your account ?</string>
     <string name="error_message_delete_account">We couldn\'t delete your account. Please try another time.</string>
     <string name="go_to_home">Go to home</string>
+    <string name="image_saved">Your image has been saved successfully.</string>
     <string-array name="rating_opinions">
         <item>Disgusting!</item>
         <item>Meh..</item>
