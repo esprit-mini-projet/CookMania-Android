@@ -122,16 +122,6 @@ public class AddRecipeFragment extends Fragment {
     private EditText caloriesEditText;
     private FlexboxLayout labelsFlexBox;
 
-    private Button healthyButton;
-    private Button cheapButton;
-    private Button easyButton;
-    private Button fastButton;
-    private Button vegButton;
-    private Button kidsButton;
-    private Button breakfastButton;
-    private Button dinnerButton;
-    private Button dateButton;
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
