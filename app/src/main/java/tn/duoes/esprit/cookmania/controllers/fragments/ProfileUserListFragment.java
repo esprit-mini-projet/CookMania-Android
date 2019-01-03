@@ -97,5 +97,6 @@ public class ProfileUserListFragment extends Fragment implements ProfileUserList
         Intent i = new Intent(getActivity(), ProfileActivity.class);
         i.putExtra(ProfileActivity.EXTRA_USER_ID, userId);
         startActivity(i);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

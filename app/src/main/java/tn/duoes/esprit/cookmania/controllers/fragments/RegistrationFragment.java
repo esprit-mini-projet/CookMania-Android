@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,6 +40,7 @@ public class RegistrationFragment extends Fragment {
     private TextInputLayout mConfirmPasswordLayout;
     private Button mRegisterButton;
     private LinearLayout mProgressBar;
+    private ImageButton mBackButton;
 
     public static RegistrationFragment newInstance(String email) {
 
@@ -59,6 +61,11 @@ public class RegistrationFragment extends Fragment {
         mConfirmPasswordLayout = v.findViewById(R.id.activity_main_password_confirm_input_layout);
         mRegisterButton = v.findViewById(R.id.activity_main_register_button);
         mProgressBar = v.findViewById(R.id.fragment_registration_progress_bar);
+        mBackButton = v.findViewById(R.id.fragment_registration_login_back_btn);
+
+        mBackButton.setOnClickListener(v1 -> {
+            getActivity().onBackPressed();
+        });
 
         mUsernameLayout.requestFocus();
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +140,7 @@ public class RegistrationFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void saveUserData(User user) {

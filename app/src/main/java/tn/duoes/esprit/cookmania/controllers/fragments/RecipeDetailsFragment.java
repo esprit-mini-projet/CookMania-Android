@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -35,8 +36,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ExperienceListAdapter;
@@ -44,6 +47,7 @@ import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.adapters.SimilarListAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
@@ -100,6 +104,7 @@ public class RecipeDetailsFragment extends Fragment
     private View mRatingCard;
     private View mDeleteAllButton;
     private ImageView mUserImageView;
+    private ConstraintLayout mUserImageLayout;
 
     private Recipe mRecipe;
     private int mRating;
@@ -222,6 +227,7 @@ public class RecipeDetailsFragment extends Fragment
         mSimilarListCard = view.findViewById(R.id.fragment_recipe_details_similar_recipes_cardview);
         mRatingCard = view.findViewById(R.id.fragment_recipe_details_rating_cardview);
         mUserImageView = view.findViewById(R.id.fragment_recipe_details_user_image_view);
+        mUserImageLayout = view.findViewById(R.id.fragment_recipe_details_user_image_layout);
     }
 
     private void updateUI(){
@@ -239,13 +245,11 @@ public class RecipeDetailsFragment extends Fragment
                         .into(mUserImageView);
             }
         });
-        mUserImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                intent.putExtra(ProfileActivity.EXTRA_USER_ID, mRecipe.getUserId());
-                startActivity(intent);
-            }
+        mUserImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            intent.putExtra(ProfileActivity.EXTRA_USER_ID, mRecipe.getUserId());
+            startActivity(intent);
+            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
         mRatingInfoBar.setRating(mRecipe.getRating());
         mIngredientsNumberTextView.setText("" + mRecipe.getIngredients().size());
@@ -315,6 +319,7 @@ public class RecipeDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), ShoppingListActivity.class));
+                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
         mProgressDialog.dismiss();
@@ -335,6 +340,14 @@ public class RecipeDetailsFragment extends Fragment
                 if (isDetached()) return;
                 mRecipe = recipes.get(0);
                 updateUI();
+                //update recipe views
+                Set<String> viewedRecipes = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                        .getStringSet(getString(R.string.prefs_recipes_viewed_list), new HashSet<>());
+                if (viewedRecipes.add(mRecipe.getId() + "")) {
+                    RecipeService.getInstance().incrementViews(mRecipe.getId());
+                    getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                            .edit().putStringSet(getString(R.string.prefs_recipes_viewed_list), viewedRecipes).apply();
+                }
             }
 
             @Override
@@ -384,14 +397,22 @@ public class RecipeDetailsFragment extends Fragment
                 item.setTitle(R.string.remove_favorite);
                 item.setIcon(R.drawable.icon_heart_full);
                 FavoriteLab.getInstance(getActivity()).insert(recipeId, userId);
+                RecipeService.getInstance().incrementFavorites(recipeId);
             }else{
                 item.setTitle(R.string.favorite);
                 item.setIcon(R.drawable.icon_heart_outline);
                 FavoriteLab.getInstance(getActivity()).delete(recipeId, userId);
+                RecipeService.getInstance().decrementFavorites(recipeId);
             }
             return true;
         } else if (item.getItemId() == R.id.recipe_details_delete) {
             showDeleteConfirmationDialog();
+            return true;
+        } else if (item.getItemId() == R.id.recipe_details_home) {
+            Intent intent = new Intent(getActivity(), MainScreenActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -600,6 +621,7 @@ public class RecipeDetailsFragment extends Fragment
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
         i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

@@ -190,6 +190,7 @@ public class MainLoginFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void showErrorAlert() {

@@ -95,6 +95,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(SettingsActivity.this, EditAccountActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }
@@ -117,16 +118,20 @@ public class SettingsActivity extends AppCompatActivity {
                     .build();
             GoogleSignIn.getClient(SettingsActivity.this, gso).signOut();
         }
-        getSharedPreferences(MainLoginFragment.PREFS_NAME, MODE_PRIVATE).edit()
+        getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE).edit()
                 .remove(getString(R.string.prefs_user_id))
                 .remove(getString(R.string.pref_image_url))
                 .remove(getString(R.string.prefs_username))
                 .remove(getString(R.string.prefs_user_email))
                 .remove(getString(R.string.prefs_signin_method))
                 .apply();
+        String uuid = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                .getString(getString(R.string.prefs_uuid), "");
+        UserService.getInstance().logout(uuid);
         Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void getViewReferences() {
@@ -140,8 +145,15 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 }

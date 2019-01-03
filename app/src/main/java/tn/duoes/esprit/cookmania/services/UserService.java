@@ -424,6 +424,23 @@ public class UserService {
         });
     }
 
+    public void logout(String uuid) {
+        JsonObject body = new JsonObject();
+        body.addProperty("uuid", uuid);
+        Call<Void> call = mUserApi.logout(body);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     public interface CreateFromSocialMediaCallBack{
         void onCompletion(User user);

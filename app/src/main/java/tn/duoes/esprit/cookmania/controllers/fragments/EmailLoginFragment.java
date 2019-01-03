@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import tn.duoes.esprit.cookmania.R;
@@ -26,6 +27,7 @@ public class EmailLoginFragment extends Fragment {
     private Button mNextButton;
     private LinearLayout mProgressBar;
     private EmailLoginFragmentCallBack mCallBack;
+    private ImageButton mBackButton;
 
     public static EmailLoginFragment newInstance(EmailLoginFragmentCallBack callBack) {
 
@@ -52,6 +54,11 @@ public class EmailLoginFragment extends Fragment {
         mEmailLayout = v.findViewById(R.id.activity_main_email_input_layout);
         mNextButton = v.findViewById(R.id.activity_main_next_button);
         mProgressBar = v.findViewById(R.id.fragment_email_login_progress_bar);
+        mBackButton = v.findViewById(R.id.fragment_email_login_back_btn);
+
+        mBackButton.setOnClickListener(v1 -> {
+            getActivity().onBackPressed();
+        });
 
         mEmailLayout.requestFocus();
         mNextButton.setOnClickListener(new View.OnClickListener() {
@@ -110,9 +117,20 @@ public class EmailLoginFragment extends Fragment {
         showSoftKeyboard();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideSoftKeyboard();
+    }
+
     private void showSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(getActivity().getWindow().getDecorView().getRootView(),InputMethodManager.SHOW_FORCED);
+        imm.showSoftInput(mEmailLayout, InputMethodManager.SHOW_FORCED);
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getRootView().getWindowToken(), 0);
     }
 
     public interface EmailLoginFragmentCallBack{

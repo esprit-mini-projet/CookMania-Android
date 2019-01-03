@@ -45,10 +45,14 @@ public class RecipeDetailsActivity extends AppCompatActivity
         mBlurLayout.setVisibility(View.VISIBLE);
         Fragment timerFragment = getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
         if(timerFragment == null){
-            getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .commit();
         }else{
-            getSupportFragmentManager().beginTransaction().replace(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.timer_fragment_container, TimerFragment.newInstance(time, this))
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .commit();
         }
         mBlurLayout.startBlur();
@@ -64,7 +68,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
             }
             boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
             if (shouldFinish) finish();
-            else startActivity(new Intent(this, MainScreenActivity.class));
+            else {
+                Intent intent = new Intent(this, MainScreenActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
@@ -73,7 +82,9 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
     private void removeTimerFragment() {
         getSupportFragmentManager().beginTransaction()
-                .remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container)).commit();
+                .remove(getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container))
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .commit();
         timerIsShown = false;
         mBlurLayout.pauseBlur();
         mBlurLayout.setVisibility(View.GONE);
@@ -99,7 +110,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
         }
         boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
         if (shouldFinish) finish();
-        else startActivity(new Intent(this, MainScreenActivity.class));
+        else {
+            Intent intent = new Intent(this, MainScreenActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,6 +36,7 @@ public class PasswordLoginFragment extends Fragment {
     private TextInputLayout mPasswordInputLayout;
     private Button mSignInButton;
     private LinearLayout mProgressBar;
+    private ImageButton mBackButton;
 
     public static PasswordLoginFragment newInstance(String email) {
 
@@ -53,6 +55,11 @@ public class PasswordLoginFragment extends Fragment {
         mPasswordInputLayout = v.findViewById(R.id.fragment_password_login_password_input_layout);
         mSignInButton = v.findViewById(R.id.fragment_password_login_signin_button);
         mProgressBar = v.findViewById(R.id.fragment_password_login_progress_bar);
+        mBackButton = v.findViewById(R.id.fragment_password_login_back_btn);
+
+        mBackButton.setOnClickListener(v1 -> {
+            getActivity().onBackPressed();
+        });
 
         mPasswordInputLayout.requestFocus();
         mSignInButton.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +124,7 @@ public class PasswordLoginFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MainScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void saveUserData(User user) {
