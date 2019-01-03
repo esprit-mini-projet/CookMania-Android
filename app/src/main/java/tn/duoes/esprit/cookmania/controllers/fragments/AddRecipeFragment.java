@@ -148,7 +148,7 @@ public class AddRecipeFragment extends Fragment {
             button.setOnClickListener(labelClicked);
 
             button.setBackground(getResources().getDrawable(R.drawable.shape_unselected_label));
-            button.setPadding(MesurementConvertionUtils.dpToPx(15, getContext()), 0, MesurementConvertionUtils.dpToPx(15, getContext()), 0);
+            button.setPadding(MesurementConvertionUtils.dpToPx((int)(label.length()*1.2), getContext()), 0, MesurementConvertionUtils.dpToPx((int)(label.length()*1.2), getContext()), 0);
             button.setText(label);
             button.setTextSize(14);
             button.setTypeface(button.getTypeface(), Typeface.BOLD);
@@ -206,7 +206,7 @@ public class AddRecipeFragment extends Fragment {
         fragment.findViewById(R.id.add_recipe_next_bt).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                durationEditText = ((TextInputLayout)fragment.findViewById(R.id.recipe_duration_layout)).getEditText();
                 if (image == null){
                     addImageBTError.setError("Recipe image is required!");
                     addImageBTError.requestFocus();
@@ -225,11 +225,11 @@ public class AddRecipeFragment extends Fragment {
                     return;
                 }
 
-                if((durationEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_duration_layout)).getEditText())).getText().toString().isEmpty()){
+                /*if((durationEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_duration_layout)).getEditText())).getText().toString().isEmpty()){
                     durationEditText.setError("Recipe duration is required!");
                     durationEditText.requestFocus();
                     return;
-                }
+                }*/
 
                 if((caloriesEditText = (((TextInputLayout)fragment.findViewById(R.id.recipe_calories_layout)).getEditText())).getText().toString().isEmpty()){
                     caloriesEditText.setError("Recipe calories is required!");
@@ -248,7 +248,7 @@ public class AddRecipeFragment extends Fragment {
                         descriptionEditText.getText().toString(),
                         Integer.valueOf(caloriesEditText.getText().toString()),
                         servingsSlider.getMax(),
-                        Integer.valueOf(durationEditText.getText().toString()),
+                        (durationEditText.getText() == null || durationEditText.getText().toString().isEmpty())?0:Integer.valueOf(durationEditText.getText().toString()),
                         getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE).getString("user_id", ""),
                         image,
                         labels);

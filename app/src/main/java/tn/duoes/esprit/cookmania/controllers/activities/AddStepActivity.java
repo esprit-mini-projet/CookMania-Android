@@ -142,6 +142,7 @@ public class AddStepActivity extends AppCompatActivity {
                 Step step;
                 if((step = createStep())==null && mRecipe.getSteps().isEmpty()){
                     Toast.makeText(AddStepActivity.this, "At least one step needs to be added!", Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
                     return;
                 }
                 mRecipe.getSteps().add(step);
@@ -200,8 +201,9 @@ public class AddStepActivity extends AppCompatActivity {
             durationET.setError("Step duration is required!");
             return null;
         }
-
-        return new Step(descriptionET.getText().toString(), Integer.valueOf(durationET.getText().toString()), clearIngredientsList(mIngredientAdapter.mIngredients), image);
+        Step step = new Step(descriptionET.getText().toString(), Integer.valueOf(durationET.getText().toString()), clearIngredientsList(mIngredientAdapter.mIngredients), image);
+        Log.d(TAG, "createStep: "+step);
+        return step;
     }
 
     private List<Ingredient> clearIngredientsList(List<Ingredient> ingredients){
@@ -225,7 +227,7 @@ public class AddStepActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mRecipe = gson.fromJson(getIntent().getStringExtra(RECIPE_KEY), Recipe.class);
-        Log.d(TAG, "onCreate: "+mRecipe);
+        Log.d(TAG, "onStart: addRecipe"+mRecipe);
     }
 
     @Nullable

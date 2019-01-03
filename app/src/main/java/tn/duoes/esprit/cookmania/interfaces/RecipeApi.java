@@ -1,5 +1,9 @@
 package tn.duoes.esprit.cookmania.interfaces;
 
+import com.google.gson.JsonElement;
+
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,14 +40,14 @@ public interface RecipeApi {
 
     @Multipart
     @POST("add")
-    Call<Integer> createRecipe(@Part MultipartBody.Part image,
-                               @Part("name") RequestBody name,
-                               @Part("description") RequestBody description,
-                               @Part("calories") RequestBody calories,
-                               @Part("servings") RequestBody servings,
-                               @Part("time") RequestBody time,
-                               @Part("user_id") RequestBody userId,
-                               @Part("labels") RequestBody labels);
+    Call<JsonElement> createRecipe(@Part MultipartBody.Part image,
+                                   @Part("name") RequestBody name,
+                                   @Part("description") RequestBody description,
+                                   @Part("calories") RequestBody calories,
+                                   @Part("servings") RequestBody servings,
+                                   @Part("time") RequestBody time,
+                                   @Part("user_id") RequestBody userId,
+                                   @Part("labels") RequestBody labels);
   
     @GET("{id}")
     Call<Recipe> getRecipeById(@Path("id") String id);

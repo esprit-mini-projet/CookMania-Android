@@ -151,7 +151,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
-                            android:hint="Duration"
+                            android:hint="Duration (minutes)"
                             android:inputType="time" />
                     </android.support.design.widget.TextInputLayout>
 

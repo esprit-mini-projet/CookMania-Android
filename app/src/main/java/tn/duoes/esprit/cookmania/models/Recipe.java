@@ -31,7 +31,7 @@ public class Recipe implements Parcelable {
     private List<String> labels;
     private List<Step> steps;
 
-    private transient File image;
+    private File image;
     private transient List<Ingredient> mIngredients;
 
     public Recipe() {
@@ -254,8 +254,10 @@ public class Recipe implements Parcelable {
                 ", time=" + time +
                 ", userId='" + userId + '\'' +
                 ", rating=" + rating +
+                ", labels=" + labels +
                 ", steps=" + steps +
-                ", labels= "+labels+
+                ", image=" + image +
+                ", mIngredients=" + mIngredients +
                 '}';
     }
 
