@@ -42,6 +42,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
 
     @Override
     public void onTimeLayoutClicked(int time) {
+        mBlurLayout.invalidate();
         mBlurLayout.setVisibility(View.VISIBLE);
         Fragment timerFragment = getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
         if(timerFragment == null){
