@@ -57,9 +57,9 @@ public class TimerFragment extends Fragment {
         mPauseImage = view.findViewById(R.id.fragment_timer_pause_button);
         final ImageView stopImage = view.findViewById(R.id.fragment_timer_stop_button);
 
-        //final int minutes = getArguments().getInt(ARGS_MINUTES);
-        mTimer.setMaxProgress(3);
-        mTimer.setCurrentProgress(3);
+        final int minutes = getArguments().getInt(ARGS_MINUTES);
+        mTimer.setMaxProgress(minutes * 60);
+        mTimer.setCurrentProgress(minutes * 60);
         mTimer.setProgressTextAdapter(new CircularProgressIndicator.ProgressTextAdapter() {
             @NonNull
             @Override

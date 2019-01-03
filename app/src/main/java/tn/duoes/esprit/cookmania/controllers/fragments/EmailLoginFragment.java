@@ -57,6 +57,7 @@ public class EmailLoginFragment extends Fragment {
         mBackButton = v.findViewById(R.id.fragment_email_login_back_btn);
 
         mBackButton.setOnClickListener(v1 -> {
+            hideSoftKeyboard();
             getActivity().onBackPressed();
         });
 
@@ -114,23 +115,25 @@ public class EmailLoginFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showSoftKeyboard();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        hideSoftKeyboard();
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG, "onStart: ");
+        showSoftKeyboard();
     }
 
     private void showSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mEmailLayout, InputMethodManager.SHOW_FORCED);
+        //imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
+        mEmailLayout.getEditText().requestFocus();
+        imm.showSoftInput(mEmailLayout.getEditText(), InputMethodManager.SHOW_FORCED);
     }
 
     private void hideSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getRootView().getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(mEmailLayout.getEditText().getWindowToken(), 0);
     }
 
     public interface EmailLoginFragmentCallBack{
