@@ -36,8 +36,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ExperienceListAdapter;
@@ -316,6 +318,7 @@ public class RecipeDetailsFragment extends Fragment
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), ShoppingListActivity.class));
+                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
         mProgressDialog.dismiss();
@@ -336,6 +339,14 @@ public class RecipeDetailsFragment extends Fragment
                 if (isDetached()) return;
                 mRecipe = recipes.get(0);
                 updateUI();
+                //update recipe views
+                Set<String> viewedRecipes = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                        .getStringSet(getString(R.string.prefs_recipes_viewed_list), new HashSet<>());
+                if (viewedRecipes.add(mRecipe.getId() + "")) {
+                    RecipeService.getInstance().incrementViews(mRecipe.getId());
+                    getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
+                            .edit().putStringSet(getString(R.string.prefs_recipes_viewed_list), viewedRecipes).apply();
+                }
             }
 
             @Override
@@ -385,10 +396,12 @@ public class RecipeDetailsFragment extends Fragment
                 item.setTitle(R.string.remove_favorite);
                 item.setIcon(R.drawable.icon_heart_full);
                 FavoriteLab.getInstance(getActivity()).insert(recipeId, userId);
+                RecipeService.getInstance().incrementFavorites(recipeId);
             }else{
                 item.setTitle(R.string.favorite);
                 item.setIcon(R.drawable.icon_heart_outline);
                 FavoriteLab.getInstance(getActivity()).delete(recipeId, userId);
+                RecipeService.getInstance().decrementFavorites(recipeId);
             }
             return true;
         } else if (item.getItemId() == R.id.recipe_details_delete) {
@@ -601,6 +614,7 @@ public class RecipeDetailsFragment extends Fragment
         i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
         i.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
         startActivity(i);
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

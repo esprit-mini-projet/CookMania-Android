@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -98,6 +99,7 @@ public class ExperienceListAdapter extends RecyclerView.Adapter<ExperienceListAd
                     Intent intent = new Intent(mContext, ProfileActivity.class);
                     intent.putExtra(ProfileActivity.EXTRA_USER_ID, experience.getUser().getId());
                     mContext.startActivity(intent);
+                    ((AppCompatActivity) mContext).overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
             });
             //set the remaining fields

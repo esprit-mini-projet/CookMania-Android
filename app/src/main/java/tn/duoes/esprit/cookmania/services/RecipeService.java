@@ -327,4 +327,52 @@ public final class RecipeService {
             }
         });
     }
+
+    public void incrementViews(int recipeId) {
+        Log.i(TAG, "incrementViews: ");
+        Call<Void> call = mRecipeApi.incrementViews(recipeId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void incrementFavorites(int recipeId) {
+        Log.i(TAG, "incrementFavorites: ");
+        Call<Void> call = mRecipeApi.incrementFavorites(recipeId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void decrementFavorites(int recipeId) {
+        Log.i(TAG, "decrementFavorites: ");
+        Call<Void> call = mRecipeApi.decrementFavorites(recipeId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
 }

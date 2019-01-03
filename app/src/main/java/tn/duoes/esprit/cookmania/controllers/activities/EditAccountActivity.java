@@ -62,9 +62,9 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         if (item.getItemId() == android.R.id.home) {
             finish();
+            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             return true;
         }
 
@@ -127,6 +127,7 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
                 .putString(getString(R.string.prefs_user_email), mUser.getEmail())
                 .apply();
         finish();
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 
     private void showAlertDialog() {
@@ -135,5 +136,11 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
                 .setMessage(R.string.error_message_update_creds)
                 .setPositiveButton(android.R.string.ok, null)
                 .show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 }

@@ -13,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import tn.duoes.esprit.cookmania.models.FeedResult;
@@ -67,4 +68,13 @@ public interface RecipeApi {
 
     @GET("feed/{user_id}")
     Call<List<FeedResult>> getFeed(@Path("user_id") String userId);
+
+    @PUT("addViews/{id}")
+    Call<Void> incrementViews(@Path("id") int recipeId);
+
+    @PUT("add_favorites/{id}")
+    Call<Void> incrementFavorites(@Path("id") int recipeId);
+
+    @PUT("decrement_favorites/{id}")
+    Call<Void> decrementFavorites(@Path("id") int recipeId);
 }
