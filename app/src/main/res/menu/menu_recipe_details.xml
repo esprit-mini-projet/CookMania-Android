@@ -8,6 +8,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/recipe_details_home"
+        android:icon="@drawable/ic_tab_home"
+        android:title="@string/go_to_home"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/recipe_details_delete"
         android:title="@string/delete"
         app:showAsAction="never" />

@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -19,6 +20,8 @@ import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ProfilePagerAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
+import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.SettingsActivity;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
@@ -102,9 +105,13 @@ public class ProfileFragment extends Fragment implements UserService.IsFollowing
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (mUserId.equals(mConnectedUserId)) {
             inflater.inflate(R.menu.menu_profile, menu);
+            if (getActivity().getClass() != ProfileActivity.class)
+                menu.removeItem(R.id.my_profile_home);
         } else {
             inflater.inflate(R.menu.menu_other_profile, menu);
             menu.getItem(0).setTitle(mIsFollowing ? R.string.unfollow : R.string.follow);
+            if (getActivity().getClass() != ProfileActivity.class)
+                menu.removeItem(R.id.other_profile_home);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -148,6 +155,19 @@ public class ProfileFragment extends Fragment implements UserService.IsFollowing
                         }
                     });
                 }
+                return true;
+
+            case R.id.my_profile_home:
+                Intent i = new Intent(getActivity(), MainScreenActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+                return true;
+
+            case R.id.other_profile_home:
+                Intent intent = new Intent(getActivity(), MainScreenActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 return true;
         }
         return super.onOptionsItemSelected(item);

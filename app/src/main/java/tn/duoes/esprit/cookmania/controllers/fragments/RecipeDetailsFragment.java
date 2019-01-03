@@ -47,6 +47,7 @@ import tn.duoes.esprit.cookmania.adapters.RatingPagerAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsIngredientsAdapter;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.adapters.SimilarListAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
@@ -406,6 +407,12 @@ public class RecipeDetailsFragment extends Fragment
             return true;
         } else if (item.getItemId() == R.id.recipe_details_delete) {
             showDeleteConfirmationDialog();
+            return true;
+        } else if (item.getItemId() == R.id.recipe_details_home) {
+            Intent intent = new Intent(getActivity(), MainScreenActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

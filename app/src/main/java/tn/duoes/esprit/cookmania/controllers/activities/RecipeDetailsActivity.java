@@ -68,8 +68,12 @@ public class RecipeDetailsActivity extends AppCompatActivity
             }
             boolean shouldFinish = getIntent().getBooleanExtra(EXTRA_SHOULD_FINISH, true);
             if (shouldFinish) finish();
-            else startActivity(new Intent(this, MainScreenActivity.class));
-            overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            else {
+                Intent intent = new Intent(this, MainScreenActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            }
             return true;
         } else {
             return super.onOptionsItemSelected(item);

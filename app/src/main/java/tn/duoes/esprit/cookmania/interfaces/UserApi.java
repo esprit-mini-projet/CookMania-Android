@@ -65,4 +65,7 @@ public interface UserApi {
 
     @DELETE("delete/{id}")
     Call<Void> delete(@Path("id") String id);
+
+    @POST("logout")
+    Call<Void> logout(@Body JsonObject body);
 }

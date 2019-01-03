@@ -6,4 +6,10 @@
         android:id="@+id/menu_follow"
         android:title="@string/unfollow"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/other_profile_home"
+        android:icon="@drawable/ic_tab_home"
+        android:title="@string/go_to_home"
+        app:showAsAction="ifRoom" />
 </menu>

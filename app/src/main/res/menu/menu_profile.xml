@@ -7,4 +7,10 @@
         android:icon="@drawable/ic_bar_settings"
         android:title="Settings"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/my_profile_home"
+        android:icon="@drawable/ic_tab_home"
+        android:title="@string/go_to_home"
+        app:showAsAction="ifRoom" />
 </menu>
