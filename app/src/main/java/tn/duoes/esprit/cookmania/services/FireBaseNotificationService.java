@@ -20,15 +20,12 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
-import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.User;
-import tn.duoes.esprit.cookmania.utils.Constants;
 
 public class FireBaseNotificationService extends FirebaseMessagingService {
     private static final String TAG = FireBaseNotificationService.class.getSimpleName();
@@ -77,23 +74,20 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                 break;
 
             case RECIPE_TYPE:
-                RecipeService.getInstance().getRecipeById(data.get("notif_id"), new RecipeService.RecipeServiceGetCallBack() {
-
+                UserService.getInstance().getUserById(data.get("notif_user_id"), new UserService.GetUserByIdCallBack() {
                     @Override
-                    public void onResponse(List<Recipe> recipes) {
-                        Log.d(TAG, "onResponse: " + recipes.isEmpty());
-                        if (recipes.isEmpty()) return;
-                        Recipe recipe = recipes.get(0);
+                    public void onCompletion(User user) {
+                        Log.i(TAG, "onCompletion: recipe id: " + data.get("notif_id"));
                         Glide.with(FireBaseNotificationService.this)
                                 .asBitmap()
-                                .load(Constants.UPLOAD_FOLDER_URL + "/" + recipe.getImageURL())
+                                .load(user.getImageUrl())
                                 .apply(RequestOptions.circleCropTransform().override(100, 100))
                                 .into(new SimpleTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, RecipeDetailsActivity.class);
                                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, data.get("notif_id"));
-                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
+                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
 
                                         Log.d(TAG, "onResourceReady: ");
                                         sendNotification(RECIPE_CHANNEL_ID,
@@ -104,11 +98,6 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                                 intent);
                                     }
                                 });
-                    }
-
-                    @Override
-                    public void onFailure() {
-
                     }
                 });
                 break;
@@ -126,7 +115,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, ProfileActivity.class);
                                         intent.putExtra(ProfileActivity.EXTRA_USER_ID, data.get("notif_id"));
-                                        intent.putExtra(ProfileActivity.EXTRA_SHOULD_FINISH, false);
+                                        intent.putExtra(ProfileActivity.EXTRA_SHOULD_FINISH, true);
 
                                         sendNotification(FOLLOWER_CHANNEL_ID,
                                                 FOLLOWER_CHANNEL_NAME,
