@@ -372,6 +372,10 @@ public class RecipeDetailsFragment extends Fragment
         if (!mUserId.equals(mRecipe.getUserId())) {
             menu.removeItem(R.id.recipe_details_delete);
         }
+        if (mUserId.equals(mRecipe.getUserId())) {
+            menu.removeItem(R.id.menu_favorite);
+            return;
+        }
         MenuItem item = menu.getItem(0);
         String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), null);
