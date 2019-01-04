@@ -3,6 +3,7 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ShoppingListViewAdapter;
@@ -74,6 +76,7 @@ public class ShoppingListFragment extends Fragment {
     private RecyclerView mShoppingRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ShoppingListViewAdapter mViewAdapter;
+    private TextView emptyTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,6 +90,9 @@ public class ShoppingListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mShoppingRecyclerView.setLayoutManager(mLayoutManager);
         mShoppingRecyclerView.setAdapter(mViewAdapter);
+
+        emptyTextView = fragment.findViewById(R.id.shopping_empty_tv);
+        checkForEmptyShoppingList();
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, new RecyclerItemTouchHelper.RecyclerItemTouchHelperListener() {
             @Override
@@ -108,6 +114,7 @@ public class ShoppingListFragment extends Fragment {
 
                 // remove the item from recycler view
                 mViewAdapter.removeItem(viewHolder.getAdapterPosition());
+                checkForEmptyShoppingList();
 
                 // showing snack bar with Undo option
                 Snackbar snackbar = Snackbar.make(viewHolder.itemView, "removed from cart!", Snackbar.LENGTH_LONG);
@@ -115,6 +122,7 @@ public class ShoppingListFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         mViewAdapter.restoreItem(toRestoreItem, toRestoreIndex);
+                        checkForEmptyShoppingList();
                     }
                 });
                 snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -131,6 +139,14 @@ public class ShoppingListFragment extends Fragment {
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mShoppingRecyclerView);
 
         return fragment;
+    }
+
+    private void checkForEmptyShoppingList(){
+        if(mViewAdapter.mItems.isEmpty()){
+            emptyTextView.setVisibility(View.VISIBLE);
+        }else{
+            emptyTextView.setVisibility(View.GONE);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event

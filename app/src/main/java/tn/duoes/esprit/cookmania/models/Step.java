@@ -106,10 +106,12 @@ public class Step {
     public String toString() {
         return "Step{" +
                 "id=" + id +
+                ", recipeId=" + recipeId +
                 ", description='" + description + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", time=" + time +
                 ", ingredients=" + ingredients +
+                ", image=" + image +
                 '}';
     }
 }

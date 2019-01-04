@@ -3,6 +3,10 @@ package tn.duoes.esprit.cookmania.services;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -178,11 +182,12 @@ public final class RecipeService {
     }
 
     public void addRecipe(Recipe recipe, final RecipeServiceInsertCallBack callBack){
+        Log.d(TAG, "addRecipe: "+recipe);
         RequestBody requestImage = RequestBody.create(MediaType.parse("image/*"), recipe.getImage());
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", recipe.getImage().getName(), requestImage);
         Gson gson = new Gson();
 
-        Call<Integer> call = mRecipeApi.createRecipe(body,
+        Call<JsonElement> call = mRecipeApi.createRecipe(body,
                 RequestBody.create(MediaType.parse("text/plain"),recipe.getName()),
                 RequestBody.create(MediaType.parse("text/plain"), recipe.getDescription()),
                 RequestBody.create(MediaType.parse("text/plain"), String.valueOf(recipe.getCalories())),
@@ -191,18 +196,18 @@ public final class RecipeService {
                 RequestBody.create(MediaType.parse("text/plain"), recipe.getUserId()),
                 RequestBody.create(MediaType.parse("text/plain"), gson.toJson(recipe.getLabels())));
 
-        call.enqueue(new Callback<Integer>() {
+        call.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
                 if(response.isSuccessful()){
-                    callBack.onResponse(response.body());
+                    callBack.onResponse(response.body().getAsJsonObject().get("id").getAsInt());
                     return;
                 }
                 callBack.onFailure();
             }
 
             @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
+            public void onFailure(Call<JsonElement> call, Throwable t) {
                 Log.e(TAG, "onFailure: ", t);
                 callBack.onFailure();
             }

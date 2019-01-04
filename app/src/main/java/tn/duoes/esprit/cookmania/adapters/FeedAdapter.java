@@ -74,12 +74,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 .getString(viewHolder.itemView.getContext().getString(R.string.prefs_user_id), "");
         if (FavoriteLab.getInstance(viewHolder.itemView.getContext()).recipeExists(userId, viewHolder.recipe.getId())) {
             viewHolder.favoriteBt.setTag(true);
-            Drawable heartIcon = viewHolder.itemView.getContext().getDrawable(R.drawable.icon_heart_full);
-            viewHolder.favoriteBt.setImageDrawable(heartIcon);
+            viewHolder.favoriteBt.setImageResource(R.drawable.icon_heart_full);
+            viewHolder.favoriteBt.setColorFilter(viewHolder.itemView.getResources().getColor(R.color.colorAccent));
         } else {
             viewHolder.favoriteBt.setTag(false);
-            Drawable heartIcon = viewHolder.itemView.getContext().getDrawable(R.drawable.icon_heart_outline);
-            viewHolder.favoriteBt.setImageDrawable(heartIcon);
+            viewHolder.favoriteBt.setImageResource(R.drawable.icon_heart_outline);
+            viewHolder.favoriteBt.setColorFilter(Color.parseColor("#000000"));
         }
     }
 

@@ -1,6 +1,7 @@
 package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,17 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.dao.ShoppingListDAO;
 import tn.duoes.esprit.cookmania.models.Ingredient;
+import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.ListUtils;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 import tn.duoes.esprit.cookmania.utils.SwipableViewHolder;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<Object> mItems;
+    public List<Object> mItems;
 
     public ShoppingListViewAdapter(Context context){
         super();
@@ -88,6 +92,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             RecipeViewHolder holder = (RecipeViewHolder) viewHolder;
             Glide.with(holder.itemView).load(Constants.UPLOAD_FOLDER_URL+"/"+shoppingListItem.getRecipe().getImageURL()).into(holder.recipeImageView);
             holder.recipeTextView.setText(shoppingListItem.getRecipe().getName());
+            holder.recipe = shoppingListItem.getRecipe();
         }
     }
 
@@ -99,6 +104,7 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     public class RecipeViewHolder extends SwipableViewHolder {
         ImageView recipeImageView;
         TextView recipeTextView;
+        Recipe recipe;
 
         RecipeViewHolder(@NonNull View itemView){
             super(itemView);
@@ -106,6 +112,14 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             backgroundView = itemView.findViewById(R.id.shopping_list_background);
             recipeImageView = foregroundView.findViewById(R.id.shopping_row_iv);
             recipeTextView = foregroundView.findViewById(R.id.shopping_row_tv);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
+                    i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId()+"");
+                    v.getContext().startActivity(i);
+                }
+            });
         }
     }
 

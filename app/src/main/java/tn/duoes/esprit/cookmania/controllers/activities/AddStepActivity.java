@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -55,6 +56,7 @@ public class AddStepActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private File image;
     private Gson gson;
+    TextView ingredientsErrorTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,16 @@ public class AddStepActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         gson = new Gson();
+
+        ingredientsErrorTV = findViewById(R.id.add_step_ingredient_error_tv);
+        ingredientsErrorTV.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    ingredientsErrorTV.setError(null);
+                }
+            }
+        });
 
         mIngredientRecyclerView = findViewById(R.id.add_step_ingredients_rv);
         mIngredientRecyclerView.setHasFixedSize(true);
@@ -122,9 +134,8 @@ public class AddStepActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Step step;
 
-                if((step = createStep())==null)
+                if(((step = createStep())==null) || !mIngredientAdapter.isValidIngredient())
                     return;
-
                 mRecipe.getSteps().add(step);
                 Intent intent = NavigationUtils.getNavigationFormattedIntent(AddStepActivity.this, AddStepActivity.class);
                 intent.putExtra(RECIPE_KEY, gson.toJson(mRecipe));
@@ -135,16 +146,23 @@ public class AddStepActivity extends AppCompatActivity {
         findViewById(R.id.add_step_finish_bt).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog progressDialog = new ProgressDialog(AddStepActivity.this);
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-
                 Step step;
+                if(!mIngredientAdapter.isValidIngredient()){
+                    return;
+                }
                 if((step = createStep())==null && mRecipe.getSteps().isEmpty()){
                     Toast.makeText(AddStepActivity.this, "At least one step needs to be added!", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if(!checkForIngredients(step)){
+                    ingredientsErrorTV.setError("At least one ingredient must be added to this recipe");
+                    ingredientsErrorTV.requestFocus();
+                    return;
+                }
                 mRecipe.getSteps().add(step);
+                final ProgressDialog progressDialog = new ProgressDialog(AddStepActivity.this);
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
                 RecipeService.getInstance().addRecipe(mRecipe, new RecipeService.RecipeServiceInsertCallBack() {
                     @Override
                     public void onResponse(int recipeId) {
@@ -170,6 +188,18 @@ public class AddStepActivity extends AppCompatActivity {
         });
     }
 
+    private boolean checkForIngredients(Step step){
+        List<Ingredient> ingredients = new ArrayList<>();
+        Log.d(TAG, "checkForIngredients: "+mRecipe.getSteps());
+        for(Step s : mRecipe.getSteps()){
+            if(s.getIngredients() != null){
+                ingredients.addAll(s.getIngredients());
+            }
+        }
+        ingredients.addAll(step.getIngredients());
+        return !ingredients.isEmpty();
+    }
+
     private void saveSteps(final int position){
         Step step = mRecipe.getSteps().get(position);
         step.setRecipeId(mRecipe.getId());
@@ -192,23 +222,26 @@ public class AddStepActivity extends AppCompatActivity {
         EditText descriptionET;
         if((descriptionET = ((TextInputLayout)findViewById(R.id.add_step_description_layout)).getEditText()).getText().toString().equals("")){
             descriptionET.setError("Step description is required!");
+            descriptionET.requestFocus();
             return null;
         }
 
         EditText durationET;
-        if((durationET = ((TextInputLayout)findViewById(R.id.add_step_duration_layout)).getEditText()).getText().toString().equals("")){
-            durationET.setError("Step duration is required!");
-            return null;
+        int duration = 0;
+        if(!(durationET = ((TextInputLayout)findViewById(R.id.add_step_duration_layout)).getEditText()).getText().toString().equals("")){
+            duration = Integer.valueOf(durationET.getText().toString());
         }
-
-        return new Step(descriptionET.getText().toString(), Integer.valueOf(durationET.getText().toString()), clearIngredientsList(mIngredientAdapter.mIngredients), image);
+        Step step = new Step(descriptionET.getText().toString(), duration, clearIngredientsList(mIngredientAdapter.mIngredients), image);
+        Log.d(TAG, "createStep: "+step);
+        return step;
     }
 
     private List<Ingredient> clearIngredientsList(List<Ingredient> ingredients){
-        if(!ingredients.isEmpty() && (ingredients.get(ingredients.size()-1).getName() == null || ingredients.get(ingredients.size()-1).getName().isEmpty())){
-            ingredients.remove(ingredients.size()-1);
+        List<Ingredient> newIngredient = new ArrayList<>(ingredients);
+        if(!newIngredient.isEmpty() && (newIngredient.get(ingredients.size()-1).getName() == null || newIngredient.get(ingredients.size()-1).getName().isEmpty())){
+            newIngredient.remove(newIngredient.size()-1);
         }
-        return ingredients;
+        return newIngredient;
     }
 
     @Override
@@ -225,7 +258,7 @@ public class AddStepActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         mRecipe = gson.fromJson(getIntent().getStringExtra(RECIPE_KEY), Recipe.class);
-        Log.d(TAG, "onCreate: "+mRecipe);
+        Log.d(TAG, "onStart: addRecipe"+mRecipe);
     }
 
     @Nullable
@@ -246,6 +279,15 @@ public class AddStepActivity extends AppCompatActivity {
         public IngredientsRecyclerViewAdapter(){
             super();
             mIngredients = new ArrayList<>(Arrays.asList(new Ingredient()));
+        }
+
+        public boolean isValidIngredient(){
+            for(Ingredient ingredient : mIngredients){
+                if(ingredient.getQuantity() == -1 || ingredient.getName() == null || ingredient.getName().isEmpty()){
+                    return false;
+                }
+            }
+            return true;
         }
 
         @NonNull
@@ -303,6 +345,17 @@ public class AddStepActivity extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if(ingredientNameLayout.getEditText().getText().toString().isEmpty() && !ingredientQuantityLayout.getEditText().getText().toString().isEmpty()){
+                            ingredientNameLayout.setError("Ingredient name is required!");
+                        }else{
+                            ingredientNameLayout.setError(null);
+                        }
+                        if(ingredientQuantityLayout.getEditText().getText().toString().isEmpty() && !ingredientNameLayout.getEditText().getText().toString().isEmpty()){
+                            ingredientQuantityLayout.setError("Ingredient quantity is required!");
+                        }else{
+                            ingredientQuantityLayout.setError(null);
+                        }
+
                         mIngredients.get(getAdapterPosition()).setName(ingredientNameLayout.getEditText().getText().toString());
                     }
                 });
@@ -342,9 +395,21 @@ public class AddStepActivity extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable s) {
+                        if(ingredientNameLayout.getEditText().getText().toString().isEmpty() && !ingredientQuantityLayout.getEditText().getText().toString().isEmpty()){
+                            ingredientNameLayout.setError("Ingredient name is required!");
+                        }else{
+                            ingredientNameLayout.setError(null);
+                        }
+                        if(ingredientQuantityLayout.getEditText().getText().toString().isEmpty() && !ingredientNameLayout.getEditText().getText().toString().isEmpty()){
+                            ingredientQuantityLayout.setError("Ingredient quantity is required!");
+                        }else{
+                            ingredientQuantityLayout.setError(null);
+                        }
+
                         String quantityString;
-                        if((quantityString = ingredientQuantityLayout.getEditText().getText().toString()).isEmpty())
-                            quantityString = "0";
+                        if((quantityString = ingredientQuantityLayout.getEditText().getText().toString()).isEmpty()) {
+                            quantityString = "-1";
+                        }
                         mIngredients.get(getAdapterPosition()).setQuantity(Integer.valueOf(quantityString));
                     }
                 });
