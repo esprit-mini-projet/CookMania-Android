@@ -87,7 +87,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, RecipeDetailsActivity.class);
                                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, data.get("notif_id"));
-                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, true);
+                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
 
                                         Log.d(TAG, "onResourceReady: ");
                                         sendNotification(RECIPE_CHANNEL_ID,
@@ -115,7 +115,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, ProfileActivity.class);
                                         intent.putExtra(ProfileActivity.EXTRA_USER_ID, data.get("notif_id"));
-                                        intent.putExtra(ProfileActivity.EXTRA_SHOULD_FINISH, true);
+                                        intent.putExtra(ProfileActivity.EXTRA_SHOULD_FINISH, false);
 
                                         sendNotification(FOLLOWER_CHANNEL_ID,
                                                 FOLLOWER_CHANNEL_NAME,
@@ -143,7 +143,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                 .setLargeIcon(largeIcon);
 
         if (actionIntent != null) {
-            builder.setContentIntent(PendingIntent.getActivity(this, 0, actionIntent, 0));
+            builder.setContentIntent(PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
