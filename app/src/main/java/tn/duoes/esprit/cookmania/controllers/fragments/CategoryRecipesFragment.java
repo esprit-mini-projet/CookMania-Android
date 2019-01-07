@@ -138,6 +138,11 @@ public class CategoryRecipesFragment extends Fragment {
         return fragment;
     }
 
+    public void updateRecipies(List<Recipe> recipes){
+        mAdapter.mRecipes = mRecipes = recipes;
+        mAdapter.notifyDataSetChanged();
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

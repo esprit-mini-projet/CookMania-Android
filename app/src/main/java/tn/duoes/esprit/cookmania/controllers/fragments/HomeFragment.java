@@ -5,12 +5,15 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.Recipe;
@@ -61,12 +64,14 @@ public class HomeFragment extends Fragment{
         return fragment;
     }
 
-    private Fragment suggestedFragment;
-    private Fragment topRatedFragment;
-    private Fragment healthyFragment;
-    private Fragment cheapFragment;
-    private Fragment feedFragment;
+    private SuggestedFragment suggestedFragment;
+    private CategoryRecipesFragment topRatedFragment;
+    private CategoryRecipesFragment healthyFragment;
+    private CategoryRecipesFragment cheapFragment;
+    private FeedFragment feedFragment;
     public static CustomScrollView scrollView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private Stack<Integer> loadersStack = new Stack<>();
 
 
     @Override
@@ -82,8 +87,8 @@ public class HomeFragment extends Fragment{
         feedFragment = FeedFragment.newInstance(null, null);
     }
 
-    private Fragment buildCategoryFragment(String name, List<Recipe> recipes){
-        Fragment fragment = CategoryRecipesFragment.newInstance(null, null);
+    private CategoryRecipesFragment buildCategoryFragment(String name, List<Recipe> recipes){
+        CategoryRecipesFragment fragment = CategoryRecipesFragment.newInstance(null, null);
         Bundle bundle = new Bundle();
         bundle.putString(CategoryRecipesFragment.CATEGORY_NAME_KEY, name);
         bundle.putParcelableArrayList(CategoryRecipesFragment.RECIPES_KEY, (ArrayList)recipes);
@@ -97,6 +102,76 @@ public class HomeFragment extends Fragment{
         View fragment = inflater.inflate(R.layout.fragment_home, container, false);
 
         scrollView = fragment.findViewById(R.id.home_scroll);
+
+        (swipeRefreshLayout = fragment.findViewById(R.id.home_refresh_layout)).setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadersStack.push(1);
+                feedFragment.updateData(new FeedFragment.FeedUpdateCallback() {
+                    @Override
+                    public void updateFinished() {
+                        loadersStack.pop();
+                        if(loadersStack.empty()){
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                });
+
+                loadersStack.push(2);
+                suggestedFragment.updateSuggested(new SuggestedFragment.SuggestedUpdatedCallback() {
+                    @Override
+                    public void updateFinished() {
+                        loadersStack.pop();
+                        if(loadersStack.empty()){
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                });
+
+                loadersStack.push(2);
+                RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                    @Override
+                    public void onResponse(List<Recipe> recipes) {
+                        topRatedFragment.updateRecipies(recipes);
+                        loadersStack.pop();
+                        if(loadersStack.empty()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {}
+                });
+                loadersStack.push(4);
+                RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                    @Override
+                    public void onResponse(List<Recipe> recipes) {
+                        healthyFragment.updateRecipies(recipes);
+                        loadersStack.pop();
+                        if(loadersStack.empty()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {}
+                });
+                loadersStack.push(5);
+                RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                    @Override
+                    public void onResponse(List<Recipe> recipes) {
+                        cheapFragment.updateRecipies(recipes);
+                        loadersStack.pop();
+                        if(loadersStack.empty()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {}
+                });
+            }
+        });
 
         //Fragment suggestedFragment = SuggestedFragment.newInstance(null, null);
         getFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();

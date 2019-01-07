@@ -31,6 +31,11 @@ import tn.duoes.esprit.cookmania.utils.NavigationUtils;
  * create an instance of this fragment.
  */
 public class SuggestedFragment extends Fragment {
+    public interface SuggestedUpdatedCallback{
+        public void updateFinished();
+    }
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,15 +78,24 @@ public class SuggestedFragment extends Fragment {
         }
     }
 
+    private View fragment;
+    private ProgressDialog progressDialog;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View fragment = inflater.inflate(R.layout.fragment_suggested, container, false);
+        fragment = inflater.inflate(R.layout.fragment_suggested, container, false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
 
+        updateSuggested(null);
+
+        return fragment;
+    }
+
+    public void updateSuggested(SuggestedUpdatedCallback callback){
         SuggestionService.getInstance().getSuggestions(new SuggestionService.SuggestionServiceCallback() {
             @Override
             public void onResponse(final Suggestion suggestion) {
@@ -135,6 +149,9 @@ public class SuggestedFragment extends Fragment {
                 Glide.with(fragment).load(Constants.UPLOAD_FOLDER_URL+"/"+suggestion.getRecipes().get(3).getImageURL()).into(forthImageView);
 
                 progressDialog.dismiss();
+                if(callback != null){
+                    callback.updateFinished();
+                }
             }
 
             @Override
@@ -142,7 +159,6 @@ public class SuggestedFragment extends Fragment {
                 progressDialog.dismiss();
             }
         });
-        return fragment;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

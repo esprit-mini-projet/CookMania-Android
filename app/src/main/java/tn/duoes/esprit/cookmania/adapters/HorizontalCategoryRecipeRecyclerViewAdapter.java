@@ -30,7 +30,7 @@ import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<HorizontalCategoryRecipeRecyclerViewAdapter.ViewHolder> {
 
-    private List<Recipe> mRecipes;
+    public List<Recipe> mRecipes;
     private FragmentActivity activity;
     public RecipeDialog recipeDialog;
 

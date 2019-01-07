@@ -27,6 +27,11 @@ import tn.duoes.esprit.cookmania.services.RecipeService;
  * create an instance of this fragment.
  */
 public class FeedFragment extends Fragment {
+    public interface FeedUpdateCallback{
+        public void updateFinished();
+    }
+
+
     private static final String TAG = FeedFragment.class.getSimpleName();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -73,6 +78,7 @@ public class FeedFragment extends Fragment {
 
     private RecyclerView feedRecipesRv;
     private FeedAdapter feedAdapter;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,14 +91,23 @@ public class FeedFragment extends Fragment {
         feedAdapter = new FeedAdapter();
         feedRecipesRv.setAdapter(feedAdapter);
 
-        String userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
+        userId = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
                 .getString(getString(R.string.prefs_user_id), "");
+        updateData(null);
+
+        return fragment;
+    }
+
+    public void updateData(FeedUpdateCallback callback){
         RecipeService.getInstance().getFeed(userId, new RecipeService.FeedGetCallBack() {
             @Override
             public void onResponse(List<FeedResult> feedResults) {
                 Log.d(TAG, "onResponse: "+feedResults);
                 feedAdapter.feedResults = feedResults;
                 feedAdapter.notifyDataSetChanged();
+                if(callback != null){
+                    callback.updateFinished();
+                }
             }
 
             @Override
@@ -100,8 +115,6 @@ public class FeedFragment extends Fragment {
 
             }
         });
-
-        return fragment;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
