@@ -86,6 +86,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     @Override
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, RecipeDetailsActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, data.get("notif_id"));
                                         intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
 
@@ -143,7 +144,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                 .setLargeIcon(largeIcon);
 
         if (actionIntent != null) {
-            builder.setContentIntent(PendingIntent.getActivity(this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+            builder.setContentIntent(PendingIntent.getActivity(this, (int) System.currentTimeMillis(), actionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
