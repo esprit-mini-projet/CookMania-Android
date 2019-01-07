@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -79,11 +80,14 @@ public class FeedFragment extends Fragment {
     private RecyclerView feedRecipesRv;
     private FeedAdapter feedAdapter;
     private String userId;
+    private TextView feedEmptyTv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.fragment_feed, container, false);
+
+        feedEmptyTv = fragment.findViewById(R.id.feed_empty_tv);
 
         feedRecipesRv = fragment.findViewById(R.id.feed_recycler_view);
         feedRecipesRv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -105,6 +109,11 @@ public class FeedFragment extends Fragment {
                 Log.d(TAG, "onResponse: "+feedResults);
                 feedAdapter.feedResults = feedResults;
                 feedAdapter.notifyDataSetChanged();
+                if(feedResults.isEmpty()){
+                    feedEmptyTv.setVisibility(View.VISIBLE);
+                }else{
+                    feedEmptyTv.setVisibility(View.GONE);
+                }
                 if(callback != null){
                     callback.updateFinished();
                 }
