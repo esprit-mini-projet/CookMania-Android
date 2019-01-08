@@ -78,7 +78,6 @@ public class AddStepActivity extends AppCompatActivity {
         });
 
         mIngredientRecyclerView = findViewById(R.id.add_step_ingredients_rv);
-        mIngredientRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mIngredientRecyclerView.setLayoutManager(mLayoutManager);
         mIngredientAdapter = new IngredientsRecyclerViewAdapter();
@@ -122,11 +121,11 @@ public class AddStepActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Ingredient lastIngredient = mIngredientAdapter.mIngredients.get(mIngredientAdapter.mIngredients.size()-1);
 
-                if(lastIngredient.getName() == null || lastIngredient.getName().isEmpty() || lastIngredient.getQuantity() == 0){
+                if(!mIngredientAdapter.isValidIngredient()){
                     return;
                 }
                 mIngredientAdapter.mIngredients.add(new Ingredient());
-                mIngredientAdapter.notifyDataSetChanged();
+                mIngredientAdapter.notifyItemInserted(mIngredientAdapter.mIngredients.size());
             }
         });
 
@@ -366,18 +365,19 @@ public class AddStepActivity extends AppCompatActivity {
                         if(!hasFocus && ingredientNameLayout.getEditText().getText().toString().isEmpty() && ingredientQuantityLayout.getEditText().getText().toString().isEmpty() && mIngredients.size() != 1
                                 && mIngredients.size()-1>=getAdapterPosition()){
                             mIngredients.remove(getAdapterPosition());
-                            viewAdapter.notifyDataSetChanged();
+                            viewAdapter.notifyItemRemoved(getAdapterPosition());
                         }
                     }
                 });
 
-                ingredientQuantityLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                ingredientQuantityLayout.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if(!hasFocus && ingredientNameLayout.getEditText().getText().toString().isEmpty() && ingredientQuantityLayout.getEditText().getText().toString().isEmpty() && mIngredients.size() != 1
                                 && mIngredients.size()-1>=getAdapterPosition()){
                             mIngredients.remove(getAdapterPosition());
-                            viewAdapter.notifyDataSetChanged();
+                            viewAdapter.notifyItemRemoved(getAdapterPosition());
                         }
                     }
                 });
