@@ -58,7 +58,8 @@ public class MainScreenActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Cookmania");
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setLogo(R.drawable.name_logo);
 
         searchView = findViewById(R.id.searchview);
 
