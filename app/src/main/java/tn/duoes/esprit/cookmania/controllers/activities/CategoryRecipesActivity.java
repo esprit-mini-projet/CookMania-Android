@@ -1,9 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,7 +13,6 @@ import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.CategoryRecipiesRecyclerViewAdapter;
-import tn.duoes.esprit.cookmania.adapters.HorizontalCategoryRecipeRecyclerViewAdapter;
 import tn.duoes.esprit.cookmania.models.Recipe;
 import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
@@ -59,5 +58,19 @@ public class CategoryRecipesActivity extends AppCompatActivity {
     @Override
     public Intent getSupportParentActivityIntent() {
         return NavigationUtils.getParentActivityIntent(this, getIntent());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

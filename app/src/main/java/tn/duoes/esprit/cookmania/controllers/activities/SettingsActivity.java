@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,8 +18,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
 import tn.duoes.esprit.cookmania.services.UserService;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private static final String TAG = "SettingsActivity";
 
     private String mMethodString;
     private Button mLogoutButton;
@@ -155,5 +159,19 @@ public class SettingsActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

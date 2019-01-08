@@ -5,13 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class ShoppingListActivity extends AppCompatActivity implements ShoppingListFragment.OnFragmentInteractionListener {
+
+    private static final String TAG = "ShoppingListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,5 +61,19 @@ public class ShoppingListActivity extends AppCompatActivity implements ShoppingL
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

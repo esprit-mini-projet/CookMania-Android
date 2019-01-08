@@ -24,6 +24,7 @@ import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.GlideApp;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class EditAccountActivity extends AppCompatActivity implements UserService.UpdateCredCallBack {
 
@@ -210,5 +211,19 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
                 Log.i(TAG, "onCompletion: ");
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

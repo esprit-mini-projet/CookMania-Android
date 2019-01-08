@@ -108,7 +108,7 @@ public class RegistrationFragment extends Fragment {
                         String uuid = getActivity().getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE)
                                 .getString(getString(R.string.prefs_uuid), UUID.randomUUID().toString());
                         user.setUuid(uuid);
-                        user.setToken("");
+                        user.setToken(token);
 
                         showProgressBar();
                         UserService.getInstance().createFromEmail(user, new UserService.CreateFromEmailCallBack() {

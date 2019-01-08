@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -12,6 +13,7 @@ import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.RecipeDetailsStepAdapter;
 import tn.duoes.esprit.cookmania.controllers.fragments.RecipeDetailsFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.TimerFragment;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class RecipeDetailsActivity extends AppCompatActivity
         implements RecipeDetailsStepAdapter.StepItemCallBack,
@@ -122,5 +124,19 @@ public class RecipeDetailsActivity extends AppCompatActivity
     @Override
     public void onViewClicked() {
         removeTimerFragment();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

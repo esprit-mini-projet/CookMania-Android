@@ -24,6 +24,7 @@ import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SuggestedFragment;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 import tn.duoes.esprit.cookmania.views.RatingViewPager;
 
 public class MainScreenActivity extends AppCompatActivity
@@ -106,5 +107,19 @@ public class MainScreenActivity extends AppCompatActivity
         }
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

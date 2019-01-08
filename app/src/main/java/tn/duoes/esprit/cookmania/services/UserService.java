@@ -114,7 +114,7 @@ public class UserService {
                 try{
                     id = response.body().get("id").getAsString();
                 } catch (NullPointerException e){
-                    Log.e(TAG, "onGetSimilarResponse: ", e);
+                    Log.e(TAG, "onCreateFromEmailResponse: ", e);
                 }
                 callBack.onCompletion(id);
 

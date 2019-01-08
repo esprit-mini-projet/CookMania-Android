@@ -1,15 +1,16 @@
 package tn.duoes.esprit.cookmania.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
+
+import java.util.Stack;
 
 public class NavigationUtils {
 
     private static final String TAG = NavigationUtils.class.getSimpleName();
     public static final String NAVIGATION_KEY = "goTo";
+    public static Stack<Integer> pagesStack = new Stack<>();
 
     public static Intent getNavigationFormattedIntent(Context context, Class destinationClass){
         Intent intent = new Intent(context, destinationClass);

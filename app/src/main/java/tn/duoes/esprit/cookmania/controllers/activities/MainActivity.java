@@ -3,6 +3,7 @@ package tn.duoes.esprit.cookmania.controllers.activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import tn.duoes.esprit.cookmania.R;
@@ -10,9 +11,11 @@ import tn.duoes.esprit.cookmania.controllers.fragments.EmailLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.MainLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.PasswordLoginFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.RegistrationFragment;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,5 +52,19 @@ public class MainActivity extends AppCompatActivity {
             });
             getSupportFragmentManager().beginTransaction().add(R.id.login_fragment_container, fragment).commit();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationUtils.pagesStack.push(1);
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NavigationUtils.pagesStack.pop();
+        Log.i(TAG, "onDestroy: ");
     }
 }

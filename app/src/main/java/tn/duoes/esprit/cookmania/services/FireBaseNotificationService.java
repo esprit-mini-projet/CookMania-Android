@@ -26,6 +26,7 @@ import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.ProfileActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.RecipeDetailsActivity;
 import tn.duoes.esprit.cookmania.models.User;
+import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class FireBaseNotificationService extends FirebaseMessagingService {
     private static final String TAG = FireBaseNotificationService.class.getSimpleName();
@@ -38,6 +39,7 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
     public static final int RECIPE_TYPE = 1;
     public static final int FOLLOWER_TYPE = 2;
     public static final int EXPERIENCE_TYPE = 3;
+    public static final String PREF_APP_OPEN = "app_is_open";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -59,7 +61,9 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, RecipeDetailsActivity.class);
                                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, data.get("notif_id"));
-                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
+                                        boolean appOpen = !NavigationUtils.pagesStack.empty();
+                                        Log.i(TAG, "onResourceReady: app is open: " + appOpen);
+                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, appOpen);
 
                                         sendNotification(EXPERIENCE_CHANNEL_ID,
                                                 EXPERIENCE_CHANNEL_NAME,
@@ -87,7 +91,9 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, RecipeDetailsActivity.class);
                                         intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, data.get("notif_id"));
-                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
+                                        boolean appOpen = !NavigationUtils.pagesStack.empty();
+                                        Log.i(TAG, "onResourceReady: app is open: " + appOpen);
+                                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, appOpen);
 
                                         Log.d(TAG, "onResourceReady: ");
                                         sendNotification(RECIPE_CHANNEL_ID,
@@ -115,7 +121,9 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                         Intent intent = new Intent(FireBaseNotificationService.this, ProfileActivity.class);
                                         intent.putExtra(ProfileActivity.EXTRA_USER_ID, data.get("notif_id"));
-                                        intent.putExtra(ProfileActivity.EXTRA_SHOULD_FINISH, false);
+                                        boolean appOpen = !NavigationUtils.pagesStack.empty();
+                                        Log.i(TAG, "onResourceReady: app is open: " + appOpen);
+                                        intent.putExtra(ProfileActivity.EXTRA_SHOULD_FINISH, appOpen);
 
                                         sendNotification(FOLLOWER_CHANNEL_ID,
                                                 FOLLOWER_CHANNEL_NAME,
@@ -137,13 +145,16 @@ public class FireBaseNotificationService extends FirebaseMessagingService {
                 .Builder(this, channelId)
                 .setContentTitle(title)
                 .setContentText(messageBody)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setSound(defaultSoundUri)
                 .setVibrate(new long[]{0, 100, 200, 100})
                 .setLargeIcon(largeIcon);
 
         if (actionIntent != null) {
-            actionIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            if (!NavigationUtils.pagesStack.empty()) {
+                actionIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            }
             builder.setContentIntent(PendingIntent.getActivity(this, (int) System.currentTimeMillis(), actionIntent, PendingIntent.FLAG_UPDATE_CURRENT));
         }
 
