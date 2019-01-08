@@ -56,6 +56,7 @@ public class AddStepActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private File image;
     private Gson gson;
+    private ProgressDialog progressDialog;
     TextView ingredientsErrorTV;
 
     @Override
@@ -160,7 +161,7 @@ public class AddStepActivity extends AppCompatActivity {
                     return;
                 }
                 mRecipe.getSteps().add(step);
-                final ProgressDialog progressDialog = new ProgressDialog(AddStepActivity.this);
+                progressDialog = new ProgressDialog(AddStepActivity.this);
                 progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 RecipeService.getInstance().addRecipe(mRecipe, new RecipeService.RecipeServiceInsertCallBack() {
@@ -169,14 +170,6 @@ public class AddStepActivity extends AppCompatActivity {
                         Log.d(TAG, "onResponse: "+recipeId);
                         mRecipe.setId(recipeId);
                         saveSteps(0);
-
-                        Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipeId+"");
-                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
-                        progressDialog.dismiss();
-                        Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
-                        startActivity(intent);
                     }
 
                     @Override
@@ -206,8 +199,15 @@ public class AddStepActivity extends AppCompatActivity {
         StepService.getInstance().addStep(step, new StepService.StepServiceInsertCallBack() {
             @Override
             public void onResponse() {
-                if(position == mRecipe.getSteps().size()-1)
+                if(position == mRecipe.getSteps().size()-1){
+                    Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
+                    intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, mRecipe.getId()+"");
+                    intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
+                    progressDialog.dismiss();
+                    Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
+                    startActivity(intent);
                     return;
+                }
                 saveSteps(position+1);
             }
 
