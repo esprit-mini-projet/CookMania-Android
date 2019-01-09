@@ -56,6 +56,7 @@ public class AddStepActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private File image;
     private Gson gson;
+    private ProgressDialog progressDialog;
     TextView ingredientsErrorTV;
 
     @Override
@@ -77,7 +78,6 @@ public class AddStepActivity extends AppCompatActivity {
         });
 
         mIngredientRecyclerView = findViewById(R.id.add_step_ingredients_rv);
-        mIngredientRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mIngredientRecyclerView.setLayoutManager(mLayoutManager);
         mIngredientAdapter = new IngredientsRecyclerViewAdapter();
@@ -121,11 +121,11 @@ public class AddStepActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Ingredient lastIngredient = mIngredientAdapter.mIngredients.get(mIngredientAdapter.mIngredients.size()-1);
 
-                if(lastIngredient.getName() == null || lastIngredient.getName().isEmpty() || lastIngredient.getQuantity() == 0){
+                if(!mIngredientAdapter.isValidIngredient()){
                     return;
                 }
                 mIngredientAdapter.mIngredients.add(new Ingredient());
-                mIngredientAdapter.notifyDataSetChanged();
+                mIngredientAdapter.notifyItemInserted(mIngredientAdapter.mIngredients.size());
             }
         });
 
@@ -160,7 +160,7 @@ public class AddStepActivity extends AppCompatActivity {
                     return;
                 }
                 mRecipe.getSteps().add(step);
-                final ProgressDialog progressDialog = new ProgressDialog(AddStepActivity.this);
+                progressDialog = new ProgressDialog(AddStepActivity.this);
                 progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 RecipeService.getInstance().addRecipe(mRecipe, new RecipeService.RecipeServiceInsertCallBack() {
@@ -169,14 +169,6 @@ public class AddStepActivity extends AppCompatActivity {
                         Log.d(TAG, "onResponse: "+recipeId);
                         mRecipe.setId(recipeId);
                         saveSteps(0);
-
-                        Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
-                        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipeId+"");
-                        intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
-                        progressDialog.dismiss();
-                        Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
-                        startActivity(intent);
                     }
 
                     @Override
@@ -206,8 +198,15 @@ public class AddStepActivity extends AppCompatActivity {
         StepService.getInstance().addStep(step, new StepService.StepServiceInsertCallBack() {
             @Override
             public void onResponse() {
-                if(position == mRecipe.getSteps().size()-1)
+                if(position == mRecipe.getSteps().size()-1){
+                    Intent intent = new Intent(AddStepActivity.this, RecipeDetailsActivity.class);
+                    intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, mRecipe.getId()+"");
+                    intent.putExtra(RecipeDetailsActivity.EXTRA_SHOULD_FINISH, false);
+                    progressDialog.dismiss();
+                    Toast.makeText(AddStepActivity.this, "Recipe added successfully", Toast.LENGTH_LONG).show();
+                    startActivity(intent);
                     return;
+                }
                 saveSteps(position+1);
             }
 
@@ -366,18 +365,19 @@ public class AddStepActivity extends AppCompatActivity {
                         if(!hasFocus && ingredientNameLayout.getEditText().getText().toString().isEmpty() && ingredientQuantityLayout.getEditText().getText().toString().isEmpty() && mIngredients.size() != 1
                                 && mIngredients.size()-1>=getAdapterPosition()){
                             mIngredients.remove(getAdapterPosition());
-                            viewAdapter.notifyDataSetChanged();
+                            viewAdapter.notifyItemRemoved(getAdapterPosition());
                         }
                     }
                 });
 
-                ingredientQuantityLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                ingredientQuantityLayout.getEditText().setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if(!hasFocus && ingredientNameLayout.getEditText().getText().toString().isEmpty() && ingredientQuantityLayout.getEditText().getText().toString().isEmpty() && mIngredients.size() != 1
                                 && mIngredients.size()-1>=getAdapterPosition()){
                             mIngredients.remove(getAdapterPosition());
-                            viewAdapter.notifyDataSetChanged();
+                            viewAdapter.notifyItemRemoved(getAdapterPosition());
                         }
                     }
                 });
