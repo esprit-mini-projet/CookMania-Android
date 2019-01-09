@@ -30,7 +30,8 @@
                 android:resource="@xml/picker_provider_paths" />
         </provider>
 
-        <activity android:name=".controllers.activities.MainActivity">
+        <activity android:name=".controllers.activities.MainActivity"
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
