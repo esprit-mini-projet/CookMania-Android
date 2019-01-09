@@ -24,6 +24,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+
         String userId = getIntent().getStringExtra(EXTRA_USER_ID);
         Fragment profileFragment = getSupportFragmentManager().findFragmentById(R.id.activity_profile_fragment_container);
         if (profileFragment == null) {

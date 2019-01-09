@@ -22,6 +22,7 @@ public class ShoppingListActivity extends AppCompatActivity implements ShoppingL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Shopping list");
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.activity_shopping_list_fragment_container);
         if (fragment == null) {

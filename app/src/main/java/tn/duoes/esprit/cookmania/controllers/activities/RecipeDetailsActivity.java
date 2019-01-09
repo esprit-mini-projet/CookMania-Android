@@ -32,6 +32,7 @@ public class RecipeDetailsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         mBlurLayout = findViewById(R.id.timer_fragment_container);
         
