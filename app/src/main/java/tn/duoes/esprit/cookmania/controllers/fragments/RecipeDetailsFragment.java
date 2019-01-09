@@ -435,7 +435,7 @@ public class RecipeDetailsFragment extends Fragment
                             @Override
                             public void onResponse(boolean isSuccessful) {
                                 mProgressDialog.dismiss();
-                                getActivity().finish();
+                                getActivity().onBackPressed();
                             }
                         });
                     }

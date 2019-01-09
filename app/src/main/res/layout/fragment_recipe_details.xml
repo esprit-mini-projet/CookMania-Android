@@ -43,27 +43,15 @@
                     app:layout_constraintBottom_toTopOf="@id/details_recipe_name_text"
                     app:layout_constraintStart_toStartOf="@id/details_recipe_name_text"/>
 
-                <TextView
-                    android:id="@+id/details_recipe_name_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Crispy Baked Chicken Wings"
-                    android:textSize="16sp"
-                    android:textColor="@android:color/white"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/details_info"/>
-
                 <FrameLayout
                     android:id="@+id/details_dot_separator"
                     android:layout_width="2dp"
                     android:layout_height="2dp"
                     android:background="@drawable/circle_shape"
                     android:layout_marginStart="8dp"
-                    app:layout_constraintStart_toEndOf="@id/details_recipe_name_text"
-                    app:layout_constraintTop_toTopOf="@id/details_recipe_name_text"
-                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_name_text"/>
+                    app:layout_constraintStart_toEndOf="@id/details_recipe_rating_info_bar"
+                    app:layout_constraintTop_toTopOf="@id/details_recipe_rating_info_bar"
+                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_rating_info_bar" />
 
                 <ImageView
                     android:id="@+id/details_recipe_time_image"
@@ -72,19 +60,33 @@
                     android:src="@drawable/timer_icon"
                     android:layout_marginStart="8dp"
                     app:layout_constraintStart_toEndOf="@id/details_dot_separator"
-                    app:layout_constraintTop_toTopOf="@id/details_recipe_name_text"
-                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_name_text"/>
+                    app:layout_constraintTop_toTopOf="@id/details_recipe_rating_info_bar"
+                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_rating_info_bar" />
 
                 <TextView
                     android:id="@+id/details_recipe_time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:text="23'"
+                    tools:text="23'"
                     android:textColor="@android:color/white"
                     app:layout_constraintStart_toEndOf="@id/details_recipe_time_image"
-                    app:layout_constraintTop_toTopOf="@id/details_recipe_name_text"
-                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_name_text"/>
+                    app:layout_constraintTop_toTopOf="@id/details_recipe_rating_info_bar"
+                    app:layout_constraintBottom_toBottomOf="@id/details_recipe_rating_info_bar" />
+
+                <TextView
+                    android:id="@+id/details_recipe_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Crispy Baked Chicken Wings"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/details_info" />
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/details_info"
@@ -107,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
                             android:textSize="30sp"
-                            android:text="6" />
+                            tools:text="6" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -151,7 +153,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@android:color/white"
                             android:textSize="30sp"
-                            android:text="1153" />
+                            tools:text="1153" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -294,7 +296,7 @@
                         android:id="@+id/details_recipe_description_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/lorem_ipsum_long"
+                        tools:text="@string/lorem_ipsum_long"
                         android:textColor="@color/colorDark"/>
 
                 </LinearLayout>
@@ -365,7 +367,7 @@
                                     android:id="@+id/details_recipe_shop_items_text"
                                     android:layout_width="26dp"
                                     android:layout_height="wrap_content"
-                                    android:text="19"
+                                    tools:text="19"
                                     android:textSize="10sp"
                                     android:textAlignment="center"
                                     android:textColor="@android:color/white"

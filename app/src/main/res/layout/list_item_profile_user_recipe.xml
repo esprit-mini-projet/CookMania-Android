@@ -130,6 +130,8 @@
             app:layout_constraintTop_toTopOf="@id/list_item_profile_user_recipe_transparent_layout"
             app:layout_constraintBottom_toBottomOf="@id/list_item_profile_user_recipe_transparent_layout"
             android:layout_marginStart="16dp"
+            android:paddingEnd="4dp"
+            android:paddingStart="0dp"
             android:gravity="center_vertical">
 
             <TextView
