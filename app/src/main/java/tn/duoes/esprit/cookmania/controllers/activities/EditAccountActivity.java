@@ -46,6 +46,7 @@ public class EditAccountActivity extends AppCompatActivity implements UserServic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_account);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Edit");
         getViewReferences();
         String imageUrl = getSharedPreferences(getString(R.string.prefs_name), MODE_PRIVATE)
                 .getString(getString(R.string.pref_image_url), "");
