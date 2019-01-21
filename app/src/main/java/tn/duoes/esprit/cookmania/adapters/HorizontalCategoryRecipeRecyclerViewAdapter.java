@@ -27,6 +27,8 @@ import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
+import tn.duoes.esprit.cookmania.views.corned_beef.BubbleCoachMark;
+import tn.duoes.esprit.cookmania.views.corned_beef.CoachMark;
 
 public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Adapter<HorizontalCategoryRecipeRecyclerViewAdapter.ViewHolder> {
 
@@ -63,6 +65,16 @@ public class HorizontalCategoryRecipeRecyclerViewAdapter extends RecyclerView.Ad
         viewHolder.recipeNameTV.setText(recipe.getName());
         viewHolder.recipeRatingBar.setRating(recipe.getRating());
         viewHolder.recipe = recipe;
+        if(position == 1) {
+            CoachMark mBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                    viewHolder.itemView.getContext(), viewHolder.itemView, "This is a bubble coach mark!")
+                    .setTargetOffset(0.25f)
+                    .setShowBelowAnchor(true)
+                    .setPadding(10)
+                    .build();
+
+            mBubbleCoachMark.show();
+        }
     }
 
     @Override
