@@ -1,7 +1,9 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +20,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -43,11 +47,14 @@ import tn.duoes.esprit.cookmania.services.RecipeService;
 import tn.duoes.esprit.cookmania.services.StepService;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 import tn.duoes.esprit.cookmania.utils.SwipableViewHolder;
+import tn.duoes.esprit.cookmania.views.corned_beef.BubbleCoachMark;
+import tn.duoes.esprit.cookmania.views.corned_beef.CoachMark;
 
 public class AddStepActivity extends AppCompatActivity {
 
     private static final String TAG = AddStepActivity.class.getSimpleName();
     public static final String RECIPE_KEY = "recipe";
+    public static final String SEEN_ADD_STEP_HINT = "add_step_hint";
     public static final int REQUEST_CODE = 101;
 
     private Recipe mRecipe;
@@ -58,11 +65,14 @@ public class AddStepActivity extends AppCompatActivity {
     private Gson gson;
     private ProgressDialog progressDialog;
     TextView ingredientsErrorTV;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_step);
+        sharedPreferences = getSharedPreferences(getString(R.string.prefs_name), Context.MODE_PRIVATE);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add step");
 
@@ -117,7 +127,8 @@ public class AddStepActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.add_step_add_ingredient_bt).setOnClickListener(new View.OnClickListener() {
+        ImageView addIngredientBT = findViewById(R.id.add_step_add_ingredient_bt);
+        addIngredientBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Ingredient lastIngredient = mIngredientAdapter.mIngredients.get(mIngredientAdapter.mIngredients.size()-1);
@@ -130,7 +141,8 @@ public class AddStepActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.add_step_next_bt).setOnClickListener(new View.OnClickListener() {
+        Button nextBT = findViewById(R.id.add_step_next_bt);
+        nextBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Step step;
@@ -144,7 +156,8 @@ public class AddStepActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.add_step_finish_bt).setOnClickListener(new View.OnClickListener() {
+        Button finishBT = findViewById(R.id.add_step_finish_bt);
+        finishBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Step step;
@@ -177,6 +190,63 @@ public class AddStepActivity extends AppCompatActivity {
                         Toast.makeText(AddStepActivity.this, "Error adding recipe", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+
+        mIngredientRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+
+                sharedPreferences.edit().putBoolean(SEEN_ADD_STEP_HINT, false).apply();
+                if(!sharedPreferences.getBoolean(SEEN_ADD_STEP_HINT, false) && mIngredientAdapter.mIngredients != null && !mIngredientAdapter.mIngredients.isEmpty()) {
+                    sharedPreferences.edit().putBoolean(SEEN_ADD_STEP_HINT, true).apply();
+
+                    CoachMark addIngredientBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                            AddStepActivity.this, addIngredientBT, "Click on this button to add more ingredients")
+                            .setTargetOffset(0.25f)
+                            .setShowBelowAnchor(true)
+                            .setPadding(10)
+                            .setTimeout(-1)
+                            .setOnDismissListener(() -> {
+                                Spinner unitSpinner = ((IngredientsRecyclerViewAdapter.ViewHolder)mIngredientRecyclerView.findViewHolderForAdapterPosition(0)).ingredientUnitET;
+                                CoachMark ingredientUnitBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                                        AddStepActivity.this, unitSpinner, "You can select unit from here, or leave it unspecified")
+                                        .setTargetOffset(0.25f)
+                                        .setShowBelowAnchor(true)
+                                        .setPadding(10)
+                                        .setTimeout(-1)
+                                        .setOnDismissListener(new CoachMark.OnDismissListener() {
+                                            @Override
+                                            public void onDismiss() {
+                                                CoachMark nextBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                                                        AddStepActivity.this, nextBT, "Click Next to add another step")
+                                                        .setTargetOffset(0.25f)
+                                                        .setPadding(10)
+                                                        .setOnDismissListener(new CoachMark.OnDismissListener() {
+                                                            @Override
+                                                            public void onDismiss() {
+                                                                CoachMark finishBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                                                                        AddStepActivity.this, finishBT, "Or finish to finish adding the recipe.")
+                                                                        .setTargetOffset(0.25f)
+                                                                        .setPadding(10)
+                                                                        .build();
+
+                                                                finishBubbleCoachMark.show();
+                                                            }
+                                                        })
+                                                        .build();
+
+                                                nextBubbleCoachMark.show();
+                                            }
+                                        })
+                                        .build();
+
+                                ingredientUnitBubbleCoachMark.show();
+                            })
+                            .build();
+
+                    addIngredientBubbleCoachMark.show();
+                }
             }
         });
     }
@@ -418,7 +488,7 @@ public class AddStepActivity extends AppCompatActivity {
                 ingredientUnitET.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        mIngredients.get(getAdapterPosition()).setUnit(ingredientUnitET.getSelectedItem().toString());
+                        mIngredients.get(getAdapterPosition()).setUnit(ingredientUnitET.getSelectedItemPosition()==0?"":ingredientUnitET.getSelectedItem().toString());
                     }
 
                     @Override
