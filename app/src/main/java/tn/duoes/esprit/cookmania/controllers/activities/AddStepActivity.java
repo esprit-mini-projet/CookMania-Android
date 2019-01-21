@@ -196,8 +196,6 @@ public class AddStepActivity extends AppCompatActivity {
         mIngredientRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-
-                sharedPreferences.edit().putBoolean(SEEN_ADD_STEP_HINT, false).apply();
                 if(!sharedPreferences.getBoolean(SEEN_ADD_STEP_HINT, false) && mIngredientAdapter.mIngredients != null && !mIngredientAdapter.mIngredients.isEmpty()) {
                     sharedPreferences.edit().putBoolean(SEEN_ADD_STEP_HINT, true).apply();
 
