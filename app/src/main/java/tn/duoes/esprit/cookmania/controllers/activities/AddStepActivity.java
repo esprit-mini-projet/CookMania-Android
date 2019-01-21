@@ -217,14 +217,14 @@ public class AddStepActivity extends AppCompatActivity {
                                             @Override
                                             public void onDismiss() {
                                                 CoachMark nextBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                                                        AddStepActivity.this, nextBT, "Click Next to add another step")
+                                                        AddStepActivity.this, nextBT, "Click NEXT to add another step")
                                                         .setTargetOffset(0.25f)
                                                         .setPadding(10)
                                                         .setOnDismissListener(new CoachMark.OnDismissListener() {
                                                             @Override
                                                             public void onDismiss() {
                                                                 CoachMark finishBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
-                                                                        AddStepActivity.this, finishBT, "Or finish to finish adding the recipe.")
+                                                                        AddStepActivity.this, finishBT, "Or FINISH to finish adding the recipe.")
                                                                         .setTargetOffset(0.25f)
                                                                         .setPadding(10)
                                                                         .build();
