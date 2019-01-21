@@ -66,9 +66,8 @@
             android:id="@+id/shopping_row_tv"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:gravity="bottom"
             android:text="This is a very long recipe name much longer than expected"
@@ -76,7 +75,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/shopping_row_arrow"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/view2" />
 
@@ -94,7 +93,7 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/shopping_row_arrow"
             android:layout_width="32dp"
             android:layout_height="39dp"
             android:layout_marginStart="8dp"

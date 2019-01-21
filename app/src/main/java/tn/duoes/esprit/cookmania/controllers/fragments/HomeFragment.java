@@ -227,7 +227,7 @@ public class HomeFragment extends Fragment{
                 public void onResponse(List<Recipe> recipes) {
                     cheapFragment = buildCategoryFragment("Cheap", recipes);
                     cheapProgressDialog.dismiss();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commitAllowingStateLoss();
                 }
 
                 @Override

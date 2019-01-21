@@ -33,53 +33,45 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:id="@+id/shopping_list_item_row_foreground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white">
-
-        <TextView
-            android:id="@+id/shopping_ingredient_row_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/shopping_ingredient_row_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
-            app:layout_constraintStart_toEndOf="@+id/shopping_ingredient_row_name"
-            app:layout_constraintTop_toTopOf="@+id/shopping_ingredient_row_name" />
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/shopping_ingredient_row_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_weight="0.75"
             android:text="TextView"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.15"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:paddingStart="30dp"/>
+
+        <TextView
+            android:id="@+id/shopping_ingredient_row_unit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:text="TextView"
+            android:textAlignment="viewStart"
+            android:textSize="16sp"
+            android:paddingStart="10dp"/>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/shopping_ingredient_row_arrow"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:foregroundTint="@color/colorFaded"
+            android:src="@drawable/forward_arrow_icon"
             android:tint="@color/colorFaded"
-            app:layout_constraintBottom_toBottomOf="@+id/shopping_ingredient_row_unit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.95"
-            app:layout_constraintStart_toEndOf="@+id/shopping_ingredient_row_unit"
-            app:layout_constraintTop_toTopOf="@+id/shopping_ingredient_row_unit"
-            app:srcCompat="@drawable/forward_arrow_icon" />
+            android:layout_marginEnd="10dp"/>
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
