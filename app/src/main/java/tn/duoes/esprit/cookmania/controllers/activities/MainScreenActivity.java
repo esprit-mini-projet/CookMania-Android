@@ -1,5 +1,6 @@
 package tn.duoes.esprit.cookmania.controllers.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import tn.duoes.esprit.cookmania.controllers.fragments.HomeFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SearchFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.ShoppingListFragment;
 import tn.duoes.esprit.cookmania.controllers.fragments.SuggestedFragment;
+import tn.duoes.esprit.cookmania.helpers.InternetConnectivityObserver;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 import tn.duoes.esprit.cookmania.views.RatingViewPager;
 
@@ -87,6 +89,9 @@ public class MainScreenActivity extends AppCompatActivity
 
             }
         });
+
+        InternetConnectivityObserver.get().stop();
+        InternetConnectivityObserver.get().start();
     }
 
     @Override
@@ -114,26 +119,24 @@ public class MainScreenActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         NavigationUtils.pagesStack.push(1);
-        Log.i(TAG, "onResume: ");/*
-        InternetConnectivityObserver.get().start(new InternetConnectivityObserver.Consumer() {
+        Log.i(TAG, "onResume: ");
+        InternetConnectivityObserver.get().setConsumer(new InternetConnectivityObserver.Consumer() {
             @Override
             public void accept(boolean isConnected) {
                 if(!isConnected) startActivity(new Intent(MainScreenActivity.this, ShoppingListActivity.class));
             }
-        });*/
+        });
     }
 
     @Override
     protected void onStop() {
-        super.onStop();/*
-        InternetConnectivityObserver.get().stop();*/
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         NavigationUtils.pagesStack.pop();
-        Log.i(TAG, "onDestroy: ");/*
-        InternetConnectivityObserver.get().stop();*/
+        Log.i(TAG, "onDestroy: ");
     }
 }

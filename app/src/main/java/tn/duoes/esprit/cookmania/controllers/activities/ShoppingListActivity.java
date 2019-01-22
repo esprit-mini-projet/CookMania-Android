@@ -21,7 +21,7 @@ public class ShoppingListActivity extends AppCompatActivity implements ShoppingL
     private static final String TAG = "ShoppingListActivity";
 
     private TextView mOfflineText;
-    private boolean mIsOnline;
+    private boolean mIsOnline = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +75,10 @@ public class ShoppingListActivity extends AppCompatActivity implements ShoppingL
         super.onResume();
         NavigationUtils.pagesStack.push(1);
         Log.i(TAG, "onResume: ");
-        InternetConnectivityObserver.get().start(new InternetConnectivityObserver.Consumer() {
+        InternetConnectivityObserver.get().setConsumer(new InternetConnectivityObserver.Consumer() {
             @Override
             public void accept(boolean internet) {
+                Log.i(TAG, "accept: " + internet);
                 mIsOnline = internet;
                 mOfflineText = findViewById(R.id.activity_shopping_list_offline_text);
                 mOfflineText.setVisibility(internet ? View.GONE : View.VISIBLE);
@@ -88,6 +89,8 @@ public class ShoppingListActivity extends AppCompatActivity implements ShoppingL
                 }
             }
         });
+        InternetConnectivityObserver.get().stop();
+        InternetConnectivityObserver.get().start();
     }
 
     @Override
@@ -100,14 +103,12 @@ public class ShoppingListActivity extends AppCompatActivity implements ShoppingL
     protected void onPause() {
         super.onPause();
         Log.i(TAG, "onPause: ");
-        InternetConnectivityObserver.get().stop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         NavigationUtils.pagesStack.pop();
-        InternetConnectivityObserver.get().stop();
         Log.i(TAG, "onDestroy: ");
     }
 

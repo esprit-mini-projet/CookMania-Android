@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import tn.duoes.esprit.cookmania.R;
+import tn.duoes.esprit.cookmania.helpers.InternetConnectivityObserver;
 import tn.duoes.esprit.cookmania.helpers.RecyclerItemTouchHelper;
 import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.Recipe;
@@ -196,7 +196,7 @@ public class AddStepActivity extends AppCompatActivity {
         mIngredientRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                if(!sharedPreferences.getBoolean(SEEN_ADD_STEP_HINT, false) && mIngredientAdapter.mIngredients != null && !mIngredientAdapter.mIngredients.isEmpty()) {
+                if (!sharedPreferences.getBoolean(SEEN_ADD_STEP_HINT, false) && mIngredientAdapter.mIngredients != null && !mIngredientAdapter.mIngredients.isEmpty()) {
                     sharedPreferences.edit().putBoolean(SEEN_ADD_STEP_HINT, true).apply();
 
                     CoachMark addIngredientBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
@@ -206,7 +206,7 @@ public class AddStepActivity extends AppCompatActivity {
                             .setPadding(10)
                             .setTimeout(-1)
                             .setOnDismissListener(() -> {
-                                Spinner unitSpinner = ((IngredientsRecyclerViewAdapter.ViewHolder)mIngredientRecyclerView.findViewHolderForAdapterPosition(0)).ingredientUnitET;
+                                Spinner unitSpinner = ((IngredientsRecyclerViewAdapter.ViewHolder) mIngredientRecyclerView.findViewHolderForAdapterPosition(0)).ingredientUnitET;
                                 CoachMark ingredientUnitBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
                                         AddStepActivity.this, unitSpinner, "You can select unit from here, or leave it unspecified")
                                         .setTargetOffset(0.25f)
@@ -486,7 +486,7 @@ public class AddStepActivity extends AppCompatActivity {
                 ingredientUnitET.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        mIngredients.get(getAdapterPosition()).setUnit(ingredientUnitET.getSelectedItemPosition()==0?"":ingredientUnitET.getSelectedItem().toString());
+                        mIngredients.get(getAdapterPosition()).setUnit(ingredientUnitET.getSelectedItemPosition() == 0 ? "" : ingredientUnitET.getSelectedItem().toString());
                     }
 
                     @Override
@@ -502,26 +502,24 @@ public class AddStepActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         NavigationUtils.pagesStack.push(1);
-        Log.i(TAG, "onResume: ");/*
-        InternetConnectivityObserver.get().start(new InternetConnectivityObserver.Consumer() {
+        Log.i(TAG, "onResume: ");
+        InternetConnectivityObserver.get().setConsumer(new InternetConnectivityObserver.Consumer() {
             @Override
             public void accept(boolean isConnected) {
                 if(!isConnected) startActivity(new Intent(AddStepActivity.this, ShoppingListActivity.class));
             }
-        });*/
+        });
     }
 
     @Override
     protected void onStop() {
-        super.onStop();/*
-        InternetConnectivityObserver.get().stop();*/
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         NavigationUtils.pagesStack.pop();
-        Log.i(TAG, "onDestroy: ");/*
-        InternetConnectivityObserver.get().stop();*/
+        Log.i(TAG, "onDestroy: ");
     }
 }

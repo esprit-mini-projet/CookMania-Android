@@ -208,13 +208,14 @@ public class MainLoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if(isLoggedIn()){
-            InternetConnectivityObserver.get().startOnce(new InternetConnectivityObserver.Consumer() {
+            InternetConnectivityObserver.get().setConsumer(new InternetConnectivityObserver.Consumer() {
                 @Override
                 public void accept(boolean internet) {
                     if (internet) goToHome();
                     else goToShoppingList();
                 }
             });
+            InternetConnectivityObserver.get().start();
             return;
         }
 

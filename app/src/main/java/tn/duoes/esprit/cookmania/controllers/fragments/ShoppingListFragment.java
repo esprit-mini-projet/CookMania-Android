@@ -5,15 +5,12 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +34,7 @@ import tn.duoes.esprit.cookmania.views.corned_beef.CoachMark;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.ShopItemClickListener{
+public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.ShopItemClickListener {
     private static final String TAG = ShoppingListFragment.class.getSimpleName();
     public static final String SEEN_RECIPE_HINT_KEY = "recipe_hint";
 
@@ -149,7 +146,7 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mShoppingRecyclerView);
 
         mShoppingRecyclerView.post(() -> {
-            if(!sharedPreferences.getBoolean(SEEN_RECIPE_HINT_KEY, false) && mViewAdapter.mItems != null && !mViewAdapter.mItems.isEmpty()) {
+            if (!sharedPreferences.getBoolean(SEEN_RECIPE_HINT_KEY, false) && mViewAdapter.mItems != null && !mViewAdapter.mItems.isEmpty()) {
                 sharedPreferences.edit().putBoolean(SEEN_RECIPE_HINT_KEY, true).apply();
                 ImageView recipeArrowIV = mLayoutManager.findViewByPosition(0).findViewById(R.id.shopping_row_arrow);
                 ImageView ingredientArrowIV = mLayoutManager.findViewByPosition(1).findViewById(R.id.shopping_ingredient_row_arrow);

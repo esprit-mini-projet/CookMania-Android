@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.fragments.ProfileFragment;
+import tn.duoes.esprit.cookmania.helpers.InternetConnectivityObserver;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -61,26 +62,24 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         NavigationUtils.pagesStack.push(1);
-        Log.i(TAG, "onResume: ");/*
-        InternetConnectivityObserver.get().start(new InternetConnectivityObserver.Consumer() {
+        Log.i(TAG, "onResume: ");
+        InternetConnectivityObserver.get().setConsumer(new InternetConnectivityObserver.Consumer() {
             @Override
             public void accept(boolean isConnected) {
                 if(!isConnected) startActivity(new Intent(ProfileActivity.this, ShoppingListActivity.class));
             }
-        });*/
+        });
     }
 
     @Override
     protected void onStop() {
-        super.onStop();/*
-        InternetConnectivityObserver.get().stop();*/
+        super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         NavigationUtils.pagesStack.pop();
-        Log.i(TAG, "onDestroy: ");/*
-        InternetConnectivityObserver.get().stop();*/
+        Log.i(TAG, "onDestroy: ");
     }
 }

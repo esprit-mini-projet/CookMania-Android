@@ -15,6 +15,7 @@ public class InternetConnectivityObserver {
 
     private static InternetConnectivityObserver instance;
     private Disposable mDisposable;
+    private Consumer mConsumer;
 
     public static InternetConnectivityObserver get() {
         if (instance == null) {
@@ -27,21 +28,21 @@ public class InternetConnectivityObserver {
 
     }
 
-    public void start(Consumer consumer) {
+    public void start() {
         mDisposable = ReactiveNetwork
                 .observeInternetConnectivity()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer::accept);
+                .subscribe(isConnected -> getConsumer().accept(isConnected));
         Log.i(TAG, "start: ");
     }
 
-    public void startOnce(Consumer consumer) {
+    public void startOnce() {
         Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
         mDisposable = single
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumer::accept);
+                .subscribe(isConnected -> getConsumer().accept(isConnected));
     }
 
     public void stop() {
@@ -50,6 +51,14 @@ public class InternetConnectivityObserver {
             mDisposable = null;
         }
         Log.i(TAG, "stop: ");
+    }
+
+    public Consumer getConsumer() {
+        return mConsumer;
+    }
+
+    public void setConsumer(Consumer consumer) {
+        mConsumer = consumer;
     }
 
     public interface Consumer {

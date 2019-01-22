@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="1dp">
@@ -51,7 +50,7 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:paddingStart="30dp"/>
+            android:paddingStart="30dp" />
 
         <TextView
             android:id="@+id/shopping_ingredient_row_unit"
@@ -61,7 +60,7 @@
             android:text="TextView"
             android:textAlignment="viewStart"
             android:textSize="16sp"
-            android:paddingStart="10dp"/>
+            android:paddingStart="10dp" />
 
         <ImageView
             android:id="@+id/shopping_ingredient_row_arrow"
@@ -70,7 +69,7 @@
             android:foregroundTint="@color/colorFaded"
             android:src="@drawable/forward_arrow_icon"
             android:tint="@color/colorFaded"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp" />
 
     </LinearLayout>
 
