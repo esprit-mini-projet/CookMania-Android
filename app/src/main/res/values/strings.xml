@@ -56,7 +56,7 @@
     <string name="add_photo">Add a photo</string>
 
     <string-array name="unit_names">
-        <item></item>
+        <item>N/A</item>
         <item>g</item>
         <item>ml</item>
     </string-array>

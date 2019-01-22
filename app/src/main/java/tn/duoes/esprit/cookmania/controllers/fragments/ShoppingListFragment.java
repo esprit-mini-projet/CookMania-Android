@@ -1,18 +1,23 @@
 package tn.duoes.esprit.cookmania.controllers.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import tn.duoes.esprit.cookmania.R;
@@ -21,6 +26,8 @@ import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
 import tn.duoes.esprit.cookmania.helpers.RecyclerItemTouchHelper;
 import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
+import tn.duoes.esprit.cookmania.views.corned_beef.BubbleCoachMark;
+import tn.duoes.esprit.cookmania.views.corned_beef.CoachMark;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +37,10 @@ import tn.duoes.esprit.cookmania.models.ShoppingListItem;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.ShopItemClickListener {
+public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.ShopItemClickListener{
+    private static final String TAG = ShoppingListFragment.class.getSimpleName();
+    public static final String SEEN_RECIPE_HINT_KEY = "recipe_hint";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,6 +74,8 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
         return fragment;
     }
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,10 +83,11 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        this.sharedPreferences = getContext().getSharedPreferences(getContext().getString(R.string.prefs_name), Context.MODE_PRIVATE);
     }
 
     private RecyclerView mShoppingRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private ShoppingListViewAdapter mViewAdapter;
     private TextView emptyTextView;
 
@@ -117,13 +130,10 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
                 checkForEmptyShoppingList();
 
                 // showing snack bar with Undo option
-                Snackbar snackbar = Snackbar.make(viewHolder.itemView, "removed from cart!", Snackbar.LENGTH_LONG);
-                snackbar.setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mViewAdapter.restoreItem(toRestoreItem, toRestoreIndex);
-                        checkForEmptyShoppingList();
-                    }
+                Snackbar snackbar = Snackbar.make(viewHolder.itemView, "Click UNDO to restore removed item", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", view -> {
+                    mViewAdapter.restoreItem(toRestoreItem, toRestoreIndex);
+                    checkForEmptyShoppingList();
                 });
                 snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
@@ -137,6 +147,32 @@ public class ShoppingListFragment extends Fragment implements ShoppingListViewAd
             }
         });
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mShoppingRecyclerView);
+
+        mShoppingRecyclerView.post(() -> {
+            if(!sharedPreferences.getBoolean(SEEN_RECIPE_HINT_KEY, false) && mViewAdapter.mItems != null && !mViewAdapter.mItems.isEmpty()) {
+                sharedPreferences.edit().putBoolean(SEEN_RECIPE_HINT_KEY, true).apply();
+                ImageView recipeArrowIV = mLayoutManager.findViewByPosition(0).findViewById(R.id.shopping_row_arrow);
+                ImageView ingredientArrowIV = mLayoutManager.findViewByPosition(1).findViewById(R.id.shopping_ingredient_row_arrow);
+                CoachMark recipeBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                        getContext(), recipeArrowIV, "Slide to remove the entire recipe from shopping list!")
+                        .setTargetOffset(0.25f)
+                        .setShowBelowAnchor(true)
+                        .setPadding(10)
+                        .setOnDismissListener(() -> {
+                            CoachMark ingredientBubbleCoachMark = new BubbleCoachMark.BubbleCoachMarkBuilder(
+                                    getContext(), ingredientArrowIV, "Or slide to only remove specific ingredient!")
+                                    .setTargetOffset(0.25f)
+                                    .setShowBelowAnchor(true)
+                                    .setPadding(10)
+                                    .build();
+
+                            ingredientBubbleCoachMark.show();
+                        })
+                        .build();
+
+                recipeBubbleCoachMark.show();
+            }
+        });
 
         return fragment;
     }

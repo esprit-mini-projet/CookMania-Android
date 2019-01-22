@@ -2,6 +2,7 @@ package tn.duoes.esprit.cookmania.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,11 +26,13 @@ import tn.duoes.esprit.cookmania.utils.Constants;
 import tn.duoes.esprit.cookmania.utils.ListUtils;
 import tn.duoes.esprit.cookmania.utils.NavigationUtils;
 import tn.duoes.esprit.cookmania.utils.SwipableViewHolder;
+import tn.duoes.esprit.cookmania.views.corned_beef.BubbleCoachMark;
+import tn.duoes.esprit.cookmania.views.corned_beef.CoachMark;
 
 public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context mContext;
     public List<Object> mItems;
+    private Context mContext;
     private ShopItemClickListener mCallBack;
 
     public interface ShopItemClickListener {
