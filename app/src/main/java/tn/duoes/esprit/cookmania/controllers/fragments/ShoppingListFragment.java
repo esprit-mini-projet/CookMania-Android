@@ -3,7 +3,6 @@ package tn.duoes.esprit.cookmania.controllers.fragments;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.adapters.ShoppingListViewAdapter;
+import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
 import tn.duoes.esprit.cookmania.helpers.RecyclerItemTouchHelper;
 import tn.duoes.esprit.cookmania.models.Ingredient;
 import tn.duoes.esprit.cookmania.models.ShoppingListItem;
@@ -30,7 +30,7 @@ import tn.duoes.esprit.cookmania.models.ShoppingListItem;
  * Use the {@link ShoppingListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingListFragment extends Fragment {
+public class ShoppingListFragment extends Fragment implements ShoppingListViewAdapter.ShopItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -84,7 +84,7 @@ public class ShoppingListFragment extends Fragment {
         View fragment = inflater.inflate(R.layout.fragment_shopping_list, container, false);
 
         mShoppingRecyclerView = fragment.findViewById(R.id.shooping_list_view);
-        mViewAdapter = new ShoppingListViewAdapter(getContext());
+        mViewAdapter = new ShoppingListViewAdapter(getContext(), this);
 
         mShoppingRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -171,6 +171,15 @@ public class ShoppingListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public boolean onClick() {
+        if (getActivity().getClass() == ShoppingListActivity.class) {
+            ShoppingListActivity activity = (ShoppingListActivity) getActivity();
+            return activity.isOnline();
+        }
+        return true;
     }
 
     /**

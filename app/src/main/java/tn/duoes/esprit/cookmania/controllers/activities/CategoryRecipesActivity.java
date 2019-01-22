@@ -64,13 +64,26 @@ public class CategoryRecipesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         NavigationUtils.pagesStack.push(1);
-        Log.i(TAG, "onResume: ");
+        Log.i(TAG, "onResume: ");/*
+        InternetConnectivityObserver.get().start(new InternetConnectivityObserver.Consumer() {
+            @Override
+            public void accept(boolean isConnected) {
+                if(!isConnected) startActivity(new Intent(CategoryRecipesActivity.this, ShoppingListActivity.class));
+            }
+        });*/
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();/*
+        InternetConnectivityObserver.get().stop();/*
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         NavigationUtils.pagesStack.pop();
-        Log.i(TAG, "onDestroy: ");
+        Log.i(TAG, "onDestroy: ");/*
+        InternetConnectivityObserver.get().stop();*/
     }
 }

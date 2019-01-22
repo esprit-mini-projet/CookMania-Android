@@ -30,10 +30,16 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private Context mContext;
     public List<Object> mItems;
+    private ShopItemClickListener mCallBack;
 
-    public ShoppingListViewAdapter(Context context){
+    public interface ShopItemClickListener {
+        boolean onClick();
+    }
+
+    public ShoppingListViewAdapter(Context context, ShopItemClickListener callBack) {
         super();
         this.mContext = context;
+        mCallBack = callBack;
         updateDataSource();
     }
 
@@ -69,11 +75,11 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(viewType, viewGroup, false);
         switch (viewType){
             case R.layout.row_shopping_list:
-                return new RecipeViewHolder(v);
+                return new RecipeViewHolder(v, mCallBack);
             case R.layout.row_shopping_list_item:
                 return new IngredientViewHolder(v);
             default:
-                return new RecipeViewHolder(v);
+                return new RecipeViewHolder(v, mCallBack);
         }
     }
 
@@ -105,9 +111,11 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         ImageView recipeImageView;
         TextView recipeTextView;
         Recipe recipe;
+        ShopItemClickListener mCallBack;
 
-        RecipeViewHolder(@NonNull View itemView){
+        RecipeViewHolder(@NonNull View itemView, ShopItemClickListener callBack) {
             super(itemView);
+            mCallBack = callBack;
             foregroundView = itemView.findViewById(R.id.shopping_list_foreground);
             backgroundView = itemView.findViewById(R.id.shopping_list_background);
             recipeImageView = foregroundView.findViewById(R.id.shopping_row_iv);
@@ -115,9 +123,11 @@ public class ShoppingListViewAdapter extends RecyclerView.Adapter<RecyclerView.V
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
-                    i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId()+"");
-                    v.getContext().startActivity(i);
+                    if (mCallBack.onClick()) {
+                        Intent i = NavigationUtils.getNavigationFormattedIntent(v.getContext(), RecipeDetailsActivity.class);
+                        i.putExtra(RecipeDetailsActivity.EXTRA_RECIPE_ID, recipe.getId() + "");
+                        v.getContext().startActivity(i);
+                    }
                 }
             });
         }

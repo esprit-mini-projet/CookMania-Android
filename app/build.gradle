@@ -107,6 +107,9 @@ dependencies {
 
     //Blur library
     implementation 'io.alterac.blurkit:blurkit:1.1.0'
+
+    //Reactive Network
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

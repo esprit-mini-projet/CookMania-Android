@@ -41,7 +41,7 @@ import java.util.UUID;
 import tn.duoes.esprit.cookmania.R;
 import tn.duoes.esprit.cookmania.controllers.activities.MainScreenActivity;
 import tn.duoes.esprit.cookmania.controllers.activities.ShoppingListActivity;
-import tn.duoes.esprit.cookmania.helpers.InternetCheckTask;
+import tn.duoes.esprit.cookmania.helpers.InternetConnectivityObserver;
 import tn.duoes.esprit.cookmania.models.User;
 import tn.duoes.esprit.cookmania.services.UserService;
 import tn.duoes.esprit.cookmania.utils.Constants;
@@ -208,9 +208,9 @@ public class MainLoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if(isLoggedIn()){
-            new InternetCheckTask(new InternetCheckTask.Consumer() {
+            InternetConnectivityObserver.get().startOnce(new InternetConnectivityObserver.Consumer() {
                 @Override
-                public void accept(Boolean internet) {
+                public void accept(boolean internet) {
                     if (internet) goToHome();
                     else goToShoppingList();
                 }
