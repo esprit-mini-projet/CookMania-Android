@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controllers.activities.SettingsActivity">
+    tools:context="com.esprit.cookmania.controllers.activities.SettingsActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/activity_settings_edit_container"

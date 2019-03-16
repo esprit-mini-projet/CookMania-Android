@@ -104,6 +104,7 @@
     <string name="go_to_home">Go to home</string>
     <string name="image_saved">Your image has been saved successfully.</string>
     <string name="offline_text">Offline Mode</string>
+    <string name="info_cant_leave_page">Can\'t leave this page without Internet</string>
     <string-array name="rating_opinions">
         <item>Disgusting!</item>
         <item>Meh..</item>

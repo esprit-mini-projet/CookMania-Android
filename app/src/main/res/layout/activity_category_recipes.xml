@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.activities.CategoryRecipesActivity">
+    tools:context="com.esprit.cookmania.controllers.activities.CategoryRecipesActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/category_recipes_rv"

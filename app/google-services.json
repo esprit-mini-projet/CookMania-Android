@@ -8,6 +8,57 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:323514335162:android:d9b5d5b7180effcc",
+        "android_client_info": {
+          "package_name": "com.esprit.cookmania"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323514335162-ibh9ukmh9ufbvqoo0qe70giuk9krqied.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.esprit.cookmania",
+            "certificate_hash": "1118c64758f3f7fc6f9036521090893593878379"
+          }
+        },
+        {
+          "client_id": "323514335162-h1pmb87tdhi36nfm2n4lnibu254r01fp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCf9pfJRSBurQehaX0Jbe3JJ75g8NILCJA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323514335162-h1pmb87tdhi36nfm2n4lnibu254r01fp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "323514335162-ut1n697tbepfjk414bsiju9g5fo567h4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.elyes-seif.products.CookMania"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:323514335162:android:b2d1772b165c03f0",
         "android_client_info": {
           "package_name": "tn.duoes.esprit.cookmania"

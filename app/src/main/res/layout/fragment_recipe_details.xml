@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.activities.RecipeDetailsActivity">
+    tools:context="com.esprit.cookmania.controllers.activities.RecipeDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -524,7 +524,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <tn.duoes.esprit.cookmania.views.RatingViewPager
+                    <com.esprit.cookmania.views.RatingViewPager
                         android:id="@+id/details_recipe_rating_viewpager"
                         android:layout_width="match_parent"
                         android:layout_height="250dp">
@@ -537,7 +537,7 @@
                             app:tabGravity="center"
                             app:tabIndicatorHeight="0dp"/>
 
-                    </tn.duoes.esprit.cookmania.views.RatingViewPager>
+                    </com.esprit.cookmania.views.RatingViewPager>
 
                 </LinearLayout>
 

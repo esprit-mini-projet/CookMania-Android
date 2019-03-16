@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.fragments.SuggestedFragment">
+    tools:context="com.esprit.cookmania.controllers.fragments.SuggestedFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

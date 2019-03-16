@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="tn.duoes.esprit.cookmania">
+    package="com.esprit.cookmania">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -30,7 +30,8 @@
                 android:resource="@xml/picker_provider_paths" />
         </provider>
 
-        <activity android:name=".controllers.activities.MainActivity"
+        <activity
+            android:name="com.esprit.cookmania.controllers.activities.MainActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.activities.MainScreenActivity"
+        <activity
+            android:name="com.esprit.cookmania.controllers.activities.MainScreenActivity"
             android:theme="@style/MainScreenTheme"/>
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -61,14 +63,15 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".controllers.activities.ProfileActivity" />
-        <activity android:name=".controllers.activities.AddStepActivity" />
-        <activity android:name=".controllers.activities.RecipeDetailsActivity" />
-        <activity android:name=".controllers.activities.SettingsActivity" />
-        <activity android:name=".controllers.activities.CategoryRecipesActivity" />
-        <activity android:name=".controllers.activities.ShoppingListActivity" />
-        <activity android:name=".controllers.activities.EditAccountActivity" />
-        <service android:name=".services.FireBaseNotificationService">
+        <activity android:name="com.esprit.cookmania.controllers.activities.ProfileActivity" />
+        <activity android:name="com.esprit.cookmania.controllers.activities.AddStepActivity" />
+        <activity android:name="com.esprit.cookmania.controllers.activities.RecipeDetailsActivity" />
+        <activity android:name="com.esprit.cookmania.controllers.activities.SettingsActivity" />
+        <activity android:name="com.esprit.cookmania.controllers.activities.CategoryRecipesActivity" />
+        <activity android:name="com.esprit.cookmania.controllers.activities.ShoppingListActivity" />
+        <activity android:name="com.esprit.cookmania.controllers.activities.EditAccountActivity" />
+
+        <service android:name="com.esprit.cookmania.services.FireBaseNotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

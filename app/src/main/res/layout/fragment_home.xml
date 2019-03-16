@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controllers.fragments.HomeFragment"
+    tools:context="com.esprit.cookmania.controllers.fragments.HomeFragment"
     android:id="@+id/home_refresh_layout">
 
     <!-- TODO: Update blank fragment layout -->
-<tn.duoes.esprit.cookmania.views.CustomScrollView
+    <com.esprit.cookmania.views.CustomScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/home_scroll">
@@ -55,5 +55,5 @@
         </FrameLayout>
 
     </LinearLayout>
-</tn.duoes.esprit.cookmania.views.CustomScrollView>
+    </com.esprit.cookmania.views.CustomScrollView>
 </android.support.v4.widget.SwipeRefreshLayout>

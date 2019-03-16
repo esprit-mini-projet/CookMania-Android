@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controllers.fragments.FeedFragment">
+    tools:context="com.esprit.cookmania.controllers.fragments.FeedFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <android.support.constraint.ConstraintLayout
