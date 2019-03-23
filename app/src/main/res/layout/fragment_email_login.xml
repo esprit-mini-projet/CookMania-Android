@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/login_background">
 
     <LinearLayout
@@ -129,6 +130,8 @@
         android:id="@+id/fragment_email_login_back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         style="?buttonBarButtonStyle"
         android:src="@drawable/ic_action_navigation_arrow_back_inverted" />
 

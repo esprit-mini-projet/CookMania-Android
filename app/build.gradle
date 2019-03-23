@@ -8,12 +8,12 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -96,7 +96,7 @@ dependencies {
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     //Glide Transformation
-    implementation "jp.wasabeef:glide-transformations:4.0.0"
+    implementation "jp.wasabeef:glide-transformations:4.0.1"
 
     //Firebase
     implementation 'com.google.firebase:firebase-core:16.0.6'
