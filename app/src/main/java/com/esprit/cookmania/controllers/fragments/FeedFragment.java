@@ -109,7 +109,7 @@ public class FeedFragment extends Fragment {
                 Log.d(TAG, "onResponse: "+feedResults);
                 feedAdapter.feedResults = feedResults;
                 feedAdapter.notifyDataSetChanged();
-                if(feedResults.isEmpty()){
+                if (feedResults == null || feedResults.isEmpty()) {
                     feedEmptyTv.setVisibility(View.VISIBLE);
                 }else{
                     feedEmptyTv.setVisibility(View.GONE);

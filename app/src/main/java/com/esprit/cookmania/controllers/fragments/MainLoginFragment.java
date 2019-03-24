@@ -39,7 +39,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -95,7 +94,7 @@ public class MainLoginFragment extends Fragment {
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginManager.getInstance().logInWithReadPermissions(MainLoginFragment.this, Arrays.asList(PER_FB_PUBLIC));
+                LoginManager.getInstance().logInWithReadPermissions(MainLoginFragment.this, Arrays.asList(PER_FB_PUBLIC, "email"));
             }
         });
 
@@ -129,15 +128,20 @@ public class MainLoginFragment extends Fragment {
                             try {
                                 user.setId("f_" + object.getString("id"));
                                 user.setUserName(object.getString("name"));
-                                user.setEmail(object.getString("email"));
                                 user.setPassword("");
                                 user.setImageUrl("https://graph.facebook.com/" + accessToken.getUserId() + "/picture?height=600");
+                                if (object.has("email")) {
+                                    user.setEmail(object.getString("email"));
+                                } else {
+                                    user.setEmail("");
+                                }
                                 Log.d(TAG, "onCompleted: user: " + user);
                                 loginOrCreateFromSocialMedia(user, METHOD_FACEBOOK);
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
+                                LoginManager.getInstance().logOut();
                                 e.printStackTrace();
                                 hideProgressBar();
-                                showErrorAlert();
+                                showFacebookErrorAlert();
                             }
                         }
                     }
@@ -202,6 +206,14 @@ public class MainLoginFragment extends Fragment {
                 .show();
     }
 
+    private void showFacebookErrorAlert() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage("We could not connect you using Facebook.")
+                .setTitle("Login Error")
+                .setPositiveButton("ok", null)
+                .show();
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -239,7 +251,7 @@ public class MainLoginFragment extends Fragment {
             @Override
             public void onError(FacebookException exception) {
                 Log.d(TAG, "onError: ");
-                showErrorAlert();
+                showFacebookErrorAlert();
             }
         });
     }
