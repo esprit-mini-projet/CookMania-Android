@@ -187,6 +187,7 @@ public class AddStepActivity extends AppCompatActivity {
                     @Override
                     public void onFailure() {
                         Toast.makeText(AddStepActivity.this, "Error adding recipe", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                     }
                 });
             }
@@ -280,6 +281,7 @@ public class AddStepActivity extends AppCompatActivity {
 
             @Override
             public void onFailure() {
+                progressDialog.dismiss();
                 return;
             }
         });
