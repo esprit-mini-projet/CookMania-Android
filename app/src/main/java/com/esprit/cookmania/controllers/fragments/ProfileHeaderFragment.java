@@ -51,6 +51,7 @@ public class ProfileHeaderFragment extends Fragment {
     private UserService.GetUserByIdCallBack mUserCallback = new UserService.GetUserByIdCallBack() {
         @Override
         public void onCompletion(User user) {
+            if (isDetached() || getActivity() == null) return;
             if (user == null) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Error")

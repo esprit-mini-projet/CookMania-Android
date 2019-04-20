@@ -146,7 +146,9 @@ public class SearchFragment extends Fragment {
     RecipeService.RecipeServiceGetCallBack recipeServiceGetCallBack = new RecipeService.RecipeServiceGetCallBack() {
         @Override
         public void onResponse(List<Recipe> recipes) {
-            updateResults(recipes);
+            if (isResumed()) {
+                updateResults(recipes);
+            }
         }
 
         @Override
@@ -230,6 +232,7 @@ public class SearchFragment extends Fragment {
         RecipeService.getInstance().getLabels(new RecipeService.LabelGetCallBack() {
             @Override
             public void onResponse(List<LabelCategory> categories) {
+                if (isDetached() || getActivity() == null) return;
                 for (LabelCategory category : categories){
                     insertCategoryTextView(category.getCategory());
                     for (String label : category.getLabels()){

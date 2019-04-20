@@ -131,8 +131,9 @@ public class HomeFragment extends Fragment{
                 RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
                     @Override
                     public void onResponse(List<Recipe> recipes) {
-                        topRatedFragment.updateRecipies(recipes);
                         loadersStack.pop();
+                        if (isDetached() || getActivity() == null) return;
+                        topRatedFragment.updateRecipies(recipes);
                         if(loadersStack.empty()) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -145,8 +146,9 @@ public class HomeFragment extends Fragment{
                 RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
                     @Override
                     public void onResponse(List<Recipe> recipes) {
-                        healthyFragment.updateRecipies(recipes);
                         loadersStack.pop();
+                        if (isDetached() || getActivity() == null) return;
+                        healthyFragment.updateRecipies(recipes);
                         if(loadersStack.empty()) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -159,8 +161,9 @@ public class HomeFragment extends Fragment{
                 RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
                     @Override
                     public void onResponse(List<Recipe> recipes) {
-                        cheapFragment.updateRecipies(recipes);
                         loadersStack.pop();
+                        if (isDetached() || getActivity() == null) return;
+                        cheapFragment.updateRecipies(recipes);
                         if(loadersStack.empty()) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -173,8 +176,8 @@ public class HomeFragment extends Fragment{
         });
 
         //Fragment suggestedFragment = SuggestedFragment.newInstance(null, null);
-        getFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();
-        getFragmentManager().beginTransaction().replace(R.id.home_feed_container, feedFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.home_suggested_container, suggestedFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.home_feed_container, feedFragment).commit();
 
 
         if(topRatedFragment == null || healthyFragment == null || cheapFragment == null){
@@ -186,8 +189,9 @@ public class HomeFragment extends Fragment{
             RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
                 @Override
                 public void onResponse(List<Recipe> recipes) {
-                    topRatedFragment = buildCategoryFragment("Top rated", recipes);
                     topRatedProgressDialog.dismiss();
+                    if (isDetached() || getActivity() == null) return;
+                    topRatedFragment = buildCategoryFragment("Top rated", recipes);
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
                 }
 
@@ -205,8 +209,9 @@ public class HomeFragment extends Fragment{
             RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceGetCallBack() {
                 @Override
                 public void onResponse(List<Recipe> recipes) {
+                    topRatedProgressDialog.dismiss();
+                    if (isDetached() || getActivity() == null) return;
                     healthyFragment = buildCategoryFragment("Healthy", recipes);
-                    healthyProgressDialog.dismiss();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
                 }
 
@@ -224,8 +229,9 @@ public class HomeFragment extends Fragment{
             RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceGetCallBack() {
                 @Override
                 public void onResponse(List<Recipe> recipes) {
+                    topRatedProgressDialog.dismiss();
+                    if (isDetached() || getActivity() == null) return;
                     cheapFragment = buildCategoryFragment("Cheap", recipes);
-                    cheapProgressDialog.dismiss();
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commitAllowingStateLoss();
                 }
 
@@ -237,9 +243,9 @@ public class HomeFragment extends Fragment{
 
             return fragment;
         }
-        getFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
-        getFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
-        getFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.home_toprated_container, topRatedFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
+        getChildFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commit();
 
         return fragment;
     }
