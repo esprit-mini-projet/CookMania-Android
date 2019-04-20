@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment{
                     public void onFailure() {}
                 });
                 loadersStack.push(4);
-                RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceGetCallBack() {
                     @Override
                     public void onResponse(List<Recipe> recipes) {
                         loadersStack.pop();
@@ -158,7 +158,7 @@ public class HomeFragment extends Fragment{
                     public void onFailure() {}
                 });
                 loadersStack.push(5);
-                RecipeService.getInstance().getTopRatedRecipes(new RecipeService.RecipeServiceGetCallBack() {
+                RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceGetCallBack() {
                     @Override
                     public void onResponse(List<Recipe> recipes) {
                         loadersStack.pop();
@@ -209,7 +209,7 @@ public class HomeFragment extends Fragment{
             RecipeService.getInstance().getHealthyRecipes(new RecipeService.RecipeServiceGetCallBack() {
                 @Override
                 public void onResponse(List<Recipe> recipes) {
-                    topRatedProgressDialog.dismiss();
+                    healthyProgressDialog.dismiss();
                     if (isDetached() || getActivity() == null) return;
                     healthyFragment = buildCategoryFragment("Healthy", recipes);
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_healthy_container, healthyFragment).commit();
@@ -229,7 +229,7 @@ public class HomeFragment extends Fragment{
             RecipeService.getInstance().getCheapRecipes(new RecipeService.RecipeServiceGetCallBack() {
                 @Override
                 public void onResponse(List<Recipe> recipes) {
-                    topRatedProgressDialog.dismiss();
+                    healthyProgressDialog.dismiss();
                     if (isDetached() || getActivity() == null) return;
                     cheapFragment = buildCategoryFragment("Cheap", recipes);
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.home_cheap_container, cheapFragment).commitAllowingStateLoss();
